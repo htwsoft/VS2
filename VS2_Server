@@ -1,0 +1,38 @@
+SERVER
+
+int port;
+string ip;
+
+MessageBoard getMessageBoard()
+//Messageboard ist Hauptstruktur für die Server/Knoten
+(class)struct MessageBoard
+{	
+	Message message;
+	string name;
+	int id;
+	
+	int fatherId;
+	int[n] childId;
+	
+	Message* next;
+	Message* previous;
+	Message* head;
+	
+	string getFatherName();
+	string* getChildNames();
+	void initBoard();
+	Message getMessage();
+	void setMessage();
+	boolean confirmRights();
+	saveMessages();
+	deleteMessage();
+}
+
+(class)struct Message
+{
+	int uid;
+	int id;
+	string message;
+}
+
+als nächstes login server

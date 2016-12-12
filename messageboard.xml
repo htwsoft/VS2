@@ -1,0 +1,20 @@
+<messageboard id="">
+  <mcounter> 3 </mcounter>
+  <idcounter> 3 </idcounter>
+  <messages>
+    <message id="1"> 
+      <text> bla fassel 1 </text>
+      <uid> 353646 </uid>
+    </message>
+    
+    <message id="2"> 
+      <text> blafassel 2 </text>
+      <uid> 4657 </uid>
+    </message>
+    
+    <message id="3"> 
+      <text> bla fassel 3 </text>
+      <uid> 123 </uid>
+    </message>
+  </messages>
+</messageboard>  
