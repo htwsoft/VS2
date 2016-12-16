@@ -1,15 +1,11 @@
 package server;
-    /**
-     *
-     * @author imed
-     */
-    import Empfang.*;
-     
-    import org.omg.CosNaming.*;
-    import org.omg.CosNaming.NamingContextPackage.*;
-    import org.omg.CORBA.*;
-    import org.omg.PortableServer.*;
-    import org.omg.PortableServer.POA;
+
+import Empfang.*;
+import org.omg.CosNaming.*;
+import org.omg.CosNaming.NamingContextPackage.*;
+import org.omg.CORBA.*;
+import org.omg.PortableServer.*;
+import org.omg.PortableServer.POA;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,10 +18,12 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
      
-    public class StartServer {
+public class StartServer
+{
 
 
-private static void getPublicIpAddress() {
+    private static void getPublicIpAddress()
+    {
 	
         URL ipAdress;
 
@@ -42,11 +40,13 @@ private static void getPublicIpAddress() {
             e.printStackTrace();
         }
     
-}
+    }
 
 
-      public static void main(String args[]) {
-        try{
+public static void main(String args[])
+{
+        try
+        {
           // create and initialize the ORB //// get reference to rootpoa &amp; activate the POAManager
           ORB orb = ORB.init(args, null);      
           POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));

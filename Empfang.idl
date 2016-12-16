@@ -1,11 +1,11 @@
-	module Empfang
-    {
+module Empfang
+{
     typedef sequence<string>list;
-	  interface EmpfangApp
-      {
-       void send(in string a);
-       void benutzername(in string name);
-       string getstring();
-       list getSTringArray();
-        };
+    interface EmpfangApp
+    {
+        void send(in string a);
+        void benutzername(in string name);
+        string getstring();
+        list getSTringArray();
     };
+};

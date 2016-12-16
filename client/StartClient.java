@@ -14,7 +14,8 @@ import java.io.*;
 import java.util.*;
 
 
-class schreiben implements Runnable{
+class schreiben implements Runnable
+{
 	private Thread t;
 	private EmpfangApp messgOBJ;
 	String benutzer;
@@ -55,20 +56,18 @@ class schreiben implements Runnable{
 }
 
 
-public class StartClient {
-
+public class StartClient
+{
+	//nur ein test
 	/**
 	 * @param args
 	 *            the command line arguments
 	 */
-	
-
-
-
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		try {
 			
-			String[] test =new String[]{"-ORBInitialPort","1050","-ORBInitialHost","localhost"};
+			String[] test = new String[]{"-ORBInitialPort","1050","-ORBInitialHost","localhost"};
 			
 			ORB orb = ORB.init(args, null);
 			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");

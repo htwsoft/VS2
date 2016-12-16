@@ -10,7 +10,8 @@ import org.omg.PortableServer.POA;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class EmpfangObj extends EmpfangAppPOA {
+public class EmpfangObj extends EmpfangAppPOA
+{
 	public String benutzer;
 	public String text;
 	 ArrayList<String> objtext = new ArrayList<String>();
@@ -22,14 +23,16 @@ public class EmpfangObj extends EmpfangAppPOA {
 
 
 	@Override
-	public void send(String a) {
+	public void send(String a)
+	{
 		objtext.add(benutzer+": "+a);
 		System.out.println(benutzer+": "+a);
 		
 	}
 
 	@Override
-	public void benutzername(String name) {
+	public void benutzername(String name)
+	{
 		this.benutzer=name;
 		
 	}
