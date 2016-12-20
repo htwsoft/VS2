@@ -1,0 +1,41 @@
+module VS2
+{
+	typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
+	
+	struct connectInformation
+	{
+		string ip;
+		long port;
+	}
+	
+	struct message
+	{
+		long uid;
+		long id;
+		string message;
+	}
+	
+	interface ClientMessageboardInterface
+	{
+		string getFatherName();// MessageBoard hat fatherId-> abruf xml datei auf fathername
+		array_of_String getChildNames();
+		message getMessage();
+		boolean setMessage(in string message, in long uid);
+		boolean deleteMessage(in long id, in long uid);
+		message nextMessage();
+		message previousMessage();
+		connectInformation connectToFather();
+		connectInformation connectToChild(in string childName);
+		boolean iterateChilds(in string message);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
+		boolean publishOnFather(in string message);//Nachricht auf Vater veröffentlichen
+	}
+	
+	interface ServerMessageBoardInterface//interface zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig)
+	{
+		boolean publishChilds(in string message, in long schalter);//veröffentliche Nachricht auf Kinderboards
+		boolean publishFather(in string message);/Veröffentlich Nachricht auf Vaterboard
+		boolean notifyFather(in long id, in string name, in connectInformation);//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
+		boolean notifyChildren(in long id, in string name, in connectInformation);//gebe den Kindern bescheid das du jetzt der Vater bist
+	}
+	
+}
