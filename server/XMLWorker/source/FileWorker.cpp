@@ -5,22 +5,121 @@
  * Author: Marco
  */
 
-#include "FileWorker.h"
+#include ".\FileWorker.h"
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 
+/*********************************************
+* Methoden der FileWriter-Klasse             *
+*********************************************/
+FileWriter::FileWriter(string fileName):FileWorker(fileName)
+{
+	//Datei zum beschrieben oeffnen. Datei wird wird beim oeffnen
+	//geloescht
+	this->file = fstream(fileName, ios::out | ios::binary | ios::trunc );
+	if(this->file.is_open())
+	{
+
+		//Datei-zeiger auf den Anfang der Datei setzen
+		this->setzeDateiZeigerAufAnfang();
+	}
+	else
+	{
+		throw FEHLER_DATEI_NICHT_OFFEN;
+	}
+}
+
+/*
+* Methode schreibt in die aktuell geoffnete Datei
+* ab der zuletzt gesetzten position
+*/
+void FileWriter::writeLine(string text, bool withNewLine)
+{
+	int laengeText = 0;
+	char * buffer = 0;
+	char zeichen = 0;
+	/*
+	* text muss in einen char * geschrieben werden
+	* da file->write keinen string unterstuetzt
+	*/
+	laengeText = text.length();
+	buffer = new char[laengeText+1];
+	text.copy(buffer, laengeText, 0);
+	buffer[laengeText+1] = '\0';
+	//this->file.write(buffer, laengeText);
+	for(int i=0; i<laengeText; i++)
+	{
+		/* eigene konvention fuer "/" 
+		   wenn "/" in text stuerzt das Programm ab 
+		   z.B. </test> zu: <//test>
+		*/
+		if(buffer[i] == '/' && buffer[i+1] == '/')
+		{
+			this->file.put(47);
+			i = i+2;
+		}
+		zeichen = buffer[i];
+		this->file.put(zeichen);
+	}
+	free(buffer);
+	if(withNewLine)
+	{
+		this->file.put('\n');
+	}
+}
+
+/*********************************************
+* Methoden der FileReader-Klasse             *
+*********************************************/
+
+FileReader::FileReader(string fileName):FileWorker(fileName)
+{
+	//Laden bzw. erzeugend der Datei
+	this->file = fstream(fileName, ios::in | ios::binary);
+	if(this->file.is_open())
+	{
+
+		//Datei-zeiger auf den Anfang der Datei setzen
+		this->setzeDateiZeigerAufAnfang();
+	}
+	else
+	{
+		throw FEHLER_DATEI_NICHT_OFFEN;
+	}
+}
+
+/*
+* Funktion liefert und liest eine ganze zeile einer Datei
+*/
+string FileReader::readLine()
+{
+	string line = "";
+	/*
+	* Prüfen ob die übergebene Datei geöffnet ist
+	*/
+	if(this->isFileOpen())
+	{
+		if(!this->file.eof())
+		{
+			getline(this->file, line);
+		}
+		this->file.flush();
+	}
+	return line;
+}
+
+/*********************************************
+* Methoden der FileWorker-Klasse             *
+*********************************************/
 
 /*
 * Konstruktor der FileWorker-Klasse
 */
 FileWorker::FileWorker(string fileName)
 {
-	//Laden bzw. erzeugend der Datei
-	file = fstream(fileName, ios::in | ios::out | ios::binary);
 	this->fileName = fileName;
-	//Datei-zeiger auf den Anfang der Datei setzen
-	this->setzeDateiZeigerAufAnfang();
+
 }
 
 /*
@@ -29,11 +128,14 @@ FileWorker::FileWorker(string fileName)
 FileWorker::~FileWorker()
 {
 	/*
-	 * pruefen ob die Datei geoeffnet ist, wenn ja datei schliessen
+	 * pruefen ob die Datei geoeffnet ist und erzeugt wurde , wenn ja datei schliessen
 	 * */
-	if(this->file.is_open())
-	{
-		this->file.close();
+	if(!this->file)
+	{	
+		if(this->file.is_open())
+		{
+			this->file.close();
+		}
 	}
 }
 
@@ -68,87 +170,6 @@ void FileWorker::setzeDateiZeigerAufPos(int pos)
 }
 
 /*
-* Methode dient zum schreiben von Messages auf der shell
-*/
-void FileWorker::writeDebugMessage(string text)
-{
-	cout << "Debug: " << text << endl;	
-}
-
-/*
-* Methode dient zum schreiben von Messages auf der shell
-*/
-void FileWorker::writeDebugMessage(int zahl)
-{
-	cout << "Debug: " << zahl << endl;	
-}
-
-/*
-* Methode schreibt in die aktuell geoffnete Datei
-* ab der zuletzt gesetzten position
-*/
-void FileWorker::writeLine(string text)
-{
-	int aktPos = 0;
-	string dateiAbPos = "";	
-	//aktueller Lesezeiger merken
-	aktPos = this->getAktPos();
-	/*
-	* dateiAbPos wird benoetigt,
-	* da die Datei beim einfuegen des neuen Textes sonst
-	* ab der Stelle des Lesezeigers ueberschrieben wird
-	*/
-	//datei von lesezeiger bis zu ende lesen
-	dateiAbPos = this->leseDateiAbPos(aktPos);
-	//neuen Text in Datei anhaengen
-	this->ueberschreibeDatei(text, dateiAbPos, aktPos);
-	/* 
-	* Datei wieder auf die letzte position des 
-	* lesezeiger setzen 
-	*/
-	this->setzeDateiZeigerAufPos(aktPos);
-}
-
-/*
-* funktion ueberschriebt die aktuelle Datei mitb dem uebergebenen
-* text
-*/
-void FileWorker::ueberschreibeDatei(string textNew, string textDanach, int pos)
-{
-	int laengeText = 0;
-	char * buffer = 0;
-	if(this->file.is_open())
-	{
-		/* schreibeZeigerAuf Anfang setzen um Datei quasi 
-		* "ueberschreiben" mit neuem Text
-		*/
-		this->setzeDateiZeigerAufPos(pos);
-		/*
-		* text muss in einen char * geschrieben werden
-		* da file->write keinen string unterstuetzt
-		*/
-		laengeText = textNew.length();
-		buffer = new char[laengeText+1];
-		textNew.copy(buffer, laengeText, 0);
-		buffer[laengeText+1] = '\0';
-		this->file.write(buffer, laengeText);
-		free(buffer);
-		
-		this->file.put('\r');
-		this->file.put('\n');
-		
-		laengeText = textDanach.length();
-		buffer = new char[laengeText+1];
-		textDanach.copy(buffer, laengeText, 0);
-		buffer[laengeText+1] = '\0';
-		this->file.write(buffer, laengeText-1);
-		free(buffer);		
-	}
-	this->pruefeAufEof();
-	this->setzeDateiZeigerAufAnfang();
-}
-
-/*
 * funktion kopiert ein String in ein char array
 */
 void  FileWorker::copyStringToChar(string text, char * buffer)
@@ -161,77 +182,6 @@ void  FileWorker::copyStringToChar(string text, char * buffer)
 		buffer = (char*) malloc(laengeText * sizeof(char));
 		text.copy(buffer, laengeText-1, 0);
 		buffer[laengeText] = '\0';		
-		cout << buffer << endl;
-}
-
-/*
-* Funktion liefert und liest eine ganze zeile einer Datei
-*/
-string FileWorker::readLine()
-{
-	string line = "";
-	char zeichen = '\0';
-	/*
-	* Prüfen ob die übergebene Datei geöffnet ist
-	*/
-	if(this->isFileOpen())
-	{
-		while( !this->file.eof() && zeichen != '\n' )
-		{
-			//lesen des naechsten Zeichens
-			this->file.get(zeichen);
-			//Gelesene Zeichen zusammensetzen
-			line = line + zeichen;
-		}
-		this->file.flush();
-	}
-	return line;
-}
-
-/*
-* funktion liest den restlichen inhalt einer Datei ab der
-* uebergebnen Position. ist noetig um einen Text in mitten
-* einer Datei anzuhaengen
-*/
-string FileWorker::leseDateiBisPos(int pos)
-{
-	string text = "";
-	char * buffer = 0;
-	//Pruefen ob Datei geoffnet ist
-	if(this->isFileOpen() && pos > 0)
-	{
-		buffer = new char[pos+1];
-		buffer[pos] = '\0';
-		//Zeiger an entsprechende Position setzen
-		this->setzeDateiZeigerAufAnfang();
-		//Daten lesen
-		this->file.read(buffer, pos);
-		text = text + buffer;
-	}
-	//Pruefn ob das Ende der Datei erreicht ist
-	//Falls ja diesen Status zuruecksetzen,
-	//da sonst keine Operationen mehr moeglich
-	this->pruefeAufEof();
-	return text;
-}
-
-/*
-* Funktion ist wie leseDateiBisPos, liest
-* allerdings den Inhalt ab einer bestimmten Position
-*/
-string FileWorker::leseDateiAbPos(int pos)
-{
-	string text = "";
-	if(this->isFileOpen())
-	{
-		this->setzeDateiZeigerAufPos(pos);	
-		while(!this->file.eof())
-		{
-			text = text + this->readLine();
-		}		
-	}
-	this->pruefeAufEof();
-	return text;
 }
 
 /*
