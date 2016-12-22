@@ -34,8 +34,8 @@ module VS2
 	{
 		boolean publishChilds(in string message, in long schalter);//veröffentliche Nachricht auf Kinderboards
 		boolean publishFather(in string message);//Veröffentlich Nachricht auf Vaterboard
-		boolean notifyFather(in long id, in string name, in connectInformation);//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
-		boolean notifyChildren(in long id, in string name, in connectInformation);//gebe den Kindern bescheid das du jetzt der Vater bist
+		boolean notifyFather(in long id, in string name, in connectInformation connectInformation);//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
+		boolean notifyChildren(in long id, in string name, in connectInformation connectInformation);//gebe den Kindern bescheid das du jetzt der Vater bist
 	}
 	
 }
