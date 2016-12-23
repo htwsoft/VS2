@@ -6,6 +6,7 @@
  */
 
 #include ".\source\FileWorker.h"
+#include ".\source\XMLWorkerTest.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -26,43 +27,42 @@ void writeLine(string text)
 	cout << text << endl;
 }
 
-void readFile(string fileName)
+/* Testen ob FileReader funktioniert */
+
+void testeFileReader(string fileName)
 {
-	FileWorker * freader;
-	bool test = false;
+	FileReader * freader;
 	
-	freader = new FileWorker(fileName);
-	if(freader->isFileOpen())
+	cout << "testeFileReader: " << fileName << endl;
+	freader = new FileReader(fileName);
+	while(!freader->isEof())
 	{
-		while(!freader->isEof())
-		{
-			cout << freader->readLine() << endl;
-			if(!test)
-			{
-				freader->writeLine("<Test>01234</Test>");
-				test = true;
-			}
-		}
-		cout << "Ende!" << endl;
+		cout << freader->readLine() << endl;
 	}
-	else
-	{
-		cout << "Datei konnte nicht geoeffnet werden!" << endl;
-	}
-	free(freader);	
+	delete freader;	
+	cout << endl;
 }
 
-void readParameter(int argc, char * args[])
+/* Testen ob FileWriter funktioniert */
+void testeFileWriter(string fileName)
 {
-	string text;
-	writeLine("Parameter: " + intToString(argc-1) );
-	writeLine("----------------");
-	for(int i=1; i<argc; i++)
-	{
-		text = intToString(i) + ": " + static_cast<string>(args[i]);
-		writeLine(text);
-	}
-	writeLine("----------------");
+	FileWriter * fwriter;
+	
+	cout << "testeFileWriter: " << fileName << endl;
+	fwriter = new FileWriter(fileName);
+	fwriter->writeLine("<Test>", true);
+	fwriter->writeLine("  <Test1>Value</Test1>", true);
+	fwriter->writeLine("  <Test2>Value</Test2>", true);
+	fwriter->writeLine("<//Test>", false);
+	delete fwriter;	
+}
+
+void testeXMLWorker(string fileName)
+{
+	XMLWorkerTest * xmltest;
+	xmltest = new XMLWorkerTest();
+	xmltest->starteTest();
+	delete xmltest;
 }
 
 int main(int argc, char * args[])
@@ -72,15 +72,12 @@ int main(int argc, char * args[])
 	writeLine("----------------");
 	if(argc > 1)
 	{
-		//readParameter(argc, args);
-		readFile(args[1]);	
+		testeXMLWorker(args[1]);
 	}
 	else
 	{
 		writeLine("Zu wenig/viele Parameter!");
 	}	
-	writeLine("----------------");
-	writeLine("Programm Ende!");
 	return 0;
 }
 

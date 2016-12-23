@@ -18,6 +18,7 @@
 
 #include <String>
 #include <vector>
+#include ".\FileWorker.h"
 
 using namespace std;
 
@@ -104,22 +105,34 @@ class XMLWorker
 		/* Hier noch File-Reader und -Writer */
 		XMLNode * rootNode; //Pointer auf RootNode der XML
 		XMLNode * workNode; // zuletzt gewaehlte / angesprochene Node
-		int indexWorkNode; 	//Index der aktuellen Node in der Childe-Node-Liste
-								//der aktuellen Node
+		int indexChildNode; //Index der aktuellen Node in der Childe-Node-Liste
+							//der aktuellen Node
+		int indexAttribut; //Index des aktuellen Attributes
+		void parseXML(FileReader * fileReader);
+		XMLNode * parseNode(string zeile); //Parst eine Zeile / eine Node einer XML und speichert dessen Werte
+		string readNodeName(string node);
+		string trim(string text); //enfernt alle Leerzeichen am Anfang eines Strings
+		bool isEndeTag(string name); //Prueft ob die Node zu ende ist. Wenn ohne Childs dann immer in der selben Zeile
+		bool isNodeWithChilds(string node); //Liefert true zurueck falls es eine Node mit Child-Elementen ist
 	public:
 		XMLWorker();
 		~XMLWorker();	
-		bool saveXML(string fileName);
-		//void loadXML(string fileName);
-		void createRootNode(string rootName);
-		XMLNode * createChildNode(string name, string value);
-		//void createAttribut(string name, string value);
-		//getNode(name)
-		//getFirstChildNode();
-		//getNextChildNode();
-		//getLastChild();
-		XMLNode * getRootNode();
-		XMLNode * getWorkNode();
+		bool saveXML(string fileName); //Speichert die in XMLWorker hinterlegte XML
+		bool loadXML(string fileName ); //laedt eine XML und speichert diese in XMLWorker
+		void clearXML();
+		void createRootNode(string rootName); //Erstellt eine neue Root-Node und damit eine neue XML
+		XMLNode * createChildNode(string name, string value); //Erstellt ein neues Child fuer die aktuelle workNode
+		XMLAttribut * createAttribut(string name, string value); //erstellt ein neues Attribut fuer die workNode
+		XMLNode * getChildNodeWithName(string name); //Funktion sucht nach einer Node mit bestimmten Namen
+		XMLAttribut * getAttributWithName(string name); //Funktion sucht nach einem Attribut mit bestimmten Namen
+		XMLNode * getFatherNode(); //liefert die FathereNode der workNode
+		XMLNode * getFirstChildNode(); //Liefert die erste ChildNode zurueck sofern vorhanden
+		XMLNode * getNextChildNode(); //Liefert das naechste Child ausgehend vom letzten aktiven Child
+		XMLAttribut * getFirstAttribut(); //Liefert das erste Attribut zurueck sofern vorhanden
+		XMLAttribut * getNextAttribut(); //Liefert das naechste Attribut ausgehend vom letzten aktiven Attribut
+		XMLNode * getRootNode(); //Liefert die RootNode der XML
+		void setWorkNode(XMLNode * newWorkNode); //setzen einer neuen WorkNode
+		XMLNode * getWorkNode(); //Referenz auf aktuelle workNode
 };
 
 
