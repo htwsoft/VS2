@@ -28,26 +28,184 @@ XMLWorker::~XMLWorker()
 */
 void  XMLWorker::parseXML(FileReader * fileReader)
 {
-	string zeile;
-	XMLNode * newNode = NULL;
+	string zeile = "";
 	//Schleife da nodes auch child nodes besitzen koennen
 	do
 	{
 		//Lesen einer Zeile der XML Datei
 		zeile = fileReader->readLine();
-		newNode = parseNode(zeile);		
+		parseNode(fileReader, zeile, NULL);
 	}while(!fileReader->isEof());
 }
 
 /*
 * entfernen aller lerrzeichen am Anfang eines Strings
 */
-XMLNode * XMLWorker::parseNode(string zeile)
+XMLNode * XMLWorker::parseNode(FileReader * fileReader, string zeile, XMLNode * fatherNode)
 {
-	XMLNode * newNode = NULL;
+	XMLNode * newNode = NULL; //Neue Node die zurueckgeliefert wird
+	string nodeName = ""; //Name der Node
+	string value = ""; //Wert der Node
+	bool isRootNode = false; //true falls es die RootNode ist (fatherNode = NULL)
+	isRootNode = (fatherNode == NULL);
+	//Alle leerzeichen am Anfang der Zeile loeschen
 	zeile = this->trim(zeile);
-	cout << zeile << endl;
+	//Name der Node erstellen / parsen
+	nodeName = this->readNodeName(zeile);
+	if(isRootNode)
+	{
+		this->createRootNode(nodeName);
+		newNode = this->rootNode;
+	}
+	else
+	{
+		newNode = new XMLNode(nodeName, "", false, fatherNode);
+	}
+	//Pruefen ob es eine Node mit Child-Nodes ist
+	/*
+	* <father>
+	*   <child1></child1>
+	*   <child2></child2>
+	* </father>
+	*/
+	if(!this->isEndeTag(zeile))
+	{
+		parseChilds(fileReader, newNode);
+	}
+	else
+	{
+		value = this->parseNodeValue(zeile);
+		newNode->setValue(value);
+	}
 	return newNode;
+}
+
+/*
+* Funktion sucht die Kinder einer Vater-Node
+*/
+void XMLWorker::parseChilds(FileReader * fileReader, XMLNode * fatherNode)
+{
+	string fatherNodeName = "";
+	string zeile = "";
+	bool endOfFather = false;
+	XMLNode * childNode = NULL;
+	fatherNodeName = fatherNode->getName();
+	do
+	{
+		zeile = fileReader->readLine();
+		//Pruefen ob das ende der Vater-Node erreicht ist
+		childNode = this->parseNode(fileReader, zeile, fatherNode);
+		if(fatherNode->getName() != childNode->getName())
+		{
+			//Child-Node fuer FatherNode parsen
+			fatherNode->addChild(childNode, false);
+		}
+		else
+		{
+			//Ende-Node der aktuellen FatherNode ist erreicht
+			delete childNode;
+			endOfFather = true;
+		}
+	}
+	while(!fileReader->isEof() && (!endOfFather));
+}
+
+/* Funktion pars den Wert einer Node und liefert diesen zureuck */
+string XMLWorker::parseNodeValue(string node)
+{
+	string value = "";
+	size_t endFirtsNodeTag; //Position Ende des ersten Node Tags <test>
+	size_t beginLastNodeTag; //Position beginn des Node-Tags </test>
+	endFirtsNodeTag = node.find(">");
+	beginLastNodeTag = node.find("</");
+	//prüfen ob endFirtsNodeTag < beginLastNodeTag da bei </ende> anders rum
+	if(endFirtsNodeTag < beginLastNodeTag)
+	{
+		//Kopieren des Node-Values
+		value = node.substr(endFirtsNodeTag+1, (beginLastNodeTag-endFirtsNodeTag-1));
+		//entfernen der leerzeichen am Anfang
+		value = this->trim(value);
+		//entfernen der leerzeichen am Ende
+		while(value.at(value.length()-1) == ' ' || value.at(value.length()-1) == 9)
+		{	
+			value.pop_back();
+		}
+	}
+	return value;
+}
+
+/*
+* Funktion liefert den Namen einer Node zurueck
+*/
+string XMLWorker::readNodeName(string node)
+{
+	string name = "";
+	size_t pos_leerzeichen; //Position fuer das erste leerzeichen
+	size_t pos_GreaterThan; //Position fuer das erste ">";
+	size_t pos_Slash; //Position des "/" wichtig wenn ende tag gefunden
+	//Wenn Position fuer erstes Leerzeichen. Trennt name von attribut wert
+	//<test id="">
+	pos_leerzeichen = node.find("");
+	//Position fuer ">" beendet den ersten teil der Node <test>value</test>
+	pos_GreaterThan = node.find(">");
+	//Position des Slah ermitteln. Muss bei Ende Tag auch entfernt werden
+	pos_Slash = node.find("/");
+	if(pos_leerzeichen != std::string::npos)
+	{
+		//leerzeichen gefunden <test id=""> oder <test> value </test>
+		//Pruefen ob leerzeichen vor ">"
+		if(pos_leerzeichen < pos_GreaterThan)
+		{
+			//Kopieren des Namens. Starten ab 2ter stelle um "<" nicht
+			//mit zu kopieren
+			name = node.substr(1, pos_leerzeichen-1);
+			
+		}
+		else
+		{
+			//bsp. <test> value
+			name = node.substr(1, pos_GreaterThan-1);
+		}
+	}
+	if(pos_GreaterThan != std::string::npos)
+	{
+		//Pruefen ob ">" gefunden wurde
+		//Kopieren des Namens
+		name = node.substr(1, pos_GreaterThan-1);
+	}
+	// wenn slash an erster stelle gefunden, "/" entfernen
+	if(pos_Slash != std::string::npos && pos_Slash < pos_GreaterThan)
+	{
+		name = name.erase(0, 1);
+	}
+	return name;
+}
+
+/*
+* prueft ob das Ende Tag in der aktuellen Node vorhanden ist
+*/
+bool XMLWorker::isEndeNode(string node, string name)
+{
+	size_t pos_name;
+	bool endeTag = false;
+	endeTag = this->isEndeTag(node); 
+	//suchen des uebergebene Namens fuer die Node, derren Ende geprueft werden soll
+	pos_name = node.find(name);
+ 	//npos gibt an das keine uebereinstimmung gefunden wurde mit find
+	//Wenn das EndeTag und der NodeName gefunden wurden wird true zurueckgeliefert
+	return endeTag && (pos_name != std::string::npos);
+}
+
+/*
+* prueft ob das Ende Tag in der aktuellen Node vorhanden ist
+*/
+bool XMLWorker::isEndeTag(string node)
+{
+	size_t pos_endeTag;
+	//Bsp: <test>value</test>
+	pos_endeTag = node.find("</");
+	//npos gibt an das keine uebereinstimmung gefunden wurde mit find
+	return (pos_endeTag != std::string::npos);
 }
 
 /*
@@ -57,24 +215,13 @@ string XMLWorker::trim(string text)
 {
 	string worker;
 	worker = text;
-	while(worker.substr(0,1) == " ")
+	//Solange ein zeichen loeschen bis kein leerzeichen
+	//mehr gefunden wird. 9 = Tabluator
+	while(worker.at(0) == ' ' || worker.at(0) == 9)
 	{
 		worker.erase(0, 1);
 	}
 	return worker;
-}
-
-/*
-* prueft die zeile einer XML und liefert true zurueck wenn 
-* eine Node in dieser geschlossen wird
-*/
-bool XMLWorker::isEndeTag(string name)
-{
-	return false;
-}
-string XMLWorker::readNodeName(string node)
-{
-	return "";
 }
 
 /* 
@@ -97,11 +244,12 @@ bool XMLWorker::loadXML(string fileName)
 		if(!fileReader->isEof() && fileReader->isFileOpen())
 		{
 			parseXML(fileReader);
+			dateiGeladen = true;
 		}	
 	}
 	catch(const char * c)
 	{
-		cout << "Achtung: " << c << endl;
+		cout << endl << "Achtung: " << c << endl;
 	}
 	if(fileReader != NULL)
 	{
@@ -352,7 +500,7 @@ bool XMLWorker::saveXML(string fileName)
 	}
 	catch(const char * c)
 	{
-		cout << "Achtung: " << c << endl;
+		cout << endl << "Achtung: " << c << endl;
 	}
 	return dateiGespeichert;
 }
@@ -374,6 +522,17 @@ XMLNode * XMLWorker::getRootNode()
 /*********************************************
 * Methoden der XMLNode-Klasse                *
 *********************************************/
+/*
+* Konstruktor der XMLNode-Klasse
+*/
+XMLNode::XMLNode():XMLElement("", "")
+{
+	this->isRoot = true;
+	this->fatherNode = NULL;
+	this->ebene = 0;
+	this->value = "";
+}
+
 /*
 * Konstruktor der XMLNode-Klasse
 */
@@ -428,6 +587,21 @@ XMLNode * XMLNode::addChild(string name, string value, bool asFirst)
 	return newChild;
 }
 
+XMLNode * XMLNode::addChild(XMLNode * newChild, bool asFirst)
+{
+	/*Pruefen ob neue Node am Anfang oder ende eingefuegt werden soll */
+	if(asFirst)
+	{
+		iterChilds = vChildNodes.begin();
+		vChildNodes.insert(iterChilds, newChild);
+	}
+	else
+	{
+		vChildNodes.push_back(newChild);
+	}
+	return newChild;	
+}
+
 XMLAttribut *  XMLNode::addAttribut(string name, string value)
 {
 	XMLAttribut * newAttribut = NULL;
@@ -436,14 +610,24 @@ XMLAttribut *  XMLNode::addAttribut(string name, string value)
 	return newAttribut;
 }
 
+XMLAttribut * XMLNode::addAttribut(XMLAttribut * newAttribut)
+{
+	vAttributes.push_back(newAttribut);
+	return newAttribut;	
+}
+
 /*  
 * liefert die Node als String zurueck
 * withChilds ist true wenn auch die childNodes gezeigt werden sollen
 */
 string XMLNode::toString(bool withChilds)
 {
-	string node;
+	string node = "";
+	string endeTag = "";
+	int iAnzLeerzeichen = 0; //Anzahl Leerzeichen fuer Bessere Darstellung
+	iAnzLeerzeichen = (this->ebene) * 2;
 	node = node + "<" + this->name + this->attributesToString() + ">";
+	endeTag = "</" + this->name + ">";
 	//Pruefen ob ChildNodes vorhanden sind
 	if(this->vChildNodes.size() > 0)
 	{
@@ -456,13 +640,17 @@ string XMLNode::toString(bool withChilds)
 			//wenn child node vorhanden sind ... zur verdeutlichung anzeigen
 			node = node + "\n" + " ... " + "\n";
 		}
+		endeTag = this->addLeerzeichen(iAnzLeerzeichen, endeTag);
 	}
 	else
 	{
 		//wenn keine ChildNodes vorhanden sind den value wert eintragen
-		node = node + " " + this->value + " "; 
+		if(this->value != "")
+		{
+			node = node + " " + this->value + " "; 
+		}
 	}
-	node = node +  "</" + this->name + ">";
+	node = node + endeTag;
 	return node;
 }
 
@@ -473,6 +661,7 @@ string XMLNode::toString(bool withChilds)
 string XMLNode::childeNodesToString(bool withChilds)
 {
 	string nodes = "";
+	string node = "";
 	int iAnzLeerzeichen = 0; //Anzahl Leerzeichen fuer Bessere Darstellung
 	iAnzLeerzeichen = (this->ebene + 1) * 2;
 	if(vChildNodes.size() > 0)
@@ -481,14 +670,23 @@ string XMLNode::childeNodesToString(bool withChilds)
 		for(iterChilds=vChildNodes.begin(); iterChilds<vChildNodes.end(); iterChilds++)
 		{
 			//generieren der LeerZeichen
-			for(int i=0; i<iAnzLeerzeichen; i++)
-			{
-				nodes = nodes + " ";
-			}
-			nodes = nodes + (*iterChilds)->toString(withChilds) + "\n";
+			node = (*iterChilds)->toString(withChilds) + "\n";
+			nodes = nodes + this->addLeerzeichen(iAnzLeerzeichen, node);
 		}
 	}	
 	return nodes;
+}
+
+/* Fuegt am einfang eines Strings leerzeiche ein */
+string XMLNode::addLeerzeichen(int count, string text)
+{
+	string newText = "";
+	for(int i=0; i<count; i++)
+	{
+		newText = newText + " ";
+	}	
+	newText = newText + text;
+	return newText;
 }
 
 /*
@@ -606,6 +804,12 @@ void XMLNode::clearAttributes()
 /*********************************************
 * Methoden der XMLAttribut-Klasse            *
 *********************************************/
+
+/* Konstruktor der XMLAttribut-Klasse */
+XMLAttribut::XMLAttribut():XMLElement("", "")
+{
+	this->fatherNode = NULL;
+}
 
 /* Konstruktor der XMLAttribut-Klasse */
 XMLAttribut::XMLAttribut(string name, string value, XMLNode * fatherNode):XMLElement(name, value)

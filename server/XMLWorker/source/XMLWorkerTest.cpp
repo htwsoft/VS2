@@ -34,7 +34,8 @@ void XMLWorkerTest::starteBenutzersteuerung()
 			switch(benutzerEingabe)
 			{
 				case AUSGEBEN:
-					cout << "ausgabe" << endl;
+				    this->testeAnzeigeRootNode();
+					cout << endl;
 					break;
 				case NEUE_XML:
 				    this->testeNeueRoot();
@@ -103,6 +104,14 @@ void XMLWorkerTest::starteBenutzersteuerung()
 		}
 	}
 	while(benutzerEingabe != ENDE);
+}
+
+
+void XMLWorkerTest::testeAnzeigeRootNode()
+{
+	XMLNode * rootNode = NULL;
+	rootNode = this->xmlWorker->getRootNode();
+	cout << rootNode->toString(true) << endl;
 }
 
 void XMLWorkerTest::testeLadeXML()

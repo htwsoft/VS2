@@ -53,6 +53,7 @@ class XMLAttribut: public XMLElement
 	private:
 		XMLNode * fatherNode; //Vater-Node des Attributes bzw. Node bei dem das Attribut steht
 	public:
+		XMLAttribut();
 		XMLAttribut(string name, string value, XMLNode * fatherNode);
 		~XMLAttribut(){};
 		XMLNode * getFatherNode();
@@ -78,11 +79,15 @@ class XMLNode: public XMLElement
 		vector<XMLAttribut *>::iterator iterAttributes; //Iterator zum durchlaufen der Attribute
 		void clearChilds();
 		void clearAttributes();
+		string addLeerzeichen(int count, string text);
 	public:
+		XMLNode();
 		XMLNode(string name, string value, bool isRoot, XMLNode * fatherNode);
 		~XMLNode();
 		XMLNode * addChild(string name, string value, bool asFirst); //Anlegen eines neuen Kind-Elements
+		XMLNode * addChild(XMLNode * newChild, bool asFirst); //Anlegen eines neuen Kind-Elements
 		XMLAttribut * addAttribut(string name, string value); //Anlegen eines neuen Attributes
+		XMLAttribut * addAttribut(XMLAttribut * newAttribut); //Anlegen eines neuen Attributes
 		XMLNode * getFatherNode();
 		bool getIsRoot(); 
 		XMLNode * getChild(unsigned int index);
@@ -109,16 +114,19 @@ class XMLWorker
 							//der aktuellen Node
 		int indexAttribut; //Index des aktuellen Attributes
 		void parseXML(FileReader * fileReader);
-		XMLNode * parseNode(string zeile); //Parst eine Zeile / eine Node einer XML und speichert dessen Werte
+		XMLNode * parseNode(FileReader * fileReader, string zeile, XMLNode * fatherNode); //Parst eine Zeile / eine Node einer XML und speichert dessen Werte
+		void parseChilds(FileReader * fileReader, XMLNode * fatherNode);
+		string parseNodeValue(string node);
 		string readNodeName(string node);
 		string trim(string text); //enfernt alle Leerzeichen am Anfang eines Strings
-		bool isEndeTag(string name); //Prueft ob die Node zu ende ist. Wenn ohne Childs dann immer in der selben Zeile
+		bool isEndeTag(string node); //Prueft ob ein EndeTag fuer die Node gefunden wurde
+		bool isEndeNode(string node, string name); //Prueft ob die Node zu ende ist. Wenn ohne Childs dann immer in der selben Zeile
 		bool isNodeWithChilds(string node); //Liefert true zurueck falls es eine Node mit Child-Elementen ist
 	public:
 		XMLWorker();
 		~XMLWorker();	
 		bool saveXML(string fileName); //Speichert die in XMLWorker hinterlegte XML
-		bool loadXML(string fileName ); //laedt eine XML und speichert diese in XMLWorker
+		bool loadXML(string fileName); //laedt eine XML und speichert diese in XMLWorker
 		void clearXML();
 		void createRootNode(string rootName); //Erstellt eine neue Root-Node und damit eine neue XML
 		XMLNode * createChildNode(string name, string value); //Erstellt ein neues Child fuer die aktuelle workNode

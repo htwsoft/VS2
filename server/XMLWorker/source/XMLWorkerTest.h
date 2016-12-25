@@ -19,6 +19,7 @@ class XMLWorkerTest
 	private:
 		XMLWorker * xmlWorker;
 		Menueauswahl zeigeMenue();
+		void testeAnzeigeRootNode();
 		void testeNeueRoot();
 		void testeSetWorkNode();
 		void testeCreateAttribut();
