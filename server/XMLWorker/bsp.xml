@@ -1,17 +1,16 @@
-<messageboard id="">
-<Test>01234</Test>
+<messageboard id="14">
   <mcounter> 3 </mcounter>
   <idcounter> 3 </idcounter>
   <messages>
-    <message id="1">
+    <message id="12">
       <text> bla fassel 1 </text>
       <uid> 353646 </uid>
     </message>
-    <message id="2"> 
+    <message id="13"> 
       <text> bla fassel 2 </text>
       <uid> 4657 </uid>
     </message>   
-    <message id="3"> 
+    <message id="14"> 
       <text> bla fassel 3 </text>
       <uid> 123 </uid>
     </message>

@@ -57,7 +57,7 @@ void testeFileWriter(string fileName)
 	delete fwriter;	
 }
 
-void testeXMLWorker(string fileName)
+void testeXMLWorker()
 {
 	XMLWorkerTest * xmltest;
 	xmltest = new XMLWorkerTest();
@@ -70,14 +70,7 @@ int main(int argc, char * args[])
 	cout << endl;
 	writeLine("Starte Programm:");
 	writeLine("----------------");
-	if(argc > 1)
-	{
-		testeXMLWorker(args[1]);
-	}
-	else
-	{
-		writeLine("Zu wenig/viele Parameter!");
-	}	
+	testeXMLWorker();
 	return 0;
 }
 

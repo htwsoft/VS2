@@ -117,6 +117,7 @@ class XMLWorker
 		XMLNode * parseNode(FileReader * fileReader, string zeile, XMLNode * fatherNode); //Parst eine Zeile / eine Node einer XML und speichert dessen Werte
 		void parseChilds(FileReader * fileReader, XMLNode * fatherNode);
 		string parseNodeValue(string node);
+		void parseAttributes(string nodeText, XMLNode * node);
 		string readNodeName(string node);
 		string trim(string text); //enfernt alle Leerzeichen am Anfang eines Strings
 		bool isEndeTag(string node); //Prueft ob ein EndeTag fuer die Node gefunden wurde

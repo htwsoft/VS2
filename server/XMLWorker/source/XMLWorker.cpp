@@ -71,13 +71,65 @@ XMLNode * XMLWorker::parseNode(FileReader * fileReader, string zeile, XMLNode * 
 	if(!this->isEndeTag(zeile))
 	{
 		parseChilds(fileReader, newNode);
+		this->parseAttributes(zeile, newNode);
 	}
 	else
 	{
 		value = this->parseNodeValue(zeile);
 		newNode->setValue(value);
+		this->parseAttributes(zeile, newNode);
 	}
 	return newNode;
+}
+
+/*
+* Methode parst alle Attribute einer Node
+*/
+void XMLWorker::parseAttributes(string nodeText, XMLNode * node)
+{
+	size_t posGleich; //Position von "=" zum ermitteln eines Attributes. id = "12"
+	size_t posEndFirstTag; //Position ">" das Attribute nur im Anfangs Tag <test id="1">
+	size_t posHochkomma1;
+	size_t posHochkomma2;
+	string nodeWorker = ""; //arbeiter Variable
+	string nodeName = ""; //Name der node die barbeitet wird
+	string attributName = "";
+	string attributValue = "";
+	
+	nodeWorker = nodeText;
+	nodeName = 	node->getName();
+	posEndFirstTag = nodeWorker.find(">");
+	//Alles ab posEndFirstTag trennen
+	//Bsp. <test id="2"> value </test> => <test id="2">
+	nodeWorker.erase(posEndFirstTag+1, nodeWorker.length()- posEndFirstTag);
+	//Alles bis zum nodeNamen trennen <test id="2"> => id="2">
+	//+1 wg. "<"
+	nodeWorker.erase(0, nodeName.length()+1);
+	do
+	{
+		posGleich = nodeWorker.find("=");
+		//Pruefen ob Attribute vorhanden sind
+		if(posGleich != std::string::npos)
+		{		
+			//min. ein Attribut ist noch vorhanden
+			//Leerzeichen am Anfang und am Ende entfernen
+			nodeWorker = this->trim(nodeWorker);
+			attributName = "";
+			attributValue = "";
+			//Position der beiden hockomma fuer den wert des Attributs
+			//bsp. id="2" => 2
+			posHochkomma1 = nodeWorker.find("\"");
+			posHochkomma2 = nodeWorker.find("\"", posHochkomma1+1);
+			//Kopieren des Attribut-Namens
+			attributName = this->trim( nodeWorker.substr(0, posGleich-1) );
+			//Kopieren des Attribut Wertes
+			attributValue = this->trim( nodeWorker.substr(posHochkomma1+1, posHochkomma2-posHochkomma1-1) );
+			nodeWorker.erase(0, posHochkomma2+1);	
+			//erstellen eines neuen Attributes fuer die uebergeben node
+			node->addAttribut(attributName, attributValue);
+		}
+	}
+	while(posGleich != std::string::npos);
 }
 
 /*
@@ -125,11 +177,6 @@ string XMLWorker::parseNodeValue(string node)
 		value = node.substr(endFirtsNodeTag+1, (beginLastNodeTag-endFirtsNodeTag-1));
 		//entfernen der leerzeichen am Anfang
 		value = this->trim(value);
-		//entfernen der leerzeichen am Ende
-		while(value.at(value.length()-1) == ' ' || value.at(value.length()-1) == 9)
-		{	
-			value.pop_back();
-		}
 	}
 	return value;
 }
@@ -145,11 +192,12 @@ string XMLWorker::readNodeName(string node)
 	size_t pos_Slash; //Position des "/" wichtig wenn ende tag gefunden
 	//Wenn Position fuer erstes Leerzeichen. Trennt name von attribut wert
 	//<test id="">
-	pos_leerzeichen = node.find("");
+	name = node;
+	pos_leerzeichen = name.find(" ");
 	//Position fuer ">" beendet den ersten teil der Node <test>value</test>
-	pos_GreaterThan = node.find(">");
+	pos_GreaterThan = name.find(">");
 	//Position des Slah ermitteln. Muss bei Ende Tag auch entfernt werden
-	pos_Slash = node.find("/");
+	pos_Slash = name.find("/");
 	if(pos_leerzeichen != std::string::npos)
 	{
 		//leerzeichen gefunden <test id=""> oder <test> value </test>
@@ -158,21 +206,23 @@ string XMLWorker::readNodeName(string node)
 		{
 			//Kopieren des Namens. Starten ab 2ter stelle um "<" nicht
 			//mit zu kopieren
-			name = node.substr(1, pos_leerzeichen-1);
+			name = name.substr(1, pos_leerzeichen-1);
 			
 		}
 		else
 		{
 			//bsp. <test> value
-			name = node.substr(1, pos_GreaterThan-1);
+			name = name.substr(1, pos_GreaterThan-1);
 		}
 	}
+	else
 	if(pos_GreaterThan != std::string::npos)
 	{
 		//Pruefen ob ">" gefunden wurde
 		//Kopieren des Namens
-		name = node.substr(1, pos_GreaterThan-1);
+		name = name.substr(1, pos_GreaterThan-1);
 	}
+	
 	// wenn slash an erster stelle gefunden, "/" entfernen
 	if(pos_Slash != std::string::npos && pos_Slash < pos_GreaterThan)
 	{
@@ -209,7 +259,7 @@ bool XMLWorker::isEndeTag(string node)
 }
 
 /*
-* entfernen aller lerrzeichen am Anfang eines Strings
+* entfernen alle lerrzeichen am Anfang und am Ende eines Strings
 */
 string XMLWorker::trim(string text)
 {
@@ -220,6 +270,11 @@ string XMLWorker::trim(string text)
 	while(worker.at(0) == ' ' || worker.at(0) == 9)
 	{
 		worker.erase(0, 1);
+	}
+	//entfernen der leerzeichen am Ende
+	while(worker.at(worker.length()-1) == ' ' || worker.at(worker.length()-1) == 9)
+	{	
+			worker.pop_back();
 	}
 	return worker;
 }
