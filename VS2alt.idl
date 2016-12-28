@@ -1,0 +1,47 @@
+module VS2
+{
+	typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
+	
+	struct ConnectInformation
+	{
+		string ip;
+		long port;
+	}
+	
+	struct Message
+	{
+		long uid;
+		long id;
+		string uName;
+		string message;
+		Message* previous;
+		Message* next;
+	}
+	
+	interface ClientMessageboardInterface
+	{
+		string getFatherName();// MessageBoard hat fatherId-> abruf xml datei auf fathername
+		array_of_String getChildNames();
+		//Message getMessage(); nicht sicher ob notwendig. vlt beim connect?
+		boolean setMessage(in string message, in long uid, in string uName);
+		boolean deleteMessage(in long uid);
+		boolean createNewMessage(in string message, in long uid, in string uName);
+		Message getNextMessage();
+		Message getPreviousMessage();
+		ConnectInformation connectToFather();
+		ConnectInformation connectToChild(in string childName);
+		boolean iterateChilds(in string message, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
+		boolean publishOnFather(in string message, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
+	}
+	
+	interface ServerMessageboardInterface//interface zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig)
+	{
+		boolean publishChild(in string message, in long uid, in string uName, in boolean schalter);//veröffentliche Nachricht auf Kinderboards
+		boolean publishFather(in string message, in long uid, in string uName);//Veröffentlich Nachricht auf Vaterboard
+		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
+		void saveFatherInformation(in long id, in string name, in ConnectInformation connectInformation);
+		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
+		void saveChildInformation(in long id, in string name, in ConnectInformation connectInformation);
+	}
+	
+}

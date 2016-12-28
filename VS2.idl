@@ -6,7 +6,7 @@ module VS2
 	{
 		string ip;
 		long port;
-	}
+	};
 	
 	struct Message
 	{
@@ -14,9 +14,9 @@ module VS2
 		long id;
 		string uName;
 		string message;
-		Message* previous;
-		Message* next;
-	}
+		sequence<Message> previous;
+		sequence<Message> next;
+	};
 	
 	interface ClientMessageboardInterface
 	{
@@ -32,7 +32,7 @@ module VS2
 		ConnectInformation connectToChild(in string childName);
 		boolean iterateChilds(in string message, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
 		boolean publishOnFather(in string message, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
-	}
+	};
 	
 	interface ServerMessageboardInterface//interface zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig)
 	{
@@ -42,6 +42,6 @@ module VS2
 		void saveFatherInformation(in long id, in string name, in ConnectInformation connectInformation);
 		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
 		void saveChildInformation(in long id, in string name, in ConnectInformation connectInformation);
-	}
+	};
 	
-}
+};
