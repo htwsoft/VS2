@@ -13,12 +13,15 @@
 
 #define NUM_CHILDREN 2//xml datei? unterschiedliche Boards haben unterschiedliche anzahl von kindern!
 
-#include <Message.h>
-#include <ConnectInformation.h>
+#include "../XMLWorker/source/XMLWorker.h"
+#include "./Message.h"
+#include "./ConnectInformation.h"
 
 class Messageboard
 {
 	private:
+	    string xmlPath;
+	    XMLWorker * xml;
 		int size;
 		int id;
 		string name;
@@ -26,12 +29,13 @@ class Messageboard
 		string fatherName;
 		int ** childIds;
 		string ** childNames;
-		ConnectInformation father;
+		ConnectInformation * father;
 		ConnectInformation ** childs;
 		Message* first;
 		Message* last;
 		Message* highlighted;
-		ConnectInformation connectInformation;
+		ConnectInformation * connectInformation;
+		void initBoard();
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();
@@ -47,8 +51,8 @@ class Messageboard
 		bool confirmMessageRights(int);
 		bool deleteMessage(int);
 		void erase();
-		ConnectInformation connectToFather();
-		ConnectInformation connectToChild(string);
+		ConnectInformation * connectToFather();
+		ConnectInformation * connectToChild(string);
 		bool iterateChilds(string, int, string, bool);
 		bool publishOnFather(string, int, string);
 		//Server-Server

@@ -5,11 +5,15 @@
  *      Author: Christian Patzek
  */
 
-#include <Messageboard.h>
+#include "./Messageboard.h"
+#include <cstdlib>
+#include <string>
 
 //TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
-Messageboard::Messageboard()
+Messageboard::Messageboard(string xmlPath)
 {
+	this->xmlPath = xmlPath;
+	this->xml = NULL;
 	/* first = XML
 	 * last = XML
 	 * size = XML
@@ -23,6 +27,7 @@ Messageboard::Messageboard()
 	 * father = XML ConnectInformation vater
 	 * ConnectInformation = XML
 	 */
+	 
 	highlighted=first;
 	//hier orb starten, sprich port öffnen und lauschen
 }
@@ -40,7 +45,7 @@ Messageboard::~Messageboard()
 	for(int i = 0; i < size; i++)
 	{
 		tmp = first;
-	    first = first->next;
+	    first = first->getNext();
 	    delete tmp;
 	}
 	size -= size;
@@ -63,19 +68,19 @@ string** Messageboard::getChildNames()
 
 Message Messageboard::getNextMessage()
 {
-	if(highlighted->next != NULL)
+	if(highlighted->getNext() != NULL)
 	{
-		highlighted = highlighted->next;
+		highlighted = highlighted->getNext();
 
 	}
-	return *highlighted;
+	return * highlighted;
 }
 
 Message Messageboard::getPreviousMessage()
 {
-	if(highlighted->previous != NULL)
+	if(highlighted->getPrevious() != NULL)
 	{
-		highlighted = highlighted->previous;
+		highlighted = highlighted->getPrevious();
 	}
 	return *highlighted;
 }
@@ -97,20 +102,18 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 
 bool Messageboard::createNewMessage(string message, int uid, string uName)
 {
-	Message* neu = new Message(message, uid, uName);
+	Message* neu = NULL;
 
 	if(first == 0)
 	{
-		neu->next=0;
-		neu->previous=0;
+		neu = new Message(message, uid, 0, 0, uName);
 		first = neu;
 		last = neu;
 	}
 	else
 	{
-		neu->next=first;
-		neu->next->previous = neu;
-		neu->previous=0;
+		neu = new Message(message, uid, neu, 0, uName);
+		neu->getNext()->setPrevious(neu);
 		first = neu;
 		highlighted = neu;
 	}
@@ -151,7 +154,7 @@ bool Messageboard::deleteMessage(int uid)
 
 void Messageboard::erase()
 {
-	if(highlighted->message==NULL)
+	if(highlighted==NULL)
 	{
 		//TO-DO
 		throw "leer";
@@ -164,34 +167,34 @@ void Messageboard::erase()
 		highlighted = first;
 		delete tmp;
 	}
-	else if((highlighted->next == last)&&(highlighted->previous == NULL))
+	else if((highlighted->getNext() == last)&&(highlighted->getPrevious() == NULL))
 	{
 		first = last;
-		highlighted->next->previous = 0;
+		highlighted->getNext()->setPrevious(0);
 		Message* tmp = highlighted;
 		highlighted = first;
 		delete tmp;
 	}
-	else if((highlighted->previous == first)&&(highlighted->next==NULL))
+	else if((highlighted->getPrevious() == first)&&(highlighted->getNext()==NULL))
 	{
 		last = first;
-		highlighted->previous->next = 0;
+		highlighted->getPrevious()->setNext(0);
 		Message* tmp = highlighted;
 		highlighted = first;
 		delete tmp;
 	}
-	else if(highlighted->previous==NULL)
+	else if(highlighted->getPrevious()==NULL)
 	{
-		first = first->next;
-		first->previous = 0;
+		first = first->getNext();
+		first->setPrevious(0);
 		Message* tmp = highlighted;
 		highlighted = first;
 		delete tmp;
 	}
-	else if(highlighted->next==NULL)
+	else if(highlighted->getNext()==NULL)
 	{
-		last = last->previous;
-		last->next = 0;
+		last = last->getPrevious();
+		last->setNext(0);
 		Message* tmp = highlighted;
 		highlighted = last;
 		delete tmp;
@@ -199,23 +202,23 @@ void Messageboard::erase()
 	else
 	{
 		Message* tmp = highlighted;
-		highlighted->next->previous = highlighted->previous;
-		highlighted->previous->next = highlighted->next;
-		highlighted = highlighted->previous;
+		highlighted->getNext()->setPrevious( highlighted->getPrevious() );
+		highlighted->getPrevious()->setNext( highlighted->getNext() );
+		highlighted = highlighted->getPrevious();
 		delete tmp;
 	}
 }
 
-ConnectInformation Messageboard::connectToFather()
+ConnectInformation * Messageboard::connectToFather()
 {
 	return father;
 }
 
-ConnectInformation Messageboard::connectToChild(string childName)
+ConnectInformation * Messageboard::connectToChild(string childName)
 {
 	for(int i = 0; i < NUM_CHILDREN; i++)
 	{
-		if(childNames[i]==childName)
+		if(childName.compare(childNames[i]) == 0) //childNames[i]==childName
 		{
 			return childs[i];
 		}

@@ -25,10 +25,10 @@ class Message
 		int id;
 		int uid;
 		string uName;
-		Message* previous;
-		Message* next;
+		Message * next;
+		Message * previous;
 	public:
-		Message(string, int, string, Message* =0, Message* =0);//speichere id in xml datei direkt???
+		Message(string, int, Message * = 0, Message * = 0, string = "");//speichere id in xml datei direkt???
 		~Message();
 		void setMessage(const string message){this->message=message;}
 		void setId(const int id){this->id=id;}
@@ -38,4 +38,8 @@ class Message
 		int getId()const{return this->id;}
 		int getUid()const{return this->uid;}
 		string toString(){return message;}
+		Message * getNext(){return this->next;}; //Funktion damit MessageBoard Next Abrufen kann
+		Message * getPrevious(){return this->previous;}; //Funktion damit MessageBoard previous Abrufen kann
+		void setNext(Message * next){this->next = next;}; //Funktion damit MessageBoard Next zuweisen kann
+		void setPrevious(Message * previous){this->previous = previous;}; //Funktion damit MessageBoard zuweisen Abrufen kann		
 };

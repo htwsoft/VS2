@@ -5,9 +5,9 @@
  *      Author: Noctis
  */
 
-#include <Message.h>
+#include "./Message.h"
 
-Message::Message(string Message, int uid, Message* previous =0, Message* next =0, string uName)
+Message::Message(string message, int uid, Message * previous, Message * next, string uName)
 {
 	this->message=message;
 	this->uid=uid;
@@ -17,6 +17,8 @@ Message::Message(string Message, int uid, Message* previous =0, Message* next =0
 	this->previous=previous;
 	this->next=next;
 }
+
 Message::~Message()
 {
+	
 }
