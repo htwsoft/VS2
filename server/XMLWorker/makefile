@@ -21,11 +21,11 @@ clean:
 test01: FileWorker.o XMLWorker.o XMLWorkerTest.o main.cpp
 	$(CXX) $(CFLAGS) -o test01 XMLWorkerTest.o  XMLWorker.o FileWorker.o main.cpp
 	
-XMLWorkerTest.o: .\source\XMLWorkerTest.cpp .\source\XMLWorkerTest.h .\source\XMLWorker.h
+XMLWorkerTest.o: $(SOURCEPATH)XMLWorkerTest.cpp $(SOURCEPATH)XMLWorkerTest.h $(SOURCEPATH)XMLWorker.h
 	$(CXX) $(CFLAGS) -c $(SOURCEPATH)XMLWorkerTest.cpp 
 	
-XMLWorker.o: .\source\XMLWorker.cpp .\source\XMLWorker.h
+XMLWorker.o: $(SOURCEPATH)XMLWorker.cpp $(SOURCEPATH)XMLWorker.h
 	$(CXX) $(CFLAGS) -c $(SOURCEPATH)XMLWorker.cpp 
  
-FileWorker.o: .\source\FileWorker.cpp .\source\FileWorker.h
+FileWorker.o: $(SOURCEPATH)FileWorker.cpp $(SOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(SOURCEPATH)FileWorker.cpp

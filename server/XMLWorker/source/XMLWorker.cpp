@@ -1,6 +1,6 @@
-#include ".\XMLWorker.h"
-#include ".\FileWorker.h"
-#include <String>
+#include "./XMLWorker.h"
+#include "./FileWorker.h"
+#include <string>
 #include <cstdlib>
 #include <sstream>
 

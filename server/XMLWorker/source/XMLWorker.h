@@ -16,9 +16,9 @@
 **/
 
 
-#include <String>
+#include <string>
 #include <vector>
-#include ".\FileWorker.h"
+#include "./FileWorker.h"
 
 using namespace std;
 

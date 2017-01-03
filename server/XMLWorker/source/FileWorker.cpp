@@ -5,10 +5,11 @@
  * Author: Marco
  */
 
-#include ".\FileWorker.h"
+#include "./FileWorker.h"
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 /*********************************************
 * Methoden der FileWriter-Klasse             *
@@ -20,7 +21,6 @@ FileWriter::FileWriter(string fileName):FileWorker(fileName)
 	this->file = fstream(fileName, ios::out | ios::binary | ios::trunc );
 	if(this->file.is_open())
 	{
-
 		//Datei-zeiger auf den Anfang der Datei setzen
 		this->setzeDateiZeigerAufAnfang();
 	}

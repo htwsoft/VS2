@@ -10,22 +10,23 @@
 //TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
 Messageboard::Messageboard()
 {
-	/*first = XML
-	 *last = XML
-	 *size = XML
-	 *id = XML
-	 *name = XML
-	 *fatherId = XML
-	 *fatherName = XML
-	 *childIds** = XML
-	 *childNames** = XML
-	 *childs** = XML ConnectInformations aller kinder
-	 *father = XML ConnectInformation vater
-	 *ConnectInformation = XML
+	/* first = XML
+	 * last = XML
+	 * size = XML
+	 * id = XML
+	 * name = XML
+	 * fatherId = XML
+	 * fatherName = XML
+	 * childIds** = XML
+	 * childNames** = XML
+	 * childs** = XML ConnectInformations aller kinder
+	 * father = XML ConnectInformation vater
+	 * ConnectInformation = XML
 	 */
 	highlighted=first;
 	//hier orb starten, sprich port öffnen und lauschen
 }
+
 //TO-DO wahrscheinlich nicht komplett, das Verfahren hier loescht nur alle Nachrichten auf dem Board
 Messageboard::~Messageboard()
 {

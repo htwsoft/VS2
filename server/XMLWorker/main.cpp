@@ -5,8 +5,8 @@
  *      Author: Marco
  */
 
-#include ".\source\FileWorker.h"
-#include ".\source\XMLWorkerTest.h"
+#include "./source/FileWorker.h"
+#include "./source/XMLWorkerTest.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>

@@ -24,16 +24,16 @@ class Messageboard
 		string name;
 		int fatherId;
 		string fatherName;
-		int** childIds;
-		string** childNames;
+		int ** childIds;
+		string ** childNames;
 		ConnectInformation father;
-		ConnectInformation** childs;
+		ConnectInformation ** childs;
 		Message* first;
 		Message* last;
 		Message* highlighted;
 		ConnectInformation connectInformation;
 	public:
-		Messageboard();//initboard ueber xml-datei?
+		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();
 		void saveMessages();
 		//Client-Server
