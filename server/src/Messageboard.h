@@ -36,6 +36,9 @@ class Messageboard
 		Message * highlighted;
 		ConnectInformation * connectInformation;
 		void initBoard();
+		void initMessages();
+		void initMessage(XMLNode * node);
+		string createNewMessageId(){return "";};
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();
@@ -43,10 +46,11 @@ class Messageboard
 		//Client-Server
 		string getFatherName();
 		string * getChildNames();
-		Message getNextMessage();
-		Message getPreviousMessage();
+		Message * getNextMessage();
+		Message * getPreviousMessage();
+		Message * getHighlightedMessage();
 		bool setMessage(string,int,string);
-		bool createNewMessage(string,int,string);
+		bool createNewMessage(string, string, int, string);
 		bool confirmAdminRights(int);
 		bool confirmMessageRights(int);
 		bool deleteMessage(int);
