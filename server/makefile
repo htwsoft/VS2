@@ -28,7 +28,9 @@ server01: Message.o Messageboard.o FileWorker.o XMLWorker.o StartServer.cpp
 
 #Files fuer MessageBoard
 
-
+FileWorker.o: $(XMLSOURCEPATH)FileWorker.cpp $(XMLSOURCEPATH)FileWorker.h
+	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)FileWorker.cpp 
+	
 Messageboard.o: $(SERVERSOURCEPATH)Messageboard.cpp $(SERVERSOURCEPATH)Messageboard.h $(SERVERSOURCEPATH)ConnectInformation.h
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)Messageboard.cpp
 	

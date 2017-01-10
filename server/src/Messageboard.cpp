@@ -6,8 +6,8 @@
  */
 
 #include "./Messageboard.h"
-#include <cstdlib>
-#include <string>
+#include <cstring>
+#include <String>
 
 //TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
 Messageboard::Messageboard(string xmlPath)
@@ -61,7 +61,7 @@ string Messageboard::getFatherName()
 	return fatherName;
 }
 
-string** Messageboard::getChildNames()
+string * Messageboard::getChildNames()
 {
 	return childNames;
 }
@@ -218,7 +218,7 @@ ConnectInformation * Messageboard::connectToChild(string childName)
 {
 	for(int i = 0; i < NUM_CHILDREN; i++)
 	{
-		if(childName.compare(childNames[i]) == 0) //childNames[i]==childName
+		if(childName.compare(this->childNames[i]) == 0)
 		{
 			return childs[i];
 		}
@@ -275,25 +275,27 @@ bool Messageboard::publishFather(string message, int uid, string uName)
 void Messageboard::notifyFather()
 {
 	//Verbindung aufbauen zu ConnectInformation father und dort dann sagen er soll dich als kind speichern
-	saveChildrenInformation(id,name,connectInformation);//aufruf dieser Funktion auf vaterseite!
+	//saveChildrenInformation(id,name,connectInformation);//aufruf dieser Funktion auf vaterseite!
 	//Verbindung abbauen
 }
+
 //TO-DO
 void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation connectInformation)
 {
-	childIds[NUM_CHILDREN] = id;
+	/*childIds[NUM_CHILDREN] = id;
 	childNames[NUM_CHILDREN] = name;
-	childs[NUM_CHILDREN] = connectInformation;
-	NUM_CHILDREN++;
+	childs[NUM_CHILDREN] = &connectInformation;
+	NUM_CHILDREN++;*/
 	saveMessages();
 }
+
 //TO-DO
 void Messageboard::notifyChildren()
 {
 	for(int i = 0; i < NUM_CHILDREN; i++)
 	{
 		//Verbindung aufbauen zu childs[i]
-		saveFatherInformation(id, name, connectInformation);//Funktion auf seite der kinder aufrufen!
+		//saveFatherInformation(id, name, connectInformation);//Funktion auf seite der kinder aufrufen!
 		//Verbindung abbauen
 	}
 }
@@ -302,7 +304,7 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 {
 	fatherId = id;
 	fatherName = name;
-	father = connectInformation;
+	father = &connectInformation;
 	saveMessages();
 }
 

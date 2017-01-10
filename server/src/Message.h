@@ -13,7 +13,7 @@
 #endif /* MESSAGE_H_ */
 
 #include <iostream>
-#include <string>
+#include <String>
 #include <sstream>
 
 using namespace std;

@@ -27,13 +27,13 @@ class Messageboard
 		string name;
 		int fatherId;
 		string fatherName;
-		int ** childIds;
-		string ** childNames;
+		int * childIds;
+		string * childNames;
 		ConnectInformation * father;
 		ConnectInformation ** childs;
-		Message* first;
-		Message* last;
-		Message* highlighted;
+		Message * first;
+		Message * last;
+		Message * highlighted;
 		ConnectInformation * connectInformation;
 		void initBoard();
 	public:
@@ -42,7 +42,7 @@ class Messageboard
 		void saveMessages();
 		//Client-Server
 		string getFatherName();
-		string** getChildNames();
+		string * getChildNames();
 		Message getNextMessage();
 		Message getPreviousMessage();
 		bool setMessage(string,int,string);
@@ -59,7 +59,7 @@ class Messageboard
 		bool publishChild(string, int, string, bool);
 		bool publishFather(string,int,string);
 		void notifyFather();
-		void saveChildInformation(int,string,ConnectInformation);
+		void saveChildrenInformation(int, string, ConnectInformation);
 		void notifyChildren();
-		void saveFatherInformation(int,string,ConnectInformation);
+		void saveFatherInformation(int, string, ConnectInformation);
 };
