@@ -37,8 +37,9 @@ class Messageboard
 		ConnectInformation * connectInformation;
 		void initBoard();
 		void initMessages();
-		void initMessage(XMLNode * node);
+		void initMessage(XMLNode *);
 		string createNewMessageId(){return "";};
+		int strToInt(string);
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();

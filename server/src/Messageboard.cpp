@@ -8,14 +8,20 @@
 #include "./Messageboard.h"
 #include "../XMLWorker/source/XMLWorker.h"
 #include <cstring>
-#include <String>
+#include <string>
 #include <stdlib.h>
+#include <iostream>
+#include <sstream>
 
 //TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
 Messageboard::Messageboard(string xmlPath)
 {
 	this->xmlPath = xmlPath;
 	this->xml = new XMLWorker();
+	this->size = 0;
+	this->first = NULL;
+	this->last = NULL;
+	this->highlighted = NULL;
 	this->initBoard();
 	/* size = XML
 	 * id = XML
@@ -29,7 +35,7 @@ Messageboard::Messageboard(string xmlPath)
 	 * ConnectInformation = XML
 	 */
 	 
-	highlighted = first;
+	//highlighted = first;
 	//hier orb starten, sprich port öffnen und lauschen
 }
 
@@ -60,13 +66,13 @@ void Messageboard::initBoard()
 	//laden der XML
 	this->xml->loadXML(this->xmlPath);
 	this->initMessages();
-	
 }
 
 void Messageboard::initMessages()
 {
 	XMLNode * messageFatherNode = 0; // Node "messages"
 	XMLNode * messageNode = 0; //Node "message"
+	int messageCount = 0;
 	//Pruefen ob inhalt in der XML-Klasse vorhanden ist
 	if(this->xml->getRootNode() != 0)
 	{
@@ -74,13 +80,12 @@ void Messageboard::initMessages()
 		messageFatherNode = this->xml->getChildNodeWithName("messages");
 		if(messageFatherNode != 0)
 		{
-			this->xml->setWorkNode(messageFatherNode);
-			messageNode = this->xml->getFirstChildNode();
-			//Laden der einzelnen Meessages eines Messageboards
-			while(messageNode != 0)
+			messageCount = messageFatherNode->getChildCount();
+			for(int i = messageCount-1; i >= 0; i--)
 			{
+				//Laden der einzelnen Meessages eines Messageboards
+				messageNode = messageFatherNode->getChild(i);
 				this->initMessage(messageNode);
-				messageNode = this->xml->getNextChildNode();
 			}
 		}		
 	}
@@ -97,6 +102,7 @@ void Messageboard::initMessage(XMLNode * node)
 	XMLNode * workNode = 0;
 	//Abarbeiten der einzelnen Nodes innerhalb einer Message
 	anzChildNodes = node->getChildCount();
+	
 	for(int i=0;  i < anzChildNodes; i++)
 	{
 		workNode = node->getChild(i);
@@ -121,13 +127,17 @@ void Messageboard::initMessage(XMLNode * node)
 		//Auslesend er Message ID
 		mid = node->getAttribut(0)->getValue();
 	}
+	
 	//Hier muss noch der Username ermittelt werden
 	this->createNewMessage(message, mid, uid, "");	
 }
 
 //TO-DO das komplette board(also alle Informationen und Messages) in einer XML datei speichern
 void Messageboard::saveMessages()
-{}
+{
+	
+	
+}
 
 string Messageboard::getFatherName()
 {
@@ -196,12 +206,13 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	}
 	else
 	{
-		neu = new Message(message, mid, uid, neu, 0, uName);
+		//Pruefen ob die Message waehren des Init erstell wird
+		neu = new Message(message, mid, uid, 0, first, uName);
 		neu->getNext()->setPrevious(neu);
 		first = neu;
-		highlighted = neu;
+		highlighted = neu;		
 	}
-	++size;
+	size++;
 	saveMessages();
 	return true;
 }
@@ -396,3 +407,10 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 	saveMessages();
 }
 
+int Messageboard::strToInt(string myString)
+{
+	int returnValue = 0;
+	istringstream buffer(myString);
+	buffer >> returnValue;	
+	return returnValue;
+}
