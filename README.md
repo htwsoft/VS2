@@ -35,11 +35,3 @@ FileWorker.h ---> Klasse zum Lesen einer Datei
 XMLWorkerTest.cpp --->
 
 XMLWorkerTest.h --->
-
-
-
-messageboard.xml
-
-VS2.iml
-
-VS2_Server
