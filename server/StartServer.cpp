@@ -9,7 +9,7 @@ int main(int argc, char ** args)
 	Messageboard * mb = 0;
 	Message * message = 0;
 	cout << "Server gestartet..." << endl;
-	mb = new Messageboard("./new2.xml");
+	mb = new Messageboard("./messageboard.xml");
 	message = mb->getHighlightedMessage();
 	cout << "Message: " << message->toString() << endl;
 	delete mb;

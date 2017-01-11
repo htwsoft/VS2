@@ -2,7 +2,7 @@
  * Messageboard.h
  *
  *  Created on: 21.12.2016
- *      Author: Christian Patzek
+ *      Author: Christian Patzek und Marco Palumbo
  *      Messageboard ist ein Server/Knoten in der Baumstruktur
  */
 
@@ -24,13 +24,15 @@ class Messageboard
 	    XMLWorker * xml;
 		int size;
 		int id;
-		string name;
-		int fatherId;
-		string fatherName;
-		int * childIds;
-		string * childNames;
+		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
+		string name; //name des Boards
+		int fatherId; //ID des Vaterboards
+		string fatherName; //Name des Vaterboards
+		int * childIds; //ID's der Childboards
+		string * childNames; //Name der Childboards
 		ConnectInformation * father;
-		ConnectInformation ** childs;
+		vector<ConnectInformation *> childs;
+		vector<ConnectInformation *>::iterator iterChilds;
 		Message * first;
 		Message * last;
 		Message * highlighted;
@@ -38,8 +40,15 @@ class Messageboard
 		void initBoard();
 		void initMessages();
 		void initMessage(XMLNode *);
+		void initMessageIdCounter();
+		void initBoardName();
+		void initConnectInfos();
+		void initFatherNodeConnectInfos(XMLNode * node);
+		void initChildConnectInfos(XMLNode * node);
+		void initChild(XMLNode * node);
+		void clearMessages();
+		void clearConnectInformations();
 		string createNewMessageId(){return "";};
-		int strToInt(string);
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();

@@ -1,0 +1,35 @@
+<messageboard id="14">
+  <name> Messageboard_1 </name>
+  <mcounter> 3 </mcounter>
+  <idcounter> 3 </idcounter>
+  <messages>
+    <message id="12">
+      <text> bla fassel 1 </text>
+      <uid> 353646 </uid>
+    </message>
+    <message id="13"> 
+      <text> bla fassel 2 </text>
+      <uid> 4657 </uid>
+    </message>
+    <message id="14"> 
+      <text> bla fassel 3 </text>
+      <uid> 891011 </uid>
+    </message>
+  </messages>
+  <connectInfos>
+	<father>
+	  <ip> 192.168.1.2 </ip>
+	  <port> 65001 </port>
+	</father>
+	<childs>
+	  <child>
+	    <ip> 192.168.1.3 </ip>
+		<port> 65000 </port>
+	  </child>
+	  <child>
+	    <ip> 192.168.1.4 </ip>
+		<port> 65002 </port>
+	  </child>
+	</childs>
+  </connectInfos>
+</messageboard>

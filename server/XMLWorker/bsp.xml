@@ -1,4 +1,5 @@
 <messageboard id="14">
+  <name> Messageboard_1 </name>
   <mcounter> 3 </mcounter>
   <idcounter> 3 </idcounter>
   <messages>
@@ -9,6 +10,10 @@
     <message id="13"> 
       <text> bla fassel 2 </text>
       <uid> 4657 </uid>
+    </message>
+    <message id="14"> 
+      <text> bla fassel 3 </text>
+      <uid> 891011 </uid>
     </message>
   </messages>
 </messageboard>

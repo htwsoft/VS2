@@ -2,7 +2,7 @@
  * Messageboard.cpp
  *
  *  Created on: 21.12.2016
- *      Author: Christian Patzek
+ *      Author: Christian Patzek und Marco Palumbo
  */
 
 #include "./Messageboard.h"
@@ -19,6 +19,7 @@ Messageboard::Messageboard(string xmlPath)
 	this->xmlPath = xmlPath;
 	this->xml = new XMLWorker();
 	this->size = 0;
+	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
 	this->highlighted = NULL;
@@ -42,22 +43,43 @@ Messageboard::Messageboard(string xmlPath)
 //TO-DO wahrscheinlich nicht komplett, das Verfahren hier loescht nur alle Nachrichten auf dem Board
 Messageboard::~Messageboard()
 {
-	if(first == 0)
-	{
-		throw "Liste ist leer";
-	}
-
-	Message* tmp;
-
-	for(int i = 0; i < size; i++)
-	{
-		tmp = first;
-	    first = first->getNext();
-	    delete tmp;
-	}
-	size -= size;
-	highlighted = 0;
+	this->clearMessages();
+	this->clearConnectInformations();
 	saveMessages();
+}
+
+/* loeschen der gespeichertn ConnectInformations */
+void Messageboard::clearConnectInformations()
+{
+	//loeschen der father ConnectInfo
+	delete father;
+	//loeschen der childConnectInfos
+	if(childs.size() > 0)
+	{
+		//alle Childs suchen und im Speicher freigeben
+		for(iterChilds=childs.begin(); iterChilds<childs.end(); iterChilds++)
+		{
+			delete *iterChilds;
+		}
+		childs.clear();	
+	}	
+}
+
+/* Loeschen der gespeicherten Nachrichten */
+void Messageboard::clearMessages()
+{
+	if(first != 0)
+	{
+		Message * tmp;
+		for(int i = 0; i < size; i++)
+		{
+			tmp = first;
+			first = first->getNext();
+			delete tmp;
+		}
+		size -= size;
+		highlighted = 0;
+	}
 }
 
 /* auswerten der XML und speichern im Messageboard */
@@ -66,6 +88,154 @@ void Messageboard::initBoard()
 	//laden der XML
 	this->xml->loadXML(this->xmlPath);
 	this->initMessages();
+	this->initMessageIdCounter();
+	this->initBoardName();
+	this->initConnectInfos();
+}
+
+/* Liest die ConnectInfos aus der XML */
+void Messageboard::initConnectInfos()
+{
+	XMLNode * rootNode = 0;
+	XMLNode * workNode = 0;
+	XMLNode * connectInfoNode = 0;
+	rootNode = this->xml->getRootNode();
+	if(rootNode != NULL)
+	{
+		this->xml->setWorkNode(rootNode);
+		//Suchen der Node mit den ConnectInfos 
+		connectInfoNode = this->xml->getChildNodeWithName("connectInfos");
+		if(connectInfoNode != NULL)
+		{
+			this->xml->setWorkNode(connectInfoNode);
+			//ConnectInfos der FatherNode ermitteln
+			workNode = this->xml->getChildNodeWithName("father");
+			this->initFatherNodeConnectInfos(workNode);
+			this->xml->setWorkNode(connectInfoNode);
+			//FatherNode fuer Child ConnectInfos finden
+			workNode = this->xml->getChildNodeWithName("childs");
+			this->initChildConnectInfos(workNode);
+		}
+	}
+}
+
+/* Lesen der ConnectInfos der Childs aus der XML */
+void Messageboard::initChildConnectInfos(XMLNode * node)
+{
+	XMLNode * workNode = 0;
+	int childCount = 0;
+	if(node != NULL)
+	{
+		//Ermitteln wie viele Child-ConnectInfos in der XML sind
+		childCount = node->getChildCount();
+		if(childCount > 0)
+		{
+			//Abarbeiten der einzelnen Eintraege
+			for( int i=0; i < childCount; i++)
+			{
+				workNode = node->getChild(i);
+				this->initChild(workNode);
+			}
+		}
+	}
+}
+
+/* Liest die Daten eines Childboards aus der XML */
+void Messageboard::initChild(XMLNode * node)
+{
+	XMLNode * workNode = 0;
+	string ip = "";
+	int port = 0;
+	string strPort = "";
+	string nodeName = "";
+	int paramCount = 0;
+	paramCount = node->getChildCount();
+	for(int i=0; i < paramCount; i++)
+	{
+		workNode = node->getChild(i);
+		nodeName = workNode->getName();
+		if(nodeName.compare("ip") == 0)
+		{
+			ip = workNode->getValue();		
+		}
+		else
+		if(nodeName.compare("port") == 0)
+		{
+			strPort = workNode->getValue();
+			port = atoi(strPort.c_str());		
+		}
+	}
+	this->childs.push_back(new ConnectInformation(ip, port));
+}
+
+/* Lesen der Father-ConnectInfos aus der XML */
+void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
+{
+	XMLNode * workNode = 0;
+	string ip = "";
+	int port = 0;
+	string strPort = "";
+	this->xml->setWorkNode(node);
+	workNode = this->xml->getChildNodeWithName("ip");
+	if(workNode != NULL)
+	{
+		ip = workNode->getValue();
+	}
+	workNode = this->xml->getChildNodeWithName("port");
+	if(workNode != NULL)
+	{
+		strPort = workNode->getValue();
+		port = atoi(strPort.c_str());
+	}
+	//Pruefen ob Port und IP gefunden wurden
+	if(port > 0 && ip.compare("") != 0)
+	{
+		this->father = new ConnectInformation(ip, port);
+	}
+}
+
+/* Liest den MessageboardNamen aus der XML */
+void Messageboard::initBoardName()
+{
+	
+	XMLNode * rootNode = 0;
+	XMLNode * workNode = 0;
+	string name;
+	rootNode = this->xml->getRootNode();
+	if(rootNode != NULL)
+	{
+		this->xml->setWorkNode(rootNode);
+		//Suchen der Node fuer den Board Namen
+		workNode = this->xml->getChildNodeWithName("name");
+		if(workNode != NULL)
+		{
+			name = workNode->getValue();
+			this->name = name;
+		}
+	}
+}
+
+/* Funktion liest den Message ID Counter aus der XML,
+ * damit Nachrichten des Boards eine eindeutige ID 
+ * bekommen
+ */
+void Messageboard::initMessageIdCounter()
+{
+	XMLNode * workNode;
+	XMLNode * rootNode;
+	string idCounter;
+	rootNode = this->xml->getRootNode();
+	if(rootNode != NULL)
+	{
+		this->xml->setWorkNode(rootNode);
+		//Suchen der Node fuer den Message-ID-Counter
+		workNode = this->xml->getChildNodeWithName("idcounter");
+		if(workNode != NULL)
+		{
+			idCounter = workNode->getValue();
+			this->mIdCounter = atoi(idCounter.c_str());
+		}
+	}
 }
 
 void Messageboard::initMessages()
@@ -74,11 +244,11 @@ void Messageboard::initMessages()
 	XMLNode * messageNode = 0; //Node "message"
 	int messageCount = 0;
 	//Pruefen ob inhalt in der XML-Klasse vorhanden ist
-	if(this->xml->getRootNode() != 0)
+	if(this->xml->getRootNode() != NULL)
 	{
 		//suchen der rootnode fuer messages
 		messageFatherNode = this->xml->getChildNodeWithName("messages");
-		if(messageFatherNode != 0)
+		if(messageFatherNode != NULL)
 		{
 			messageCount = messageFatherNode->getChildCount();
 			for(int i = messageCount-1; i >= 0; i--)
@@ -405,12 +575,4 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 	fatherName = name;
 	father = &connectInformation;
 	saveMessages();
-}
-
-int Messageboard::strToInt(string myString)
-{
-	int returnValue = 0;
-	istringstream buffer(myString);
-	buffer >> returnValue;	
-	return returnValue;
 }

@@ -2,7 +2,7 @@
  * Message.h
  *
  *  Created on: 21.12.2016
- *      Author: Christian Patzek
+ *      Author: Christian Patzek und Marco Palumbo
  *      Struktur von Messages die auf Messageboards verwaltet werden
  */
 
