@@ -41,7 +41,7 @@ Messageboard::Messageboard(string xmlPath)
 /* Konstruktor falls ein neues Board erstellt werden soll */
 Messageboard::Messageboard(int id, string name)
 {
-	this->xmlPath = xmlPath;
+	this->xmlPath = "./MessageBoard.xml";
 	this->xml = new XMLWorker();
 	this->size = 0;
 	this->boardInformation = new BoardInformation(name, id, NULL);
@@ -78,7 +78,7 @@ void Messageboard::saveBoard()
 	connectInformationNode = rootNode->addChild("connectInformations", "", false);
 	this->saveConnectInformations(connectInformationNode);
 	//Speichern des Messageboards
-	this->xml->saveXML("./neu.xml");
+	this->xml->saveXML(this->xmlPath);
 }
 
 /* speichern der ConnectInformations von Child und Father */
@@ -122,7 +122,6 @@ void Messageboard::saveChildConnectInformations(XMLNode * fatherNode)
 			childNode->addChild("port", port, false);
 			childNode->addAttribut("id", id);
 		}
-		childs.clear();	
 	}		
 }
 
@@ -245,6 +244,7 @@ string Messageboard::createNewMessageId()
 	return newMessageID;
 }
 
+/* funktion wandelt einen Integerwert in einen String */
 string Messageboard::intToStr(int number)
 {
 	ostringstream converter;
@@ -568,6 +568,14 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 	return false;
 }
 
+/* speichert eine neue message und erzeugt eine neue MessageId */
+bool Messageboard::createNewMessage(string message, int uid, string uName)
+{
+	string messageId = "";
+	messageId = this->createNewMessageId();
+	return this->createNewMessage(message, messageId, uid, uName, true);
+}
+/* erstellt eine neu Message mit der uebergeben MessageId */
 bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
 {
 	Message * neu = NULL;
@@ -632,7 +640,7 @@ void Messageboard::erase()
 	if(highlighted==NULL)
 	{
 		//TO-DO
-		//throw "leer";
+		throw "Liste ist leer!\n";
 	}
 	else if(first == last)
 	{
@@ -671,6 +679,7 @@ void Messageboard::erase()
 	}
 }
 
+//<--------------------------------------------- Ab hier auslagern in MessageBoard-Server-Klasse?
 ConnectInformation * Messageboard::connectToFather()
 {
 	return father->getConnectInformation();
@@ -685,8 +694,9 @@ ConnectInformation * Messageboard::connectToChild(string childName)
 			return childs[i]->getConnectInformation();
 		}
 	}
-	throw "no such child";
+	throw "Keine Childs vorhanden!\n";
 }
+
 //TO-DO Verbindungen zu anderen Servern, weiß noch nicht genau wie das funktioniert in CORBA :D
 bool Messageboard::iterateChilds(string message, int uid, string uName, bool schalter)
 {
@@ -701,20 +711,20 @@ bool Messageboard::iterateChilds(string message, int uid, string uName, bool sch
 	}
 	return assert;
 }
+
 //TO-DO
 bool Messageboard::publishOnFather(string message, int uid, string uName)
 {
 	//Verbindung aufbauen zu father
 	return publishFather(message, uid, uName);
 }
+
 //TO-DO
 bool Messageboard::publishChild(string message, int uid, string uName, bool schalter)
 {
-	string messageId = "";
 	if(confirmAdminRights(uid) && NUM_CHILDREN > 1)//Ueberpruefung mit der Datenbank vom Login-Server und ob Knoten ueberhaupt kinder hat
 	{
-		messageId = this->createNewMessageId();
-		createNewMessage(message, messageId, uid, uName, true);
+		createNewMessage(message, uid, uName);
 		if(schalter)
 		{
 			iterateChilds(message, uid, uName, schalter);
@@ -727,11 +737,9 @@ bool Messageboard::publishChild(string message, int uid, string uName, bool scha
 
 bool Messageboard::publishFather(string message, int uid, string uName)
 {
-	string messageId = "";
 	if(confirmAdminRights(uid))
 	{
-		messageId = this->createNewMessageId();
-		createNewMessage(message, messageId, uid, uName, true);
+		createNewMessage(message, uid, uName);
 		return true;
 	}
 	else
