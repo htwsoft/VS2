@@ -11,7 +11,12 @@ class BoardInformation
 		string name;
 		ConnectInformation * connectInformation;
 	public:
-		BoardInformation(string name, int id, ConnectInformation * connectInformation){this->name = name; this->id = id; this->connectInformation = connectInformation;};
+		BoardInformation(string name, int id, ConnectInformation * connectInformation)
+		{
+			this->name = name; 
+			this->id = id; 
+			this->connectInformation = connectInformation;
+		};
 		~BoardInformation(){delete this->connectInformation;};
 		string getName(){return this->name;};
 		int getId(){return this->id;};

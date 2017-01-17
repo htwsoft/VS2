@@ -25,9 +25,23 @@ Messageboard::Messageboard(string xmlPath)
 	this->first = NULL;
 	this->last = NULL;
 	this->highlighted = NULL;
-	this->initBoard();
+	this->initBoardXML();
 	this->highlighted = this->first;
 	//hier orb starten, sprich port öffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groß)
+}
+
+/* Konstruktor falls ein neues Board erstellt werden soll */
+Messageboard::Messageboard(int id, string name)
+{
+	this->xmlPath = xmlPath;
+	this->xml = new XMLWorker();
+	this->size = 0;
+	this->boardInformation = new BoardInformation(name, id, NULL);
+	this->mIdCounter = 0;
+	this->first = NULL;
+	this->last = NULL;
+	this->highlighted = NULL;
+	
 }
 
 //TO-DO das komplette board(also alle Informationen und Messages) in einer XML datei speichern
@@ -39,10 +53,10 @@ void Messageboard::saveBoard()
 	this->xml->createRootNode("messageboard");
 	rootNode = this->xml->getRootNode();
 	//Speichern der eigenen Informationen des Boards
-	//this->saveBoardInformations(rootNode);
+	this->saveBoardInformations(rootNode);
 	//Node "messages" zum speicher der Nachrichten
-	//messagesNode = rootNode->addChild("messages", "", false);
-	//this->saveMessages(messagesNode);
+	messagesNode = rootNode->addChild("messages", "", false);
+	this->saveMessages(messagesNode);
 	
 }
 void Messageboard::saveMessages(XMLNode * fatherNode)
@@ -108,8 +122,9 @@ void Messageboard::clearMessages()
 	}
 }
 
+
 /* auswerten der XML und speichern im Messageboard */
-void Messageboard::initBoard()
+void Messageboard::initBoardXML()
 {
 	//laden der XML
 	this->xml->loadXML(this->xmlPath);
@@ -503,6 +518,7 @@ bool Messageboard::deleteMessage(int uid)
 
 void Messageboard::erase()
 {
+	Message * tmp = highlighted; 
 	if(highlighted==NULL)
 	{
 		//TO-DO
@@ -512,48 +528,35 @@ void Messageboard::erase()
 	{
 		first = 0;
 		last = 0;
-		Message* tmp = highlighted;
 		highlighted = first;
-		delete tmp;
 	}
 	else if((highlighted->getNext() == last)&&(highlighted->getPrevious() == NULL))
 	{
 		first = last;
-		highlighted->getNext()->setPrevious(0);
-		Message* tmp = highlighted;
 		highlighted = first;
-		delete tmp;
 	}
 	else if((highlighted->getPrevious() == first)&&(highlighted->getNext()==NULL))
 	{
 		last = first;
-		highlighted->getPrevious()->setNext(0);
-		Message* tmp = highlighted;
 		highlighted = first;
-		delete tmp;
 	}
 	else if(highlighted->getPrevious()==NULL)
 	{
 		first = first->getNext();
-		first->setPrevious(0);
-		Message* tmp = highlighted;
 		highlighted = first;
-		delete tmp;
 	}
 	else if(highlighted->getNext()==NULL)
 	{
 		last = last->getPrevious();
-		last->setNext(0);
-		Message* tmp = highlighted;
 		highlighted = last;
-		delete tmp;
 	}
 	else
 	{
-		Message* tmp = highlighted;
-		highlighted->getNext()->setPrevious( highlighted->getPrevious() );
-		highlighted->getPrevious()->setNext( highlighted->getNext() );
 		highlighted = highlighted->getPrevious();
+	}
+	
+	if(tmp != NULL)
+	{
 		delete tmp;
 	}
 }

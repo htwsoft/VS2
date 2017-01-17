@@ -32,7 +32,7 @@ class Messageboard
 		Message * last;
 		Message * highlighted;
 		BoardInformation * boardInformation; //BoardInformatioenen 
-		void initBoard();
+		void initBoardXML();
 		void initMessages();
 		void initMessage(XMLNode *);
 		void initMessageIdCounter();
@@ -49,8 +49,8 @@ class Messageboard
 		void saveBoardInformations(XMLNode * fatherNode);
 		void saveConnectInformations(XMLNode * fatherNode){};
 	public:
-		Messageboard(string);//initboard ueber xml-datei?
-		//Messageboard(int, string); Konstruktor zum anlegen eines neuen Boards
+		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
+		Messageboard(int, string); //Konstruktor zum anlegen eines neuen Boards
 		~Messageboard();
 		void saveBoard();
 		//Client-Server
@@ -60,7 +60,7 @@ class Messageboard
 		Message * getPreviousMessage();
 		Message * getHighlightedMessage();
 		bool setMessage(string,int,string);
-		bool createNewMessage(string, string, int, string, bool withSave);
+		bool createNewMessage(string, string, int, string, bool);
 		bool confirmAdminRights(int);
 		bool confirmMessageRights(int);
 		bool deleteMessage(int);
