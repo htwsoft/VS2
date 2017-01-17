@@ -10,8 +10,6 @@
 #define MESSAGE_H_
 
 
-#endif /* MESSAGE_H_ */
-
 #include <iostream>
 #include <String>
 #include <sstream>
@@ -43,3 +41,4 @@ class Message
 		void setNext(Message * next){this->next = next;}; //Funktion damit MessageBoard Next zuweisen kann
 		void setPrevious(Message * previous){this->previous = previous;}; //Funktion damit MessageBoard zuweisen Abrufen kann		
 };
+#endif /* MESSAGE_H_ */

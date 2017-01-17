@@ -16,6 +16,7 @@
 #include "../XMLWorker/source/XMLWorker.h"
 #include "./Message.h"
 #include "./ConnectInformation.h"
+#include "./BoardInformation.h"
 
 class Messageboard
 {
@@ -26,16 +27,13 @@ class Messageboard
 		int id;
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
 		string name; //name des Boards
-		int fatherId; //ID des Vaterboards
-		string fatherName; //Name des Vaterboards
-		int * childIds; //ID's der Childboards
-		string * childNames; //Name der Childboards
-		ConnectInformation * father;
-		vector<ConnectInformation *> childs;
-		vector<ConnectInformation *>::iterator iterChilds;
+		BoardInformation * father;
+		vector<BoardInformation *> childs;
+		vector<BoardInformation *>::iterator iterChilds;
 		Message * first;
 		Message * last;
 		Message * highlighted;
+		BoardInformation * boardInformation;
 		ConnectInformation * connectInformation;
 		void initBoard();
 		void initMessages();
@@ -47,8 +45,9 @@ class Messageboard
 		void initChildConnectInfos(XMLNode * node);
 		void initChild(XMLNode * node);
 		void clearMessages();
-		void clearConnectInformations();
-		string createNewMessageId(){return "";};
+		void clearBoardInformations();
+		string intToStr(int number);
+		string createNewMessageId();
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
 		~Messageboard();
@@ -73,7 +72,7 @@ class Messageboard
 		bool publishChild(string, int, string, bool);
 		bool publishFather(string,int,string);
 		void notifyFather();
-		void saveChildrenInformation(int, string, ConnectInformation);
+		void saveChildrenInformation(int, string, ConnectInformation *);
 		void notifyChildren();
-		void saveFatherInformation(int, string, ConnectInformation);
+		void saveFatherInformation(int, string, ConnectInformation *);
 };
