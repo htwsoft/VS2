@@ -20,6 +20,7 @@ Messageboard::Messageboard(string xmlPath)
 	this->xmlPath = xmlPath;
 	this->xml = new XMLWorker();
 	this->size = 0;
+	this->boardInformation = NULL;
 	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
@@ -30,10 +31,39 @@ Messageboard::Messageboard(string xmlPath)
 }
 
 //TO-DO das komplette board(also alle Informationen und Messages) in einer XML datei speichern
-void Messageboard::saveMessages()
+void Messageboard::saveBoard()
+{
+	XMLNode * rootNode = 0;
+	XMLNode * messagesNode = 0;
+	//Durch Create RootNode wird die zuvor gespeicherte XML gelöscht
+	this->xml->createRootNode("messageboard");
+	rootNode = this->xml->getRootNode();
+	//Speichern der eigenen Informationen des Boards
+	this->saveBoardInformations(rootNode);
+	//Node "messages" zum speicher der Nachrichten
+	messagesNode = rootNode->addChild("messages", "", false);
+	this->saveMessages(messagesNode);
+	
+}
+void Messageboard::saveMessages(XMLNode * fatherNode)
 {
 	
+}
+
+/* Speichern der eigenen Informationen des Messageboards in der XML */
+void Messageboard::saveBoardInformations(XMLNode * fatherNode)
+{
+	string messageIdCounter = ""; //nachrichten zaehler zur generierun neuer MessageIDs
+	string messageCount = ""; //Anzahl nachrichten
+	string boardId = ""; //Id des Messageboards
 	
+	messageIdCounter = this->intToStr(this->mIdCounter);
+	messageCount = this->intToStr(this->size);
+	boardId = this->boardInformation->getId();
+	fatherNode->addChild("name", this->boardInformation->getName(), false);
+	fatherNode->addChild("mcounter", messageCount, false);
+	fatherNode->addChild("idcounter", messageIdCounter, false);	
+	fatherNode->addAttribut("id", boardId);
 }
 
 //TO-DO wahrscheinlich nicht komplett, das Verfahren hier loescht nur alle Nachrichten auf dem Board
@@ -41,7 +71,7 @@ Messageboard::~Messageboard()
 {
 	this->clearMessages();
 	this->clearBoardInformations();
-	saveMessages();
+	saveBoard();
 }
 
 /* loeschen der gespeichertn ConnectInformations */
@@ -85,7 +115,7 @@ void Messageboard::initBoard()
 	this->xml->loadXML(this->xmlPath);
 	this->initMessages();
 	this->initMessageIdCounter();
-	this->initBoardName();
+	this->initBoardInformations();
 	this->initConnectInfos();
 }
 
@@ -240,12 +270,14 @@ void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
 }
 
 /* Liest den MessageboardNamen aus der XML */
-void Messageboard::initBoardName()
+void Messageboard::initBoardInformations()
 {
-	
 	XMLNode * rootNode = 0;
 	XMLNode * workNode = 0;
-	string name;
+	XMLAttribut * idAttr = 0;
+	string name = "";
+	string strId = "";
+	int id = 0;
 	rootNode = this->xml->getRootNode();
 	if(rootNode != NULL)
 	{
@@ -255,9 +287,18 @@ void Messageboard::initBoardName()
 		if(workNode != NULL)
 		{
 			name = workNode->getValue();
-			this->name = name;
+		}
+		
+		
+		//suchen der board id
+		if(rootNode->getAttributCount() > 0)
+		{
+			idAttr = rootNode->getAttribut(0);
+			strId = idAttr->getValue();
+			id = atoi(strId.c_str());
 		}
 	}
+	this->boardInformation = new BoardInformation(name, id, NULL);
 }
 
 /* Funktion liest den Message ID Counter aus der XML,
@@ -421,7 +462,7 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 		highlighted = neu;		
 	}
 	size++;
-	saveMessages();
+	saveBoard();
 	return true;
 }
 
@@ -445,13 +486,13 @@ bool Messageboard::deleteMessage(int uid)
 	if(confirmAdminRights(uid))
 	{
 		erase();
-		saveMessages();
+		saveBoard();
 		return true;
 	}
 	else if(confirmMessageRights(uid))
 	{
 		erase();
-		saveMessages();
+		saveBoard();
 		return true;
 	}
 	return false;
@@ -595,7 +636,7 @@ void Messageboard::saveChildrenInformation(int id, string name, ConnectInformati
 	childNames[NUM_CHILDREN] = name;
 	childs[NUM_CHILDREN] = &connectInformation;
 	NUM_CHILDREN++;*/
-	saveMessages();
+	saveBoard();
 }
 
 //TO-DO
@@ -616,5 +657,5 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 		delete this->father;
 	}
 	father = new BoardInformation(name, id, connectInformation);
-	saveMessages();
+	saveBoard();
 }

@@ -24,22 +24,19 @@ class Messageboard
 	    string xmlPath;
 	    XMLWorker * xml;
 		int size;
-		int id;
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
-		string name; //name des Boards
 		BoardInformation * father;
 		vector<BoardInformation *> childs;
 		vector<BoardInformation *>::iterator iterChilds;
 		Message * first;
 		Message * last;
 		Message * highlighted;
-		BoardInformation * boardInformation;
-		ConnectInformation * connectInformation;
+		BoardInformation * boardInformation; //BoardInformatioenen 
 		void initBoard();
 		void initMessages();
 		void initMessage(XMLNode *);
 		void initMessageIdCounter();
-		void initBoardName();
+		void initBoardInformations();
 		void initConnectInfos();
 		void initFatherNodeConnectInfos(XMLNode * node);
 		void initChildConnectInfos(XMLNode * node);
@@ -48,10 +45,14 @@ class Messageboard
 		void clearBoardInformations();
 		string intToStr(int number);
 		string createNewMessageId();
+		void saveMessages(XMLNode * fatherNode){};
+		void saveBoardInformations(XMLNode * fatherNode);
+		void saveConnectInformations(XMLNode * fatherNode){};
 	public:
 		Messageboard(string);//initboard ueber xml-datei?
+		//Messageboard(int, string); Konstruktor zum anlegen eines neuen Boards
 		~Messageboard();
-		void saveMessages();
+		void saveBoard();
 		//Client-Server
 		string getFatherName();
 		string * getChildNames();
