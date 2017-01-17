@@ -39,10 +39,10 @@ void Messageboard::saveBoard()
 	this->xml->createRootNode("messageboard");
 	rootNode = this->xml->getRootNode();
 	//Speichern der eigenen Informationen des Boards
-	this->saveBoardInformations(rootNode);
+	//this->saveBoardInformations(rootNode);
 	//Node "messages" zum speicher der Nachrichten
-	messagesNode = rootNode->addChild("messages", "", false);
-	this->saveMessages(messagesNode);
+	//messagesNode = rootNode->addChild("messages", "", false);
+	//this->saveMessages(messagesNode);
 	
 }
 void Messageboard::saveMessages(XMLNode * fatherNode)
@@ -288,7 +288,7 @@ void Messageboard::initBoardInformations()
 		{
 			name = workNode->getValue();
 		}
-		
+					
 		
 		//suchen der board id
 		if(rootNode->getAttributCount() > 0)
@@ -296,6 +296,7 @@ void Messageboard::initBoardInformations()
 			idAttr = rootNode->getAttribut(0);
 			strId = idAttr->getValue();
 			id = atoi(strId.c_str());
+
 		}
 	}
 	this->boardInformation = new BoardInformation(name, id, NULL);
@@ -358,7 +359,6 @@ void Messageboard::initMessage(XMLNode * node)
 	XMLNode * workNode = 0;
 	//Abarbeiten der einzelnen Nodes innerhalb einer Message
 	anzChildNodes = node->getChildCount();
-	
 	for(int i=0;  i < anzChildNodes; i++)
 	{
 		workNode = node->getChild(i);
@@ -385,7 +385,7 @@ void Messageboard::initMessage(XMLNode * node)
 	}
 	
 	//Hier muss noch der Username ermittelt werden
-	this->createNewMessage(message, mid, uid, "");	
+	this->createNewMessage(message, mid, uid, "", false);	
 }
 
 string Messageboard::getFatherName()
@@ -443,7 +443,7 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 	return false;
 }
 
-bool Messageboard::createNewMessage(string message, string mid, int uid, string uName)
+bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
 {
 	Message * neu = NULL;
 
@@ -462,7 +462,10 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 		highlighted = neu;		
 	}
 	size++;
-	saveBoard();
+	if(withSave)
+	{
+		this->saveBoard();
+	}
 	return true;
 }
 
@@ -598,7 +601,7 @@ bool Messageboard::publishChild(string message, int uid, string uName, bool scha
 	if(confirmAdminRights(uid) && NUM_CHILDREN > 1)//Ueberpruefung mit der Datenbank vom Login-Server und ob Knoten ueberhaupt kinder hat
 	{
 		messageId = this->createNewMessageId();
-		createNewMessage(message, messageId, uid, uName);
+		createNewMessage(message, messageId, uid, uName, true);
 		if(schalter)
 		{
 			iterateChilds(message, uid, uName, schalter);
@@ -615,7 +618,7 @@ bool Messageboard::publishFather(string message, int uid, string uName)
 	if(confirmAdminRights(uid))
 	{
 		messageId = this->createNewMessageId();
-		createNewMessage(message, messageId, uid, uName);
+		createNewMessage(message, messageId, uid, uName, true);
 		return true;
 	}
 	else

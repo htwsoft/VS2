@@ -45,7 +45,7 @@ class Messageboard
 		void clearBoardInformations();
 		string intToStr(int number);
 		string createNewMessageId();
-		void saveMessages(XMLNode * fatherNode){};
+		void saveMessages(XMLNode * fatherNode);
 		void saveBoardInformations(XMLNode * fatherNode);
 		void saveConnectInformations(XMLNode * fatherNode){};
 	public:
@@ -60,7 +60,7 @@ class Messageboard
 		Message * getPreviousMessage();
 		Message * getHighlightedMessage();
 		bool setMessage(string,int,string);
-		bool createNewMessage(string, string, int, string);
+		bool createNewMessage(string, string, int, string, bool withSave);
 		bool confirmAdminRights(int);
 		bool confirmMessageRights(int);
 		bool deleteMessage(int);
