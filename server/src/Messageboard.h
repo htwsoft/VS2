@@ -47,7 +47,9 @@ class Messageboard
 		string createNewMessageId();
 		void saveMessages(XMLNode * fatherNode);
 		void saveBoardInformations(XMLNode * fatherNode);
-		void saveConnectInformations(XMLNode * fatherNode){};
+		void saveConnectInformations(XMLNode * fatherNode);
+		void saveChildConnectInformations(XMLNode * fatherNode);
+		void saveFatherConnectInformation(XMLNode * fatherNode);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
 		Messageboard(int, string); //Konstruktor zum anlegen eines neuen Boards

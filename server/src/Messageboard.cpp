@@ -14,6 +14,14 @@
 #include <iostream>
 #include <sstream>
 
+//TO-DO wahrscheinlich nicht komplett, das Verfahren hier loescht nur alle Nachrichten auf dem Board
+Messageboard::~Messageboard()
+{
+	saveBoard();
+	this->clearMessages();
+	this->clearBoardInformations();
+}
+
 //TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
 Messageboard::Messageboard(string xmlPath)
 {
@@ -44,11 +52,12 @@ Messageboard::Messageboard(int id, string name)
 	
 }
 
-//TO-DO das komplette board(also alle Informationen und Messages) in einer XML datei speichern
+/* das komplette board(also alle Informationen und Messages) in einer XML datei speichern */
 void Messageboard::saveBoard()
 {
 	XMLNode * rootNode = 0;
 	XMLNode * messagesNode = 0;
+	XMLNode * connectInformationNode = 0;
 	//Durch Create RootNode wird die zuvor gespeicherte XML gelöscht
 	this->xml->createRootNode("messageboard");
 	rootNode = this->xml->getRootNode();
@@ -57,12 +66,104 @@ void Messageboard::saveBoard()
 	//Node "messages" zum speicher der Nachrichten
 	messagesNode = rootNode->addChild("messages", "", false);
 	this->saveMessages(messagesNode);
-	
+	connectInformationNode = rootNode->addChild("connectInformations", "", false);
+	this->saveConnectInformations(connectInformationNode);
+	//Speichern des Messageboards
+	this->xml->saveXML("./neu.xml");
 }
+
+/* speichern der ConnectInformations von Child und Father */
+void Messageboard::saveConnectInformations(XMLNode * fatherNode)
+{
+	XMLNode * fatherConnectNode = 0;
+	XMLNode * childConnectNode = 0;	
+	//Speichern der ConnectInformations des FatherBoards
+	fatherConnectNode = fatherNode->addChild("father", "", false);
+	this->saveFatherConnectInformation(fatherConnectNode);
+	//Speichern der ChildConnect Informations in der XML
+	childConnectNode = fatherNode->addChild("childs", "", false);
+	this->saveChildConnectInformations(childConnectNode);
+}
+
+/* speichern der ConnectInformatiosn des Childs */
+void Messageboard::saveChildConnectInformations(XMLNode * fatherNode)
+{
+	XMLNode * childNode = 0;
+	BoardInformation * child = 0;
+	string name = "";
+	string ip = "";
+	string port = "";
+	string id = "";
+	if(this->childs.size() > 0)
+	{
+		//alle Childs suchen und in der XML speichern
+		for(iterChilds=this->childs.begin(); iterChilds<this->childs.end(); iterChilds++)
+		{
+			child = *iterChilds;
+			childNode = fatherNode->addChild("child", "", false);
+
+			id = this->intToStr(child->getId());
+			name = child->getName();
+			ip = child->getConnectInformation()->getIp();
+			port = this->intToStr(child->getConnectInformation()->getPort());
+			
+			//Hinzufuegen der richtigen Nodes fuer ein child
+			childNode->addChild("name", name, false);
+			childNode->addChild("ip", ip, false);
+			childNode->addChild("port", port, false);
+			childNode->addAttribut("id", id);
+		}
+		childs.clear();	
+	}		
+}
+
+/* Speichern der ConnectInformations des Fathers in der XML */
+void Messageboard::saveFatherConnectInformation(XMLNode * fatherNode)
+{
+	string id = "";
+	string name = "";
+	string ip = "";
+	string port = "";
+	if(this->father != NULL)
+	{
+		id = this->intToStr(this->father->getId());
+		name = this->father->getName();
+		ip = this->father->getConnectInformation()->getIp();
+		port = this->intToStr(this->father->getConnectInformation()->getPort());
+		//Hinzufuegen der richtigen Nodes fuer den vater
+		fatherNode->addChild("name", name, false);
+		fatherNode->addChild("ip", ip, false);
+		fatherNode->addChild("port", port, false);
+		fatherNode->addAttribut("id", id);
+	}
+}
+
+/* speichern der Messages in der XML */
 void Messageboard::saveMessages(XMLNode * fatherNode)
 {
-	
+	Message * worker = NULL;
+	XMLNode * messageNode = NULL;
+	string message = "";
+	string messageId = "";
+	string userId = "";
+	//Ab hier werden die nachrichten gespeichert
+	worker = this->first;
+	while(worker != NULL)
+	{
+		//lesen der Message-Daten
+		message = worker->getMessage();
+		messageId = worker->getId();
+		userId = this->intToStr(worker->getUid());
+		//erstellen der <message> node
+		messageNode = fatherNode->addChild("message", "", false);
+		messageNode->addChild("text", message, false);
+		messageNode->addChild("uid", userId, false);
+		messageNode->addAttribut("id", messageId);
+		//Naechste Nachricht
+		worker = worker->getNext();
+	}
 }
+
 
 /* Speichern der eigenen Informationen des Messageboards in der XML */
 void Messageboard::saveBoardInformations(XMLNode * fatherNode)
@@ -73,19 +174,11 @@ void Messageboard::saveBoardInformations(XMLNode * fatherNode)
 	
 	messageIdCounter = this->intToStr(this->mIdCounter);
 	messageCount = this->intToStr(this->size);
-	boardId = this->boardInformation->getId();
+	boardId = this->intToStr(this->boardInformation->getId());
 	fatherNode->addChild("name", this->boardInformation->getName(), false);
 	fatherNode->addChild("mcounter", messageCount, false);
 	fatherNode->addChild("idcounter", messageIdCounter, false);	
 	fatherNode->addAttribut("id", boardId);
-}
-
-//TO-DO wahrscheinlich nicht komplett, das Verfahren hier loescht nur alle Nachrichten auf dem Board
-Messageboard::~Messageboard()
-{
-	this->clearMessages();
-	this->clearBoardInformations();
-	saveBoard();
 }
 
 /* loeschen der gespeichertn ConnectInformations */
@@ -111,13 +204,13 @@ void Messageboard::clearMessages()
 	if(first != 0)
 	{
 		Message * tmp;
-		for(int i = 0; i < size; i++)
+		for(int i = 0; i < this->size; i++)
 		{
 			tmp = first;
 			first = first->getNext();
 			delete tmp;
 		}
-		size -= size;
+		size = 0;
 		highlighted = 0;
 	}
 }
@@ -161,7 +254,7 @@ void Messageboard::initConnectInfos()
 	{
 		this->xml->setWorkNode(rootNode);
 		//Suchen der Node mit den ConnectInfos 
-		connectInfoNode = this->xml->getChildNodeWithName("connectInfos");
+		connectInfoNode = this->xml->getChildNodeWithName("connectInformations");
 		if(connectInfoNode != NULL)
 		{
 			this->xml->setWorkNode(connectInfoNode);
@@ -237,6 +330,13 @@ void Messageboard::initChild(XMLNode * node)
 			port = atoi(strPort.c_str());		
 		}
 	}
+	//Prufen ob id wert angegeben ist
+	if(node->getAttributCount() > 0)
+	{
+		//Auslesend er Message ID
+		strId = node->getAttribut(0)->getValue();
+		id = atoi(strId.c_str());	
+	}
 	connectInformation = new ConnectInformation(ip, port);
 	this->childs.push_back(new BoardInformation(name, id, connectInformation));
 }
@@ -270,11 +370,12 @@ void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
 	{
 		name = workNode->getValue();
 	}
-	workNode = this->xml->getChildNodeWithName("id");
-	if(workNode != NULL)
+	//Prufen ob id wert angegeben ist
+	if(node->getAttributCount() > 0)
 	{
-		strId = workNode->getValue();
-		id = atoi(strId.c_str());
+		//Auslesend er Message ID
+		strId = node->getAttribut(0)->getValue();
+		id = atoi(strId.c_str());	
 	}
 	//Pruefen ob Port und IP gefunden wurden
 	if(port > 0 && ip.compare("") != 0)
@@ -311,7 +412,6 @@ void Messageboard::initBoardInformations()
 			idAttr = rootNode->getAttribut(0);
 			strId = idAttr->getValue();
 			id = atoi(strId.c_str());
-
 		}
 	}
 	this->boardInformation = new BoardInformation(name, id, NULL);
@@ -352,6 +452,7 @@ void Messageboard::initMessages()
 		messageFatherNode = this->xml->getChildNodeWithName("messages");
 		if(messageFatherNode != NULL)
 		{
+			//Neuste Nachricht steht in der XML ganz vorne
 			messageCount = messageFatherNode->getChildCount();
 			for(int i = messageCount-1; i >= 0; i--)
 			{
@@ -461,40 +562,40 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
 {
 	Message * neu = NULL;
-
-	if(first == 0)
+	if(first == NULL)
 	{
 		neu = new Message(message, mid, uid, 0, 0, uName);
-		first = neu;
-		last = neu;
+		this->first = neu;
+		this->last = neu;
 	}
 	else
 	{
 		//Pruefen ob die Message waehren des Init erstell wird
-		neu = new Message(message, mid, uid, 0, first, uName);
-		neu->getNext()->setPrevious(neu);
-		first = neu;
+		neu = new Message(message, mid, uid, 0, this->first, uName);
+		this->first->setPrevious(neu);
+		this->first = neu;
 		highlighted = neu;		
 	}
-	size++;
+	
 	if(withSave)
 	{
 		this->saveBoard();
 	}
+	this->size++;
 	return true;
 }
 
 //TO-DO XML-Abfrage
 bool Messageboard::confirmAdminRights(int uid)
 {
-	bool assert = true;//XML-Abfrage, prüfe uid. sprich abfrage auf admin. Ueberpruefung mit der Datenbank vom Login-Server
+	bool assert = true; //XML-Abfrage, prüfe uid. sprich abfrage auf admin. Ueberpruefung mit der Datenbank vom Login-Server
 	return assert;
 }
 
 //TO-DO
 bool Messageboard::confirmMessageRights(int uid)
 {
-	bool assert = false;//XML-Abfrage, prüfe uid. sprich ob eigentümer der nachricht
+	bool assert = false ;//XML-Abfrage, prüfe uid. sprich ob eigentümer der nachricht
 	assert = highlighted->getUid() == uid;
 	return assert;
 }
