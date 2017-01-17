@@ -52,6 +52,15 @@ Messageboard::Messageboard(int id, string name)
 	
 }
 
+//Speichern eines neuen Childs
+void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
+{
+	BoardInformation * child = 0;
+	child = new BoardInformation(name, id, connectInformation);
+	childs.push_back(child);
+	saveBoard();
+}
+
 /* das komplette board(also alle Informationen und Messages) in einer XML datei speichern */
 void Messageboard::saveBoard()
 {
@@ -734,16 +743,6 @@ void Messageboard::notifyFather()
 	//Verbindung aufbauen zu ConnectInformation father und dort dann sagen er soll dich als kind speichern
 	//saveChildrenInformation(id,name,connectInformation);//aufruf dieser Funktion auf vaterseite!
 	//Verbindung abbauen
-}
-
-//TO-DO
-void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
-{
-	/*childIds[NUM_CHILDREN] = id;
-	childNames[NUM_CHILDREN] = name;
-	childs[NUM_CHILDREN] = &connectInformation;
-	NUM_CHILDREN++;*/
-	saveBoard();
 }
 
 //TO-DO
