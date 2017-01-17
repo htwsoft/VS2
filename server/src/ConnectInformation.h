@@ -9,9 +9,6 @@
 #ifndef CONNECTINFORMATION_H_
 #define CONNECTINFORMATION_H_
 
-
-#endif /* CONNECTINFORMATION_H_ */
-
 class ConnectInformation
 {
 	private:
@@ -25,6 +22,7 @@ class ConnectInformation
 		void setPort(int port){this->port=port;}
 };
 
+#endif /* CONNECTINFORMATION_H_ */
 
 
 
