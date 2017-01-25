@@ -9,6 +9,13 @@ LDFLAGS =
 LOESCHLISTE = *.o *.exe
 XMLSOURCEPATH = ./XMLWorker/source/
 SERVERSOURCEPATH = ./src/
+OMNI_HOME     = /home/marco/Documents/HTW/Entwicklung/omniORB-4.2.1/
+OMNI_INCLUDES = -I$(OMNI_HOME)/include
+OMNI_LIB_DIR  = $(OMNI_HOME)/lib
+OMNIIDL       = $(OMNI_HOME)/bin/omniidl
+INCLUDES      = $(OMNI_INCLUDES)
+LIBS          = -lomniORB4 -lomnithread -lomniDynamic4
+
 
 
 all: server01
@@ -22,11 +29,14 @@ clean:
 
 
 
-server01: Message.o Messageboard.o FileWorker.o XMLWorker.o StartServer.cpp
-	$(CXX) $(CFLAGS) -o server01 Message.o Messageboard.o XMLWorker.o FileWorker.o StartServer.cpp
+server01: Message.o Messageboard.o FileWorker.o XMLWorker.o ClientServer.o StartServer.cpp
+	$(CXX) $(CFLAGS) -o server01 Message.o Messageboard.o XMLWorker.o FileWorker.o ClientServer.o $(LIBS) StartServer.cpp
 	
 
 #Files fuer MessageBoard
+
+ClientServer.o: ClientServer.cpp ClientServer.h VS2_klein.hh
+	$(CXX) $(CFLAGS) -c ClientServer.cpp
 
 FileWorker.o: $(XMLSOURCEPATH)FileWorker.cpp $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)FileWorker.cpp 

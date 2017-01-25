@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
-#include <String>
+#include <string>
 
 /*********************************************
 * Methoden der FileWriter-Klasse             *

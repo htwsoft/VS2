@@ -11,7 +11,7 @@
 
 
 #include <iostream>
-#include <String>
+#include <string>
 #include <sstream>
 
 using namespace std;
@@ -34,6 +34,7 @@ class Message
 		void setUName(const string uName){this->uName=uName;}
 		string getMessage(){return this->message;}
 		string getId(){return this->id;}
+        string getUName(){return this->uName;}
 		int getUid(){return this->uid;}
 		string toString(){return this->message;}
 		Message * getNext(){return this->next;}; //Funktion damit MessageBoard Next Abrufen kann

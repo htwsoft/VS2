@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <String>
+#include <string>
 #include <sstream> 
 
 using namespace std;

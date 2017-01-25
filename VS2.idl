@@ -1,6 +1,6 @@
 module VS2
 {
-	typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
+    typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
 	
 	struct ConnectInformation
 	{
@@ -13,7 +13,7 @@ module VS2
 		long uid;
 		long id;
 		string uName;
-		string message;
+		string text;
 		sequence<Message> previous;
 		sequence<Message> next;
 	};
@@ -39,9 +39,9 @@ module VS2
 		boolean publishChild(in string message, in long uid, in string uName, in boolean schalter);//veröffentliche Nachricht auf Kinderboards
 		boolean publishFather(in string message, in long uid, in string uName);//Veröffentlich Nachricht auf Vaterboard
 		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
-		void saveFatherInformation(in long id, in string name, in ConnectInformation connectInformation);
+		void saveFatherInformation(in long id, in string name, in ConnectInformation conInformation);
 		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
-		void saveChildInformation(in long id, in string name, in ConnectInformation connectInformation);
+		void saveChildInformation(in long id, in string name, in ConnectInformation conInformation);
 	};
 	
 };
