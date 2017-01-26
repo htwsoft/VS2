@@ -11,11 +11,11 @@ class ClientServer: public POA_ClientMessageboardInterface, public PortableServe
     public:
         ClientServer();
         ~ClientServer();
-        CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName);
-        CORBA::Boolean deleteMessage(::CORBA::Long uid);
-        CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName);
-        MessageData* getNextMessage();
-        MessageData* getPreviousMessage();
+        virtual CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName);
+        virtual CORBA::Boolean deleteMessage(::CORBA::Long uid);
+        virtual CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName);
+        virtual MessageData * getNextMessage();
+        virtual MessageData * getPreviousMessage();
 };
 
 

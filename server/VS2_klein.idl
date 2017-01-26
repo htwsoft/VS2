@@ -1,0 +1,18 @@
+    typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
+	
+    struct MessageData
+	{
+		long uid;
+		string id;
+		string uName;
+		string text;
+	};
+	
+	interface ClientMessageboardInterface
+	{
+		boolean setMessage(in string message, in long uid, in string uName);
+		boolean deleteMessage(in long uid);
+		boolean createNewMessage(in string message, in long uid, in string uName);
+		MessageData getNextMessage();
+		MessageData getPreviousMessage();
+	};

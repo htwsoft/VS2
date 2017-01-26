@@ -30,7 +30,7 @@ clean:
 
 
 server01: Message.o Messageboard.o FileWorker.o XMLWorker.o ClientServer.o StartServer.cpp
-	$(CXX) $(CFLAGS) -o server01 Message.o Messageboard.o XMLWorker.o FileWorker.o ClientServer.o $(LIBS) StartServer.cpp
+	$(CXX) $(CFLAGS) -o StartServer Message.o Messageboard.o XMLWorker.o FileWorker.o ClientServer.o $(LIBS) StartServer.cpp
 	
 
 #Files fuer MessageBoard

@@ -1,6 +1,7 @@
 #include "./ClientServer.h"
 #include "./VS2_kleinSK.cc"
 #include "./src/Message.h"
+#include <cstring>
 
 /* Kosntruktor der ClientServer-Klasse */
 ClientServer::ClientServer()
@@ -49,28 +50,33 @@ CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, 
 MessageData * ClientServer::getPreviousMessage()
 {
     Message * msg = NULL;
-    MessageData * mData = 0;    
+    MessageData * mData = 0;  
     msg = this->messageBoard->getPreviousMessage();
     if(msg != NULL)    
-    {
+    { 
+        mData = new MessageData();
         mData->uid = msg->getUid();
         mData->id = msg->getId().c_str();
         mData->uName = msg->getUName().c_str();
+        cout << "Message copied" << endl; 
     }
     return mData;
 }
 
 /* Naechste Nachricht an Client senden */
-MessageData* ClientServer::getNextMessage()
+MessageData * ClientServer::getNextMessage()
 {
     Message * msg = NULL;
-    MessageData * mData = 0;    
+    MessageData * mData = 0;  
+    char * text = 0;
     msg = this->messageBoard->getNextMessage();
     if(msg != NULL)    
-    {
+    { 
+        mData = new MessageData();
         mData->uid = msg->getUid();
         mData->id = msg->getId().c_str();
         mData->uName = msg->getUName().c_str();
+        mData->text = msg->getMessage().c_str(); 
     }
     return mData;
 }

@@ -1,116 +1,53 @@
-package client;
-
 /**
  *
  * @author imed
  */
-import Empfang.*;
-
-
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
 import org.omg.CORBA.*;
-import java.io.*;
-import java.util.*;
 
 
-class schreiben implements Runnable
-{
-	private Thread t;
-	private EmpfangApp messgOBJ;
-	String benutzer;
-	schreiben(EmpfangApp addobj,String benutzer){
-		this.messgOBJ=addobj;
-		this.benutzer=benutzer;
-	}
-	@Override
-	public void run() {
-		Scanner c = new Scanner(System.in);
-		String aa = c.nextLine();
-		String[] text;
-		for(;;){
-			System.out.println("Enter Text:");
-			aa = c.nextLine();
-			messgOBJ.send(aa);
 
-			System.out.println("-----------------------------------");
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	
-		
-	}
+public class StartClient{
+  /* 
+   Aufruf:
+     java HelloClient -ORBInitialPort 1050
+          [-ORBInitialHost nameserverhost] [-shutdown] [-n name] [-val x y]
+   Parameter:
+     1050            wählbare Portnummer, die der ORB des Servers auf
+                     Anforderungen abhört
+     nameserverhost  Rechner auf dem der ORB-Dämon (orbd) läuft
+     name            beliebige Zeichenkette als Vorname in der 'person'-Struktur
+     x, y            2 ganze Zahlen, die addiert werden sollen
+  */
+  
+  public static void main(String args[]){
+    boolean shutdown = false;
+    String name = "Moritz";
+    int uid = 12345;
+    
+    String method = "DataServiceName1";  //registrierter Name der implementierten Methode
 
-	   public void start () {
-	      System.out.println("Starting Schreiben "+this.benutzer );
-	      if (t == null) {
-	         t = new Thread (this,this.benutzer);
-	         t.start ();
-	      }
-	   }
-	
-}
+    try {
+      // Initialisiere ORB und beschaffe Zugang zum 'NameService'
+      // create and initialize the ORB
+      ORB orb = ORB.init(args, null);
 
-
-public class StartClient
-{
-	//nur ein test
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String[] args)
-	{
-		try {
-			
-			String[] test = new String[]{"-ORBInitialPort","1050","-ORBInitialHost","localhost"};
-			
-			ORB orb = ORB.init(args, null);
-			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
-		
-			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-			EmpfangApp addobj = (EmpfangApp) EmpfangAppHelper.narrow(ncRef.resolve_str("Abteilung1"));
-			
-			
-			Scanner c = new Scanner(System.in);
-			System.out.println("Enter Bneutzername:");
-			String aa = c.nextLine();
-			addobj.benutzername(aa);
-//			schreiben s1=new schreiben(addobj,aa);
-//			lesen l1=new lesen(addobj,aa);
-//			
-//			s1.start();
-//			l1.start();
-			
-			for(;;){
-				System.out.println("Enter Text:");
-				aa = c.nextLine();
-				addobj.send(aa);
-				String[] text;
-				text = addobj.getSTringArray();
-				System.out.println("-Nachrichten vom Server----------------------------------");
-				for (int i = 0; i < text.length; i++) {
-					System.out.println(text[i].toString());
-				}
-				System.out.println("-----------------------------------");
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-
-		} catch (Exception e) {
-			System.out.println("Hello Client exception: " + e);
-			e.printStackTrace();
-		}
-
-	}
-
+      // get the root naming context
+      org.omg.CORBA.Object objRef = 
+	  orb.resolve_initial_references("NameService");
+	  
+      // Use NamingContextExt instead of NamingContext. This is 
+      // part of the Interoperable naming Service.  
+      NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+      ClientMessageboardInterface mbImpl = ClientMessageboardInterfaceHelper.narrow(ncRef.resolve_str(method));
+      System.out.println("Obtained a handle on server object: " + method);
+      //Aufruf der entfernten Methode
+      MessageData msg = mbImpl.getNextMessage();
+      System.out.println(msg.text + ", " + msg.id + ", " + msg.uid);
+    } catch (Exception e) {
+      System.out.println("ERROR : " + e) ;
+      e.printStackTrace(System.out);
+    }
+  }
 }

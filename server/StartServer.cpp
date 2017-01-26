@@ -12,7 +12,6 @@ using namespace std;
 
 int main(int argc, char ** args)
 {
-	cout << "Server gestartet..." << endl;
   // --------------------------------------------------------------------------
   // Start CORBA server:
   // --------------------------------------------------------------------------
@@ -28,6 +27,7 @@ int main(int argc, char ** args)
     //------------------------------------------------------------------------
     // Initialize CORBA ORB - "orb"
     //------------------------------------------------------------------------
+	cout << "Server gestartet..." << endl; 
     CORBA::ORB_var orb = CORBA::ORB_init(argc, args);
                                                                                 
     //------------------------------------------------------------------------
@@ -113,6 +113,7 @@ int main(int argc, char ** args)
     orb->destroy();
                                                                                 
     free(name[0].id); // str_dup does a malloc internally
+    cout << "Server closed" << endl;
   }
                                                                                 
   catch(CORBA::SystemException&) {
@@ -129,8 +130,6 @@ int main(int argc, char ** args)
   }
   catch(...) {
     cerr << "Caught unknown exception." << endl;
-  }
-                                                                                
+  }                                                                             
   return 0;    
-	cout << "Server beendet" << endl;
 } 
