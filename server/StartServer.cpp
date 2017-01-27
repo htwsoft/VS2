@@ -34,15 +34,15 @@ int main(int argc, char ** args)
     // Servant must register with POA in order to be made available for client
     // Get reference to the RootPOA.
     //------------------------------------------------------------------------
+    cout << "Registriere POA ..." << endl;
     CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
-    PortableServer::POA_var _poa = PortableServer::POA::_narrow(obj.in());
-                                                                                
+    PortableServer::POA_var _poa = PortableServer::POA::_narrow(obj.in());                                                                           
     //------------------------------------------------------------------------
     // Operations defined in object interface invoked via an object reference.
     // Instance of CRequestSocketStream_i servant is initialized.
-    //------------------------------------------------------------------------
-    ClientServer * clientServer = new ClientServer();
-                                                                                
+    //------------------------------------------------------------------------     
+    cout << "Create ClientServer-Objekt ..." << endl;
+    ClientServer * clientServer = new ClientServer();                                                               
     //------------------------------------------------------------------------
     // ObjectId_var class defined in poa.h
     // typedef String_var ObjectId_var; CORBA_ORB.h
@@ -74,9 +74,9 @@ int main(int argc, char ** args)
     // Bind object to name service as defined by directive InitRef
     // and identifier "OmniNameService" in config file omniORB.cfg.
     //------------------------------------------------------------------------
+    cout << "Bind NameService ..." << endl;
     CORBA::Object_var obj1=orb->resolve_initial_references("NameService");
-    assert(!CORBA::is_nil(obj1.in()));
-                                                                                
+    assert(!CORBA::is_nil(obj1.in()));                                  
     //------------------------------------------------------------------------
     // narrow this to the naming context
     //------------------------------------------------------------------------
@@ -86,11 +86,11 @@ int main(int argc, char ** args)
     //------------------------------------------------------------------------
     // Bind to CORBA name service. Same name to be requested by client.
     //------------------------------------------------------------------------
+    cout << "Bind Corba-NameService ..." << endl;  
     CosNaming::Name name;
     name.length(1);
     name[0].id=CORBA::string_dup("DataServiceName1");
-    nc->rebind (name,SA_obj.in());
-                                                                                
+    nc->rebind (name,SA_obj.in());                                                                              
     //========================================================================
                                                                                 
     clientServer->_remove_ref();
@@ -104,8 +104,8 @@ int main(int argc, char ** args)
     //------------------------------------------------------------------------
     // Accept requests from clients
     //------------------------------------------------------------------------
-    orb->run();
-                                                                                
+    cout << "Server is running ..." << endl;    
+    orb->run();                                                        
     //------------------------------------------------------------------------
     // If orb leaves event handling loop.
     // - currently configured never to time out (??)
@@ -113,7 +113,6 @@ int main(int argc, char ** args)
     orb->destroy();
                                                                                 
     free(name[0].id); // str_dup does a malloc internally
-    cout << "Server closed" << endl;
   }
                                                                                 
   catch(CORBA::SystemException&) {
@@ -128,8 +127,12 @@ int main(int argc, char ** args)
     cerr << "  line: " << fe.line() << endl;
     cerr << "  mesg: " << fe.errmsg() << endl;
   }
+  catch(exception& e) {
+    cerr << "Error: " << e.what() << endl;
+  }   
   catch(...) {
     cerr << "Caught unknown exception." << endl;
-  }                                                                             
+  }       
+  cout << "Server closed" << endl;                                                                      
   return 0;    
 } 

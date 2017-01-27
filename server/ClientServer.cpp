@@ -19,6 +19,7 @@ ClientServer::~ClientServer()
 CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
     bool created = false;
+    cout << "Procedure createNewMessage() called" << endl;
     string strMessage(message); //char * in String umwandeln
     string strUName(uName); //char * in String umwandeln
     created = this->messageBoard->createNewMessage(strMessage, uid, strUName);
@@ -29,6 +30,7 @@ CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long
 CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid)
 {
     bool deleted = false;
+    cout << "Procedure deleteMessage() called" << endl; 
     deleted = this->messageBoard->deleteMessage(uid);
     return deleted;
 }
@@ -36,9 +38,10 @@ CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid)
 /* aktuelle Nachricht aendern */
 CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
-    Message * msg = NULL;
+    Message * msg = NULL;   
     string strMessage(message); //char * in String umwandeln
     string strUName(uName); //char * in String umwandeln
+    cout << "Procedure setMessage() called" << endl; 
     msg = this->messageBoard->getPreviousMessage();
     msg->setMessage(strMessage);
     msg->setUid(uid);
@@ -50,7 +53,8 @@ CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, 
 MessageData * ClientServer::getPreviousMessage()
 {
     Message * msg = NULL;
-    MessageData * mData = 0;  
+    MessageData * mData = 0; 
+    cout << "Procedure getPreviousMessage() called" << endl; 
     msg = this->messageBoard->getPreviousMessage();
     if(msg != NULL)    
     { 
@@ -58,17 +62,17 @@ MessageData * ClientServer::getPreviousMessage()
         mData->uid = msg->getUid();
         mData->id = msg->getId().c_str();
         mData->uName = msg->getUName().c_str();
-        cout << "Message copied" << endl; 
+        mData->uName = msg->getUName().c_str(); 
     }
     return mData;
 }
 
 /* Naechste Nachricht an Client senden */
 MessageData * ClientServer::getNextMessage()
-{
+{    
     Message * msg = NULL;
     MessageData * mData = 0;  
-    char * text = 0;
+    cout << "Procedure getNextMessage() called" << endl;
     msg = this->messageBoard->getNextMessage();
     if(msg != NULL)    
     { 

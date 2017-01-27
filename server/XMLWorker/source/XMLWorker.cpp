@@ -35,6 +35,8 @@ void  XMLWorker::parseXML(FileReader * fileReader)
 		//Lesen einer Zeile der XML Datei
 		zeile = fileReader->readLine();
 		parseNode(fileReader, zeile, NULL);
+        //Bei linux benötigt da sonst kein EOF gefunden wird
+        fileReader->readLine();
 	}while(!fileReader->isEof());
 }
 
@@ -267,15 +269,18 @@ string XMLWorker::trim(string text)
 	worker = text;
 	//Solange ein zeichen loeschen bis kein leerzeichen
 	//mehr gefunden wird. 9 = Tabluator
-	while(worker.at(0) == ' ' || worker.at(0) == 9)
-	{
-		worker.erase(0, 1);
-	}
-	//entfernen der leerzeichen am Ende
-	while(worker.at(worker.length()-1) == ' ' || worker.at(worker.length()-1) == 9)
-	{	
+    if(worker.size() > 0)
+    {
+	    while(worker.at(0) == ' ' || worker.at(0) == 9)
+	    {
+		    worker.erase(0, 1);
+	    }
+	    //entfernen der leerzeichen am Ende
+	    while(worker.at(worker.length()-1) == ' ' || worker.at(worker.length()-1) == 9)
+	    {	
 			worker.pop_back();
-	}
+	    }
+    }
 	return worker;
 }
 

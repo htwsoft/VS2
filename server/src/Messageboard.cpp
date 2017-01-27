@@ -32,9 +32,9 @@ Messageboard::Messageboard(string xmlPath)
 	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
-	this->highlighted = NULL;
 	this->initBoardXML();
-	//this->highlighted = this->first;
+    //Auf NULL setzen damit die erste Nachricht geladen wird
+    this->highlighted = NULL;
 	//hier orb starten, sprich port öffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groß)
 }
 
