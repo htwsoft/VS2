@@ -34,7 +34,7 @@ Messageboard::Messageboard(string xmlPath)
 	this->last = NULL;
 	this->highlighted = NULL;
 	this->initBoardXML();
-	this->highlighted = this->first;
+	//this->highlighted = this->first;
 	//hier orb starten, sprich port öffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groß)
 }
 
@@ -534,22 +534,47 @@ Message * Messageboard::getHighlightedMessage()
 	return message;
 }
 
+/* Liefert die naechte Nachricht des Messageboards */
 Message * Messageboard::getNextMessage()
 {
-	if(highlighted->getNext() != NULL)
-	{
-		highlighted = highlighted->getNext();
+    //Pruefen ob eine Nachricht existiert
+    if(this->first != NULL)
+    {
+        //Pruefen ob bereits eine Nahricht angezeigt wurde
+        if(this->highlighted == NULL)
+        {
+            //es wurde noch keine Nachricht gezeigt
+            this->highlighted = this->first;
+        }
+        else
+	    if(highlighted->getNext() != NULL)
+	    {
+		    highlighted = highlighted->getNext();
 
-	}
+	    }
+    }
 	return highlighted;
 }
 
+/* Liefert die vor Nachricht der letzten Message */
 Message * Messageboard::getPreviousMessage()
 {
-	if(highlighted->getPrevious() != NULL)
-	{
-		highlighted = highlighted->getPrevious();
-	}
+    //Pruefen ob eine Nachricht existiert
+    if(this->first != NULL)
+    {
+        //Pruefen ob bereits eine Nahricht angezeigt wurde
+        if(this->highlighted == NULL)
+        {
+            //es wurde noch keine Nachricht gezeigt
+            this->highlighted = this->first;
+        }
+        else
+	    if(highlighted->getPrevious() != NULL)
+	    {
+		    highlighted = highlighted->getPrevious();
+
+	    }
+    }
 	return highlighted;
 }
 
@@ -575,6 +600,7 @@ bool Messageboard::createNewMessage(string message, int uid, string uName)
 	messageId = this->createNewMessageId();
 	return this->createNewMessage(message, messageId, uid, uName, true);
 }
+
 /* erstellt eine neu Message mit der uebergeben MessageId */
 bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
 {
