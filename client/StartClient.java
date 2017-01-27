@@ -55,6 +55,40 @@ class schreiben implements Runnable
 	
 }
 
+class lesen implements Runnable
+{
+	private Thread t;
+	private EmpfangApp messgOBJ;
+	String benutzer;
+	lesen(EmpfangApp addobj,String benutzer){
+		this.messgOBJ=addobj;
+		this.benutzer=benutzer;
+	}
+	@Override
+	public void run() {
+		String[] str;
+
+		while(true)
+		{
+			str = messgOBJ.getSTringArray();
+			System.out.println("-Nachrichten vom Server----------------------------------");
+			for (int i = 0; i < text.length; i++) {
+				System.out.println(text[i].toString());
+			}
+			System.out.println("-----------------------------------");
+		}
+	}
+
+	   public void start () {
+	      System.out.println("Starting lesen "+this.benutzer );
+	      if (t == null) {
+	         t = new Thread (this,this.benutzer);
+	         t.start ();
+	      }
+	   }
+	
+}
+
 
 public class StartClient
 {
@@ -80,13 +114,13 @@ public class StartClient
 			System.out.println("Enter Bneutzername:");
 			String aa = c.nextLine();
 			addobj.benutzername(aa);
-//			schreiben s1=new schreiben(addobj,aa);
-//			lesen l1=new lesen(addobj,aa);
-//			
-//			s1.start();
-//			l1.start();
+			schreiben s1=new schreiben(addobj,aa);
+			lesen l1=new lesen(addobj,aa);
 			
-			for(;;){
+			s1.start();
+			l1.start();
+			
+			/*for(;;){
 				System.out.println("Enter Text:");
 				aa = c.nextLine();
 				addobj.send(aa);
@@ -103,7 +137,7 @@ public class StartClient
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
+			}*/
 			
 
 		} catch (Exception e) {
