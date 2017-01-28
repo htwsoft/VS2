@@ -1,150 +1,168 @@
-package client;
-
 /**
  *
  * @author imed
  */
-import Empfang.*;
-
-
+package client;
+import VS2idl.*;
+import java.util.ArrayList;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
+
+import java.util.Scanner;
+
 import org.omg.CORBA.*;
-import java.io.*;
-import java.util.*;
-
-
-class schreiben implements Runnable
+/*
+class LesenThread implements Runnable
 {
 	private Thread t;
-	private EmpfangApp messgOBJ;
-	String benutzer;
-	schreiben(EmpfangApp addobj,String benutzer){
-		this.messgOBJ=addobj;
-		this.benutzer=benutzer;
+	private ClientMessageboardInterface mbImpl;
+	MessageData msg;
+	LesenThread(ClientMessageboardInterface mbImpl){
+		this.mbImpl = mbImpl;
 	}
+	//FÜR DIE GUI????
+	
 	@Override
 	public void run() {
-		Scanner c = new Scanner(System.in);
-		String aa = c.nextLine();
-		String[] text;
-		for(;;){
-			System.out.println("Enter Text:");
-			aa = c.nextLine();
-			messgOBJ.send(aa);
+		
 
-			System.out.println("-----------------------------------");
+		while(true)
+		{
+			System.out.println("Obtained a handle on server object: " );
+			//Aufruf der entfernten Methode
+			msg = mbImpl.getNextMessage();
+			System.out.println(msg.text + ", " + msg.id + ", " + msg.uid);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-	
-		
 	}
 
 	   public void start () {
-	      System.out.println("Starting Schreiben "+this.benutzer );
+	      System.out.println("Starting lesen ");
 	      if (t == null) {
-	         t = new Thread (this,this.benutzer);
+	         t = new Thread (this);
 	         t.start ();
 	      }
 	   }
 	
-}
+}*/
 
-class lesen implements Runnable
-{
-	private Thread t;
-	private EmpfangApp messgOBJ;
-	String benutzer;
-	lesen(EmpfangApp addobj,String benutzer){
-		this.messgOBJ=addobj;
-		this.benutzer=benutzer;
-	}
-	@Override
-	public void run() {
-		String[] str;
-
-		while(true)
-		{
-			str = messgOBJ.getSTringArray();
-			System.out.println("-Nachrichten vom Server----------------------------------");
-			for (int i = 0; i < text.length; i++) {
-				System.out.println(text[i].toString());
-			}
-			System.out.println("-----------------------------------");
-		}
-	}
-
-	   public void start () {
-	      System.out.println("Starting lesen "+this.benutzer );
-	      if (t == null) {
-	         t = new Thread (this,this.benutzer);
-	         t.start ();
-	      }
-	   }
+public class StartClient{
 	
-}
-
-
-public class StartClient
-{
-	//nur ein test
-	/**
-	 * @param args
-	 *            the command line arguments
-	 */
-	public static void main(String[] args)
-	{
-		try {
-			
-			String[] test = new String[]{"-ORBInitialPort","1050","-ORBInitialHost","localhost"};
-			
-			ORB orb = ORB.init(args, null);
-			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+	private String uName;
+	private  int uid =12345;
+	private  String message;
+	public  MessageData msg;
+	private ClientMessageboardInterface mbImpl; 
+	boolean shutdown;
+	
+	public StartClient(){
+		String[] url = new String[]{"-ORBInitialPort","1050","-ORBInitialHost","localhost"};
 		
-			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-			EmpfangApp addobj = (EmpfangApp) EmpfangAppHelper.narrow(ncRef.resolve_str("Abteilung1"));
-			
-			
-			Scanner c = new Scanner(System.in);
-			System.out.println("Enter Bneutzername:");
-			String aa = c.nextLine();
-			addobj.benutzername(aa);
-			schreiben s1=new schreiben(addobj,aa);
-			lesen l1=new lesen(addobj,aa);
-			
-			s1.start();
-			l1.start();
-			
-			/*for(;;){
-				System.out.println("Enter Text:");
-				aa = c.nextLine();
-				addobj.send(aa);
-				String[] text;
-				text = addobj.getSTringArray();
-				System.out.println("-Nachrichten vom Server----------------------------------");
-				for (int i = 0; i < text.length; i++) {
-					System.out.println(text[i].toString());
-				}
-				System.out.println("-----------------------------------");
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
-			
+	    String method = "DataServiceName1";  //registrierter Name der implementierten Methode
 
-		} catch (Exception e) {
-			System.out.println("Hello Client exception: " + e);
-			e.printStackTrace();
-		}
+	    try {
+	      // Initialisiere ORB und beschaffe Zugang zum 'NameService'
+	      // create and initialize the ORB
+	      ORB orb = ORB.init(url, null);
 
+	      // get the root naming context
+	      org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+	      // Use NamingContextExt instead of NamingContext. This is 
+	      // part of the Interoperable naming Service.  
+	      NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+	      mbImpl = ClientMessageboardInterfaceHelper.narrow(ncRef.resolve_str(method));
+	      
+	      
+	    } catch (Exception e) {
+	        System.out.println("ERROR : " + e) ;
+	        e.printStackTrace(System.out);
+	      }
 	}
+	
+	public boolean setMessage(String message, int uid, String uName){
+		
+		return this.mbImpl.setMessage(message, uid, uName);
+		
+	}
+	
+	public MessageData getPreviousMessage() {
+		
+		return this.mbImpl.getPreviousMessage();
+	}
+	
+	public boolean deleteMessage(int uid) {
+		
+		return this.mbImpl.deleteMessage(uid);
+	}
+	
+	public ArrayList<MessageData> getMessage(){
+		ArrayList<MessageData> messageList=new ArrayList<MessageData>();
+		
+		
+		 MessageData test= mbImpl.getNextMessage(); 
+		 messageList.add(test);
+		 if (!test.text.equals("leer")){
+			do{
+				 test= mbImpl.getNextMessage(); 
+				messageList.add(test);
+			}while(!test.text.equals("leer"));
+		 
+		
+			return messageList;
+		}else{
+			return null;
+		}
+		 
+		
+		
+	}
+	
+	public boolean schreibeMessage(String message){
+		return mbImpl.createNewMessage(message, this.uid, this.uName);
+	}
+	
+	public void writeUser(String user) {
+		this.uName=user;
+	}
+	public String getUser() {
+		// TODO Auto-generated method stub
+		return this.uName;
+	}
+
+	public MessageData[] getMessageList() {
+		return mbImpl.getMessage();
+		
+	}
+  public static void main(String args[]){
+    boolean shutdown = false;
+     
+    StartClient test=new StartClient();
+    Scanner scan=new Scanner(System.in);
+    System.out.println("Username:");
+    String username=scan.nextLine();
+    
+    test.writeUser("username");
+    
+    while(true){System.out.println("\n \n\n ");
+    	System.out.println("Message:");
+        String messagea=scan.nextLine();
+    	test.schreibeMessage(messagea);
+    	System.out.println("\n \n\n Ausgabe von alle Message auf server:");
+    	for(int y=0;y<test.getMessageList().length;y++){
+    	    System.out.println(test.getMessageList()[y].text +" "+ test.getMessageList()[y].uid+" "+ test.getMessageList()[y].uName);
+    	    }
+    }
+    
+      
+  }
+
+
+
+
 
 }

@@ -1,0 +1,21 @@
+module VS2idl{
+    typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
+	
+    struct MessageData
+	{
+		long uid;
+		string id;
+		string uName;
+		string text;
+	};
+	typedef sequence<MessageData> array_of_MessageData;
+	interface ClientMessageboardInterface
+	{
+		array_of_MessageData getMessage();
+		boolean setMessage(in string message, in long uid, in string uName);
+		boolean deleteMessage(in long uid);
+		boolean createNewMessage(in string message, in long uid, in string uName);
+		MessageData getNextMessage();
+		MessageData getPreviousMessage();
+	};
+};
