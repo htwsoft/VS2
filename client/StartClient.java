@@ -2,6 +2,7 @@
  *
  * @author imed
  */
+
 import java.util.ArrayList;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
@@ -9,6 +10,7 @@ import org.omg.CosNaming.NamingContextPackage.*;
 import java.util.Scanner;
 
 import org.omg.CORBA.*;
+import org.omg.CORBA.ORBPackage.InvalidName;
 /*
 class LesenThread implements Runnable
 {
@@ -47,113 +49,156 @@ class LesenThread implements Runnable
 	
 }*/
 
-public class StartClient{
-	
+public class StartClient {
+
 	private String uName;
-	private  int uid =12345;
-	private  String message;
-	public  MessageData msg;
-	private ClientMessageboardInterface mbImpl; 
+	private int uid = 12345;
+	private String message;
+	public MessageData msg;
+	private ClientMessageboardInterface mbImpl;
 	boolean shutdown;
-	
-	public StartClient(){
-		String[] url = new String[]{"-ORBInitialPort","6000","-ORBInitialHost","127.0.0.1"};
-		
-	    String method = "DataServiceName1";  //registrierter Name der implementierten Methode
 
-	    try {
-	      // Initialisiere ORB und beschaffe Zugang zum 'NameService'
-	      // create and initialize the ORB
-	      ORB orb = ORB.init(url, null);
+	public StartClient() {
+		String[] url = new String[] { "-ORBInitialPort", "1050", "-ORBInitialHost", "127.0.0.1" };
 
-	      // get the root naming context
-	      org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
-	      // Use NamingContextExt instead of NamingContext. This is 
-	      // part of the Interoperable naming Service.  
-	      NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
-	      mbImpl = ClientMessageboardInterfaceHelper.narrow(ncRef.resolve_str(method));
-	      
-	      
-	    } catch (Exception e) {
-	        System.out.println("ERROR : " + e) ;
-	        e.printStackTrace(System.out);
-	      }
+		String method = "DataServiceName1"; // registrierter Name der
+											// implementierten Methode
+
+		try {
+			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
+			// create and initialize the ORB
+			ORB orb = ORB.init(url, null);
+
+			// get the root naming context
+			org.omg.CORBA.Object objRef;
+
+			objRef = orb.resolve_initial_references("NameService");
+
+			// Use NamingContextExt instead of NamingContext. This is
+			// part of the Interoperable naming Service.
+			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+
+			mbImpl = ClientMessageboardInterfaceHelper.narrow(ncRef.resolve_str(method));
+		} catch (Exception e) {
+			System.out.println("ERROR : " + e);
+			System.exit(0);
+		}
 	}
-	
-	public boolean setMessage(String message, int uid, String uName){
-		
+
+	public boolean setMessage(String message, int uid, String uName) {
+
 		return this.mbImpl.setMessage(message, uid, uName);
-		
+
 	}
-	
+
 	public MessageData getPreviousMessage() {
-		
+
 		return this.mbImpl.getPreviousMessage();
 	}
-	
+
 	public boolean deleteMessage(int uid) {
-		
+
 		return this.mbImpl.deleteMessage(uid);
 	}
-	
-	public ArrayList<MessageData> getMessage(){
-		ArrayList<MessageData> messageList=new ArrayList<MessageData>();
-		
-		
-		 MessageData test= mbImpl.getNextMessage(); 
-		 messageList.add(test);
-		 if (!test.text.equals("leer")){
-			do{
-				 test= mbImpl.getNextMessage(); 
-				messageList.add(test);
-			}while(!test.text.equals("leer"));
-		 
-		
-			return messageList;
-		}else{
-			return null;
+
+	public ArrayList<MessageData> getMessage() {
+
+		ArrayList<MessageData> messageList = new ArrayList<MessageData>();
+		MessageData[] tempArray = mbImpl.getMessages();
+
+		for (int y = 0; y < tempArray.length; y++) {
+			messageList.add(tempArray[y]);
 		}
-		 
-		
-		
+
+		return messageList;
+
 	}
-	
-	public boolean schreibeMessage(String message){
+
+	public boolean schreibeMessage(String message) {
 		return mbImpl.createNewMessage(message, this.uid, this.uName);
 	}
-	
+
 	public void writeUser(String user) {
-		this.uName=user;
+		this.uName = user;
 	}
+
 	public String getUser() {
-		// TODO Auto-generated method stub
+
 		return this.uName;
 	}
 
-	public MessageData[] getMessageList() {
+	private MessageData[] getMessageList() {
 		return mbImpl.getMessages();
-		
+
 	}
-  public static void main(String args[]){
-    boolean shutdown = false;
-     
-    StartClient test=new StartClient();
-    Scanner scan=new Scanner(System.in);
-    System.out.println("Username:");
-    String username=scan.nextLine();
-    
-    test.writeUser("username");
-    
-    while(true){System.out.println("\n \n\n ");
-    	System.out.println("Message:");
-        String messagea=scan.nextLine();
-    	//test.schreibeMessage(messagea);
-    	System.out.println("\n \n\n Ausgabe von alle Message auf server:");
-    	for(int y=0;y<test.getMessageList().length;y++){
-    	    System.out.println(test.getMessageList()[y].text +" "+ test.getMessageList()[y].uid+" "+ test.getMessageList()[y].uName);
-    	    }
-    }
-    
-      
-  }
+
+	public static void main(String args[]) {
+		ArrayList<MessageData> messageListtest = new ArrayList<MessageData>();
+		
+		boolean shutdown = false;
+		String messagea;
+		String bName;
+		int loeschuid;
+		StartClient test = new StartClient();
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Username:");
+		String username = scan.nextLine();
+
+		test.writeUser(username);
+		int i;
+
+		while (true) {
+			System.out.println("\n Was möchten Sie machen?" + 
+						"\nNachricht schreiben :1" 
+						+ "\nNachricht löschen 2:"
+					+ "\nNachricht ersetzen: 3" 
+						+ "\nNachricht Ausgabe: 4 " + "\n -----> ");
+			i = scan.nextInt();
+			switch (i) {
+			case 1:
+				
+				System.out.println("Message:");
+				Scanner scan1 = new Scanner(System.in);
+				 messagea = scan1.nextLine();
+				 
+				test.schreibeMessage(messagea);
+				break;
+
+			case 2:
+				System.out.println("Loeschen (geht noch nicht muss noch angepasst werden ):");
+				System.out.println("UID:");
+				loeschuid = scan.nextInt();
+				test.deleteMessage(loeschuid);
+				break;
+
+			case 3:
+				System.out.println("Ersetzen : \n ");
+				System.out.println("Message : ");
+				Scanner scan11 = new Scanner(System.in);
+				messagea = scan11.nextLine();
+				System.out.println("UserName : \n ");
+				scan = new Scanner(System.in);
+				bName = scan.nextLine();
+				System.out.println("UID : \n ");
+				scan = new Scanner(System.in);
+				loeschuid = scan.nextInt();
+				test.setMessage(messagea, loeschuid, bName);
+				break;
+			case 4:
+				
+				System.out.println("\n Ausgabe von alle Message auf server:\n");
+				messageListtest=test.getMessage();
+				for(int y=0;y<messageListtest.size();y++){
+					System.out.println("TEXT:"+messageListtest.get(y).text+
+							" BNAME:"+messageListtest.get(y).uName+
+							" UID:"+messageListtest.get(y).uid);
+				}
+				break;
+		
+
+			}
+
+		}
+
+	}
 }
