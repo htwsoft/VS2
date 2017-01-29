@@ -534,6 +534,34 @@ Message * Messageboard::getHighlightedMessage()
 	return message;
 }
 
+/* Setzt die Highlighted-Message auf First */
+void Messageboard::setLastMessageToHighlighted()
+{
+	this->highlighted = this->first; 
+}
+
+/* Setzt die Highlighted-Message auf Last  */
+void Messageboard::setFirstMessageToHighlighted()
+{
+	this->highlighted = this->last;
+}
+
+/* Liefert die erste Message des Boards zurueck */
+Message * Messageboard::getFirstMessage()
+{
+    this->highlighted = this->first;
+    return this->first;
+    
+}
+
+/*  Liefert die letzte Message des Boards zurueck */
+Message * Messageboard::getLastMessage()
+{
+    this->highlighted = this->last;
+    return this->last;
+}
+
+
 /* Liefert die naechte Nachricht des Messageboards */
 Message * Messageboard::getNextMessage()
 {
@@ -547,7 +575,6 @@ Message * Messageboard::getNextMessage()
             this->highlighted = this->first;
         }
         else
-	    if(highlighted->getNext() != NULL)
 	    {
 		    highlighted = highlighted->getNext();
 
@@ -569,7 +596,6 @@ Message * Messageboard::getPreviousMessage()
             this->highlighted = this->first;
         }
         else
-	    if(highlighted->getPrevious() != NULL)
 	    {
 		    highlighted = highlighted->getPrevious();
 
@@ -613,13 +639,12 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	}
 	else
 	{
-		//Pruefen ob die Message waehren des Init erstell wird
 		neu = new Message(message, mid, uid, 0, this->first, uName);
 		this->first->setPrevious(neu);
 		this->first = neu;
 		highlighted = neu;		
 	}
-	
+    //Pruefen ob die Message waehren des Init erstell wirds
 	if(withSave)
 	{
 		this->saveBoard();

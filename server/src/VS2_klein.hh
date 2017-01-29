@@ -186,6 +186,118 @@ typedef MessageData::_var_type MessageData_var;
 
 typedef _CORBA_ConstrType_Variable_OUT_arg< MessageData,MessageData_var > MessageData_out;
 
+class array_of_MessageData_var;
+
+class array_of_MessageData : public _CORBA_Unbounded_Sequence< MessageData >  {
+public:
+  typedef array_of_MessageData_var _var_type;
+  inline array_of_MessageData() {}
+  inline array_of_MessageData(const array_of_MessageData& _s)
+    : _CORBA_Unbounded_Sequence< MessageData > (_s) {}
+
+  inline array_of_MessageData(_CORBA_ULong _max)
+    : _CORBA_Unbounded_Sequence< MessageData > (_max) {}
+  inline array_of_MessageData(_CORBA_ULong _max, _CORBA_ULong _len, MessageData* _val, _CORBA_Boolean _rel=0)
+    : _CORBA_Unbounded_Sequence< MessageData > (_max, _len, _val, _rel) {}
+
+
+
+  inline array_of_MessageData& operator = (const array_of_MessageData& _s) {
+    _CORBA_Unbounded_Sequence< MessageData > ::operator=(_s);
+    return *this;
+  }
+};
+
+class array_of_MessageData_out;
+
+class array_of_MessageData_var {
+public:
+  inline array_of_MessageData_var() : _pd_seq(0) {}
+  inline array_of_MessageData_var(array_of_MessageData* _s) : _pd_seq(_s) {}
+  inline array_of_MessageData_var(const array_of_MessageData_var& _s) {
+    if (_s._pd_seq)  _pd_seq = new array_of_MessageData(*_s._pd_seq);
+    else             _pd_seq = 0;
+  }
+  inline ~array_of_MessageData_var() { if (_pd_seq)  delete _pd_seq; }
+    
+  inline array_of_MessageData_var& operator = (array_of_MessageData* _s) {
+    if (_pd_seq)  delete _pd_seq;
+    _pd_seq = _s;
+    return *this;
+  }
+  inline array_of_MessageData_var& operator = (const array_of_MessageData_var& _s) {
+    if (&_s != this) {
+      if (_s._pd_seq) {
+        if (!_pd_seq)  _pd_seq = new array_of_MessageData;
+        *_pd_seq = *_s._pd_seq;
+      }
+      else if (_pd_seq) {
+        delete _pd_seq;
+        _pd_seq = 0;
+      }
+    }
+    return *this;
+  }
+  inline MessageData& operator [] (_CORBA_ULong _s) {
+    return (*_pd_seq)[_s];
+  }
+
+
+
+  inline array_of_MessageData* operator -> () { return _pd_seq; }
+  inline const array_of_MessageData* operator -> () const { return _pd_seq; }
+#if defined(__GNUG__)
+  inline operator array_of_MessageData& () const { return *_pd_seq; }
+#else
+  inline operator const array_of_MessageData& () const { return *_pd_seq; }
+  inline operator array_of_MessageData& () { return *_pd_seq; }
+#endif
+    
+  inline const array_of_MessageData& in() const { return *_pd_seq; }
+  inline array_of_MessageData&       inout()    { return *_pd_seq; }
+  inline array_of_MessageData*&      out() {
+    if (_pd_seq) { delete _pd_seq; _pd_seq = 0; }
+    return _pd_seq;
+  }
+  inline array_of_MessageData* _retn() { array_of_MessageData* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+    
+  friend class array_of_MessageData_out;
+  
+private:
+  array_of_MessageData* _pd_seq;
+};
+
+class array_of_MessageData_out {
+public:
+  inline array_of_MessageData_out(array_of_MessageData*& _s) : _data(_s) { _data = 0; }
+  inline array_of_MessageData_out(array_of_MessageData_var& _s)
+    : _data(_s._pd_seq) { _s = (array_of_MessageData*) 0; }
+  inline array_of_MessageData_out(const array_of_MessageData_out& _s) : _data(_s._data) {}
+  inline array_of_MessageData_out& operator = (const array_of_MessageData_out& _s) {
+    _data = _s._data;
+    return *this;
+  }
+  inline array_of_MessageData_out& operator = (array_of_MessageData* _s) {
+    _data = _s;
+    return *this;
+  }
+  inline operator array_of_MessageData*&()  { return _data; }
+  inline array_of_MessageData*& ptr()       { return _data; }
+  inline array_of_MessageData* operator->() { return _data; }
+
+  inline MessageData& operator [] (_CORBA_ULong _i) {
+    return (*_data)[_i];
+  }
+
+
+
+  array_of_MessageData*& _data;
+
+private:
+  array_of_MessageData_out();
+  array_of_MessageData_out& operator=(const array_of_MessageData_var&);
+};
+
 #ifndef __ClientMessageboardInterface__
 #define __ClientMessageboardInterface__
 class ClientMessageboardInterface;
@@ -254,6 +366,7 @@ class _objref_ClientMessageboardInterface :
 {
 public:
   // IDL operations
+  array_of_MessageData* getMessages();
   ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName);
   ::CORBA::Boolean deleteMessage(::CORBA::Long uid);
   ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName);
@@ -292,7 +405,7 @@ class _impl_ClientMessageboardInterface :
 {
 public:
   virtual ~_impl_ClientMessageboardInterface();
-
+  virtual array_of_MessageData* getMessages() = 0;
   virtual ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;
   virtual ::CORBA::Boolean deleteMessage(::CORBA::Long uid) = 0;
   virtual ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;

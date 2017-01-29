@@ -139,15 +139,80 @@ _objref_ClientMessageboardInterface::_ptrToObjRef(const char* id)
 
 
 //
+// Code for ClientMessageboardInterface::getMessages
+
+// Proxy call descriptor class. Mangled signature:
+//  _carray__of__MessageData
+class _0RL_cd_01397986aa812c46_00000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_01397986aa812c46_00000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+    : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
+  {
+    
+  }
+  
+  
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  
+  static const char* const _user_exns[];
+
+  array_of_MessageData_var result;
+};
+
+void _0RL_cd_01397986aa812c46_00000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const array_of_MessageData&) result >>= _n;
+
+}
+
+void _0RL_cd_01397986aa812c46_00000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new array_of_MessageData;
+  (array_of_MessageData&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_01397986aa812c46_00000000::_user_exns[] = {
+  0
+};
+
+// Local call call-back function.
+static void
+_0RL_lcfn_01397986aa812c46_10000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_01397986aa812c46_00000000* tcd = (_0RL_cd_01397986aa812c46_00000000*)cd;
+  _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
+  tcd->result = impl->getMessages();
+
+
+}
+
+array_of_MessageData* _objref_ClientMessageboardInterface::getMessages()
+{
+  _0RL_cd_01397986aa812c46_00000000 _call_desc(_0RL_lcfn_01397986aa812c46_10000000, "getMessages", 12);
+
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
+
+
+//
 // Code for ClientMessageboardInterface::setMessage
 
 // Proxy call descriptor class. Mangled signature:
 //  _cboolean_i_cstring_i_clong_i_cstring
-class _0RL_cd_62f21d2bb3489c02_00000000
+class _0RL_cd_01397986aa812c46_20000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_62f21d2bb3489c02_00000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_01397986aa812c46_20000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -170,7 +235,7 @@ public:
   ::CORBA::Boolean result;
 };
 
-void _0RL_cd_62f21d2bb3489c02_00000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_20000000::marshalArguments(cdrStream& _n)
 {
   _n.marshalString(arg_0,0);
   arg_1 >>= _n;
@@ -178,7 +243,7 @@ void _0RL_cd_62f21d2bb3489c02_00000000::marshalArguments(cdrStream& _n)
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_00000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_20000000::unmarshalArguments(cdrStream& _n)
 {
   arg_0_ = _n.unmarshalString(0);
   arg_0 = arg_0_.in();
@@ -188,27 +253,27 @@ void _0RL_cd_62f21d2bb3489c02_00000000::unmarshalArguments(cdrStream& _n)
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_00000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_20000000::marshalReturnedValues(cdrStream& _n)
 {
   _n.marshalBoolean(result);
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_00000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_20000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = _n.unmarshalBoolean();
 
 }
 
-const char* const _0RL_cd_62f21d2bb3489c02_00000000::_user_exns[] = {
+const char* const _0RL_cd_01397986aa812c46_20000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_62f21d2bb3489c02_10000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_01397986aa812c46_30000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_62f21d2bb3489c02_00000000* tcd = (_0RL_cd_62f21d2bb3489c02_00000000*)cd;
+  _0RL_cd_01397986aa812c46_20000000* tcd = (_0RL_cd_01397986aa812c46_20000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
   tcd->result = impl->setMessage(tcd->arg_0, tcd->arg_1, tcd->arg_2);
 
@@ -217,7 +282,7 @@ _0RL_lcfn_62f21d2bb3489c02_10000000(omniCallDescriptor* cd, omniServant* svnt)
 
 ::CORBA::Boolean _objref_ClientMessageboardInterface::setMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
-  _0RL_cd_62f21d2bb3489c02_00000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_10000000, "setMessage", 11);
+  _0RL_cd_01397986aa812c46_20000000 _call_desc(_0RL_lcfn_01397986aa812c46_30000000, "setMessage", 11);
   _call_desc.arg_0 = message;
   _call_desc.arg_1 = uid;
   _call_desc.arg_2 = uName;
@@ -234,11 +299,11 @@ _0RL_lcfn_62f21d2bb3489c02_10000000(omniCallDescriptor* cd, omniServant* svnt)
 
 // Proxy call descriptor class. Mangled signature:
 //  _cboolean_i_clong
-class _0RL_cd_62f21d2bb3489c02_20000000
+class _0RL_cd_01397986aa812c46_40000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_62f21d2bb3489c02_20000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_01397986aa812c46_40000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -257,39 +322,39 @@ public:
   ::CORBA::Boolean result;
 };
 
-void _0RL_cd_62f21d2bb3489c02_20000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_40000000::marshalArguments(cdrStream& _n)
 {
   arg_0 >>= _n;
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_20000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_40000000::unmarshalArguments(cdrStream& _n)
 {
   (::CORBA::Long&)arg_0 <<= _n;
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_20000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_40000000::marshalReturnedValues(cdrStream& _n)
 {
   _n.marshalBoolean(result);
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_20000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_40000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = _n.unmarshalBoolean();
 
 }
 
-const char* const _0RL_cd_62f21d2bb3489c02_20000000::_user_exns[] = {
+const char* const _0RL_cd_01397986aa812c46_40000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_62f21d2bb3489c02_30000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_01397986aa812c46_50000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_62f21d2bb3489c02_20000000* tcd = (_0RL_cd_62f21d2bb3489c02_20000000*)cd;
+  _0RL_cd_01397986aa812c46_40000000* tcd = (_0RL_cd_01397986aa812c46_40000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
   tcd->result = impl->deleteMessage(tcd->arg_0);
 
@@ -298,7 +363,7 @@ _0RL_lcfn_62f21d2bb3489c02_30000000(omniCallDescriptor* cd, omniServant* svnt)
 
 ::CORBA::Boolean _objref_ClientMessageboardInterface::deleteMessage(::CORBA::Long uid)
 {
-  _0RL_cd_62f21d2bb3489c02_20000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_30000000, "deleteMessage", 14);
+  _0RL_cd_01397986aa812c46_40000000 _call_desc(_0RL_lcfn_01397986aa812c46_50000000, "deleteMessage", 14);
   _call_desc.arg_0 = uid;
 
   _invoke(_call_desc);
@@ -313,9 +378,9 @@ _0RL_lcfn_62f21d2bb3489c02_30000000(omniCallDescriptor* cd, omniServant* svnt)
 
 // Local call call-back function.
 static void
-_0RL_lcfn_62f21d2bb3489c02_40000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_01397986aa812c46_60000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_62f21d2bb3489c02_00000000* tcd = (_0RL_cd_62f21d2bb3489c02_00000000*)cd;
+  _0RL_cd_01397986aa812c46_20000000* tcd = (_0RL_cd_01397986aa812c46_20000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
   tcd->result = impl->createNewMessage(tcd->arg_0, tcd->arg_1, tcd->arg_2);
 
@@ -324,7 +389,7 @@ _0RL_lcfn_62f21d2bb3489c02_40000000(omniCallDescriptor* cd, omniServant* svnt)
 
 ::CORBA::Boolean _objref_ClientMessageboardInterface::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
-  _0RL_cd_62f21d2bb3489c02_00000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_40000000, "createNewMessage", 17);
+  _0RL_cd_01397986aa812c46_20000000 _call_desc(_0RL_lcfn_01397986aa812c46_60000000, "createNewMessage", 17);
   _call_desc.arg_0 = message;
   _call_desc.arg_1 = uid;
   _call_desc.arg_2 = uName;
@@ -341,11 +406,11 @@ _0RL_lcfn_62f21d2bb3489c02_40000000(omniCallDescriptor* cd, omniServant* svnt)
 
 // Proxy call descriptor class. Mangled signature:
 //  _cMessageData
-class _0RL_cd_62f21d2bb3489c02_50000000
+class _0RL_cd_01397986aa812c46_70000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_62f21d2bb3489c02_50000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_01397986aa812c46_70000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -361,28 +426,28 @@ public:
   MessageData_var result;
 };
 
-void _0RL_cd_62f21d2bb3489c02_50000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_70000000::marshalReturnedValues(cdrStream& _n)
 {
   (const MessageData&) result >>= _n;
 
 }
 
-void _0RL_cd_62f21d2bb3489c02_50000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_01397986aa812c46_70000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = new MessageData;
   (MessageData&)result <<= _n;
 
 }
 
-const char* const _0RL_cd_62f21d2bb3489c02_50000000::_user_exns[] = {
+const char* const _0RL_cd_01397986aa812c46_70000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_62f21d2bb3489c02_60000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_01397986aa812c46_80000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_62f21d2bb3489c02_50000000* tcd = (_0RL_cd_62f21d2bb3489c02_50000000*)cd;
+  _0RL_cd_01397986aa812c46_70000000* tcd = (_0RL_cd_01397986aa812c46_70000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
   tcd->result = impl->getNextMessage();
 
@@ -391,7 +456,7 @@ _0RL_lcfn_62f21d2bb3489c02_60000000(omniCallDescriptor* cd, omniServant* svnt)
 
 MessageData* _objref_ClientMessageboardInterface::getNextMessage()
 {
-  _0RL_cd_62f21d2bb3489c02_50000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_60000000, "getNextMessage", 15);
+  _0RL_cd_01397986aa812c46_70000000 _call_desc(_0RL_lcfn_01397986aa812c46_80000000, "getNextMessage", 15);
 
 
   _invoke(_call_desc);
@@ -406,9 +471,9 @@ MessageData* _objref_ClientMessageboardInterface::getNextMessage()
 
 // Local call call-back function.
 static void
-_0RL_lcfn_62f21d2bb3489c02_70000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_01397986aa812c46_90000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_62f21d2bb3489c02_50000000* tcd = (_0RL_cd_62f21d2bb3489c02_50000000*)cd;
+  _0RL_cd_01397986aa812c46_70000000* tcd = (_0RL_cd_01397986aa812c46_70000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
   tcd->result = impl->getPreviousMessage();
 
@@ -417,7 +482,7 @@ _0RL_lcfn_62f21d2bb3489c02_70000000(omniCallDescriptor* cd, omniServant* svnt)
 
 MessageData* _objref_ClientMessageboardInterface::getPreviousMessage()
 {
-  _0RL_cd_62f21d2bb3489c02_50000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_70000000, "getPreviousMessage", 19);
+  _0RL_cd_01397986aa812c46_70000000 _call_desc(_0RL_lcfn_01397986aa812c46_90000000, "getPreviousMessage", 19);
 
 
   _invoke(_call_desc);
@@ -455,9 +520,17 @@ _impl_ClientMessageboardInterface::_dispatch(omniCallHandle& _handle)
 {
   const char* op = _handle.operation_name();
 
+  if (omni::strMatch(op, "getMessages")) {
+
+    _0RL_cd_01397986aa812c46_00000000 _call_desc(_0RL_lcfn_01397986aa812c46_10000000, "getMessages", 12, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
   if (omni::strMatch(op, "setMessage")) {
 
-    _0RL_cd_62f21d2bb3489c02_00000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_10000000, "setMessage", 11, 1);
+    _0RL_cd_01397986aa812c46_20000000 _call_desc(_0RL_lcfn_01397986aa812c46_30000000, "setMessage", 11, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -465,7 +538,7 @@ _impl_ClientMessageboardInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "deleteMessage")) {
 
-    _0RL_cd_62f21d2bb3489c02_20000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_30000000, "deleteMessage", 14, 1);
+    _0RL_cd_01397986aa812c46_40000000 _call_desc(_0RL_lcfn_01397986aa812c46_50000000, "deleteMessage", 14, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -473,7 +546,7 @@ _impl_ClientMessageboardInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "createNewMessage")) {
 
-    _0RL_cd_62f21d2bb3489c02_00000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_40000000, "createNewMessage", 17, 1);
+    _0RL_cd_01397986aa812c46_20000000 _call_desc(_0RL_lcfn_01397986aa812c46_60000000, "createNewMessage", 17, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -481,7 +554,7 @@ _impl_ClientMessageboardInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "getNextMessage")) {
 
-    _0RL_cd_62f21d2bb3489c02_50000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_60000000, "getNextMessage", 15, 1);
+    _0RL_cd_01397986aa812c46_70000000 _call_desc(_0RL_lcfn_01397986aa812c46_80000000, "getNextMessage", 15, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -489,7 +562,7 @@ _impl_ClientMessageboardInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "getPreviousMessage")) {
 
-    _0RL_cd_62f21d2bb3489c02_50000000 _call_desc(_0RL_lcfn_62f21d2bb3489c02_70000000, "getPreviousMessage", 19, 1);
+    _0RL_cd_01397986aa812c46_70000000 _call_desc(_0RL_lcfn_01397986aa812c46_90000000, "getPreviousMessage", 19, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

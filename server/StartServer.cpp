@@ -5,8 +5,8 @@
 #include <assert.h>
 #include <signal.h>
 #include <unistd.h>
-#include "./ClientServer.h"
-#include "./VS2_klein.hh"
+#include "./src/ClientServer.h"
+#include "./src/VS2_klein.hh"
 
 using namespace std;
 

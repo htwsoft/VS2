@@ -35,8 +35,8 @@ server01: Message.o Messageboard.o FileWorker.o XMLWorker.o ClientServer.o Start
 
 #Files fuer MessageBoard
 
-ClientServer.o: ClientServer.cpp ClientServer.h VS2_klein.hh
-	$(CXX) $(CFLAGS) -c ClientServer.cpp
+ClientServer.o: $(SERVERSOURCEPATH)ClientServer.cpp $(SERVERSOURCEPATH)ClientServer.h $(SERVERSOURCEPATH)VS2_klein.hh
+	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)ClientServer.cpp
 
 FileWorker.o: $(XMLSOURCEPATH)FileWorker.cpp $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)FileWorker.cpp 

@@ -1,7 +1,8 @@
 #include "./ClientServer.h"
 #include "./VS2_kleinSK.cc"
-#include "./src/Message.h"
+#include "./Message.h"
 #include <cstring>
+#include <vector>
 
 /* Kosntruktor der ClientServer-Klasse */
 ClientServer::ClientServer()
@@ -35,6 +36,45 @@ CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid)
     return deleted;
 }
 
+/* Liefert alle Messages in einem Array */
+array_of_MessageData* ClientServer::getMessages()
+{
+    CORBA::ULong zaehler = 0;
+    Message * worker = NULL;
+    MessageData * workerData = NULL;
+    std::vector<Message *> vMessage;    
+    std::vector<Message *>::iterator iterMessage;
+    array_of_MessageData * arrayMessageData = NULL;
+    cout << "Procedure getMessages() called" << endl;
+    //Laden aller Nachrichten in vectorArray
+    //Highlighted auf erste Nachricht des Boards setzen    
+    worker = this->messageBoard->getFirstMessage();
+    while(worker != NULL)
+    {
+        vMessage.push_back(worker);
+        worker = this->messageBoard->getNextMessage();
+    }
+    //Vector in arrayMessageData speichern
+    if(vMessage.size() > 0)
+    {
+        //neues Array erstellen
+        arrayMessageData = new array_of_MessageData();
+        arrayMessageData->length(vMessage.size());  
+        for(iterMessage=vMessage.begin(); iterMessage<vMessage.end(); iterMessage++)
+		{
+            worker = * iterMessage;
+            workerData = new MessageData();
+            workerData->uid = worker->getUid();
+            workerData->id = worker->getId().c_str();
+            workerData->uName = worker->getUName().c_str();
+            workerData->text = worker->getMessage().c_str();
+            (*arrayMessageData)[zaehler] = (*workerData);  
+            zaehler++;             
+        }
+    }
+    return arrayMessageData;
+}
+
 /* aktuelle Nachricht aendern */
 CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
@@ -48,6 +88,8 @@ CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, 
     msg->setUName(strUName);
     return true;
 }
+
+
 
 /* Vorherige Nachricht an Client senden */
 MessageData * ClientServer::getPreviousMessage()
