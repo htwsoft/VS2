@@ -2,6 +2,7 @@
  *
  * @author imed
  */
+
 import java.util.ArrayList;
 import org.omg.CosNaming.*;
 import org.omg.CosNaming.NamingContextPackage.*;
@@ -9,6 +10,7 @@ import org.omg.CosNaming.NamingContextPackage.*;
 import java.util.Scanner;
 
 import org.omg.CORBA.*;
+import org.omg.CORBA.ORBPackage.InvalidName;
 /*
 class LesenThread implements Runnable
 {
@@ -46,7 +48,6 @@ class LesenThread implements Runnable
 	   }
 	
 }*/
-
 
 public class StartClient {
 
@@ -97,7 +98,7 @@ public class StartClient {
 
 	public boolean deleteMessage(int uid, MessageData msgData) {
 
-		return this.mbImpl.deleteMessage(uid, msgData);
+		return this.mbImpl.deleteMessage(uid, msgData);68
 	}
 
 	public ArrayList<MessageData> getMessage() {
