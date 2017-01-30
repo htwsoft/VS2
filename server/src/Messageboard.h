@@ -66,6 +66,7 @@ class Messageboard
         Message * getLastMessage();
         void setLastMessageToHighlighted();
         void setFirstMessageToHighlighted();
+        void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
 		bool createNewMessage(string, int, string);
 		bool confirmAdminRights(int);

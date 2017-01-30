@@ -16,6 +16,27 @@ ClientServer::~ClientServer()
     delete this->messageBoard;
 }
 
+/* sucht eine Message anhand der ID und liefert diese zurueck */
+Message * ClientServer::searchMessage(string messageID)
+{
+    bool notFound = true;
+    Message * worker = NULL;
+    Message * searchedMsg = NULL;
+    worker = this->messageBoard->getFirstMessage();
+    while(worker != NULL && notFound)
+    {
+        //Pruefen ob zu loeschende Nachricht gefunden wurde
+        if(messageID.compare(worker->getId()) == 0)
+        {
+            //Message wurde gefunden
+            searchedMsg = worker;
+            notFound = false;
+        }
+        worker = this->messageBoard->getNextMessage();
+    }  
+    return searchedMsg;
+}
+
 /* Neue Nachricht erstellen */
 CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
@@ -27,12 +48,20 @@ CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long
     return created;
 }
 
-/* aktuelle Nachricht loeschen */
-CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid)
+/* uebergeben Nachricht loeschen Nachricht loeschen */
+CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid, const MessageData& msgData)
 {
     bool deleted = false;
+    string messageID = "";
+    Message * message = NULL;
     cout << "Procedure deleteMessage() called" << endl; 
-    deleted = this->messageBoard->deleteMessage(uid);
+    //Suchen der Message um Highlighted zu setzen  
+    messageID = msgData.id;
+    message = this->searchMessage(messageID);
+    if(message != NULL)
+    {
+        deleted = this->messageBoard->deleteMessage(uid); 
+    } 
     return deleted;
 }
 
@@ -95,7 +124,7 @@ CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, 
 MessageData * ClientServer::getPreviousMessage()
 {
     Message * msg = NULL;
-    MessageData * mData = 0; 
+    MessageData * mData; 
     cout << "Procedure getPreviousMessage() called" << endl; 
     msg = this->messageBoard->getPreviousMessage();
     if(msg != NULL)    
@@ -104,7 +133,7 @@ MessageData * ClientServer::getPreviousMessage()
         mData->uid = msg->getUid();
         mData->id = msg->getId().c_str();
         mData->uName = msg->getUName().c_str();
-        mData->uName = msg->getUName().c_str(); 
+        mData->text = msg->getMessage().c_str(); 
     }
     return mData;
 }
@@ -113,7 +142,7 @@ MessageData * ClientServer::getPreviousMessage()
 MessageData * ClientServer::getNextMessage()
 {    
     Message * msg = NULL;
-    MessageData * mData = 0;  
+    MessageData * mData;  
     cout << "Procedure getNextMessage() called" << endl;
     msg = this->messageBoard->getNextMessage();
     if(msg != NULL)    

@@ -8,12 +8,13 @@
 		string text;
 	};
 	
-	typedef sequence<MessageData> array_of_MessageData;
+	typedef sequence<MessageData> array_of_MessageData;    
+
 	interface ClientMessageboardInterface
     {
         array_of_MessageData getMessages();
 		boolean setMessage(in string message, in long uid, in string uName);
-		boolean deleteMessage(in long uid);
+		boolean deleteMessage(in long uid, in MessageData msgData);
 		boolean createNewMessage(in string message, in long uid, in string uName);
 		MessageData getNextMessage();
 		MessageData getPreviousMessage();

@@ -52,6 +52,15 @@ Messageboard::Messageboard(int id, string name)
 	
 }
 
+/* setzen der Highlighted Message */
+void Messageboard::setHighlightedMessage(Message * message)
+{
+    if(message != NULL)
+    {
+        this->highlighted = message;
+    }
+}
+
 //Speichern eines neuen Childs
 void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
 {
@@ -665,7 +674,7 @@ bool Messageboard::confirmMessageRights(int uid)
 {
 	bool assert = false ;//XML-Abfrage, prüfe uid. sprich ob eigentümer der nachricht
 	assert = highlighted->getUid() == uid;
-	return assert;
+	return true;
 }
 
 bool Messageboard::deleteMessage(int uid)
