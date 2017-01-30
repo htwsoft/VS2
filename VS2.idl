@@ -8,6 +8,24 @@ module VS2
 		long port;
 	};
 	
+	struct UserData
+	{
+		string userName;
+		string password;
+	};
+	
+	struct LoginInformation
+	{
+		boolean adminRights;
+		ConnectInformation server;
+	};
+	
+	interface LoginServerInterface
+	{
+		LoginInformation login(in UserData);
+		boolean reg(in UserData, in string);
+	};
+
 	struct Message
 	{
 		long uid;
