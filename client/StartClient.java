@@ -59,7 +59,7 @@ public class StartClient {
 	boolean shutdown;
 
 	public StartClient() {
-		String[] url = new String[] { "-ORBInitialPort", "1050", "-ORBInitialHost", "127.0.0.1" };
+		String[] url = new String[] { "-ORBInitialPort", "6000", "-ORBInitialHost", "127.0.0.1" };
 
 		String method = "DataServiceName1"; // registrierter Name der
 											// implementierten Methode
@@ -96,9 +96,9 @@ public class StartClient {
 		return this.mbImpl.getPreviousMessage();
 	}
 
-	public boolean deleteMessage(int uid, MessageData msgData) {
+	public boolean deleteMessage(int uid, String messageID) {
 
-		return this.mbImpl.deleteMessage(uid, msgData);68
+		return this.mbImpl.deleteMessage(uid, messageID);
 	}
 
 	public ArrayList<MessageData> getMessage() {
@@ -137,6 +137,7 @@ public class StartClient {
 		
 		boolean shutdown = false;
 		String messagea;
+        String messageID;
 		String bName;
         MessageData msgData;
 		int loeschuid;
@@ -169,8 +170,9 @@ public class StartClient {
 				System.out.println("Loeschen (geht noch nicht muss noch angepasst werden ):");
 				System.out.println("UID:");
 				loeschuid = scan.nextInt();
-                msgData = messageListtest.get(0);
-				test.deleteMessage(loeschuid, msgData);
+                messageID = messageListtest.get(0).id;
+                System.out.println("Message-ID : "+ messageID +"\n ");
+				test.deleteMessage(loeschuid, messageID);
 				break;
 
 			case 3:

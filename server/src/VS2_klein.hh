@@ -368,7 +368,7 @@ public:
   // IDL operations
   array_of_MessageData* getMessages();
   ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName);
-  ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const ::MessageData& msgData);
+  ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const char* messageID);
   ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName);
   MessageData* getNextMessage();
   MessageData* getPreviousMessage();
@@ -408,7 +408,7 @@ public:
 
   virtual array_of_MessageData* getMessages() = 0;
   virtual ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;
-  virtual ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const ::MessageData& msgData) = 0;
+  virtual ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const char* messageID) = 0;
   virtual ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;
   virtual MessageData* getNextMessage() = 0;
   virtual MessageData* getPreviousMessage() = 0;

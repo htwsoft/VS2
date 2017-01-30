@@ -32,7 +32,10 @@ Message * ClientServer::searchMessage(string messageID)
             searchedMsg = worker;
             notFound = false;
         }
-        worker = this->messageBoard->getNextMessage();
+        else
+        {
+            worker = this->messageBoard->getNextMessage();
+        }
     }  
     return searchedMsg;
 }
@@ -49,15 +52,14 @@ CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long
 }
 
 /* uebergeben Nachricht loeschen Nachricht loeschen */
-CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid, const MessageData& msgData)
+CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid, const char* messageID)
 {
     bool deleted = false;
-    string messageID = "";
     Message * message = NULL;
+    string strMessageID(messageID); //char * in String convertieren
     cout << "Procedure deleteMessage() called" << endl; 
     //Suchen der Message um Highlighted zu setzen  
-    messageID = msgData.id;
-    message = this->searchMessage(messageID);
+    message = this->searchMessage(strMessageID);
     if(message != NULL)
     {
         deleted = this->messageBoard->deleteMessage(uid); 
@@ -124,7 +126,7 @@ CORBA::Boolean ClientServer::setMessage(const char* message, ::CORBA::Long uid, 
 MessageData * ClientServer::getPreviousMessage()
 {
     Message * msg = NULL;
-    MessageData * mData; 
+    MessageData * mData = NULL; 
     cout << "Procedure getPreviousMessage() called" << endl; 
     msg = this->messageBoard->getPreviousMessage();
     if(msg != NULL)    
@@ -142,7 +144,7 @@ MessageData * ClientServer::getPreviousMessage()
 MessageData * ClientServer::getNextMessage()
 {    
     Message * msg = NULL;
-    MessageData * mData;  
+    MessageData * mData = NULL;  
     cout << "Procedure getNextMessage() called" << endl;
     msg = this->messageBoard->getNextMessage();
     if(msg != NULL)    

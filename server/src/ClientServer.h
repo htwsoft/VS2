@@ -14,7 +14,7 @@ class ClientServer: public POA_ClientMessageboardInterface, public PortableServe
         ~ClientServer();
         virtual array_of_MessageData* getMessages();
         virtual CORBA::Boolean setMessage(const char* message, CORBA::Long uid, const char* uName);
-        virtual CORBA::Boolean deleteMessage(CORBA::Long uid, const MessageData& msgData);
+        virtual CORBA::Boolean deleteMessage(CORBA::Long uid, const char * messageID);
         virtual CORBA::Boolean createNewMessage(const char* message, CORBA::Long uid, const char* uName);
         virtual MessageData * getNextMessage();
         virtual MessageData * getPreviousMessage();

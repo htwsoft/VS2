@@ -14,7 +14,7 @@
     {
         array_of_MessageData getMessages();
 		boolean setMessage(in string message, in long uid, in string uName);
-		boolean deleteMessage(in long uid, in MessageData msgData);
+		boolean deleteMessage(in long uid, in string messageID);
 		boolean createNewMessage(in string message, in long uid, in string uName);
 		MessageData getNextMessage();
 		MessageData getPreviousMessage();

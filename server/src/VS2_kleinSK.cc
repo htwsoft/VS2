@@ -298,7 +298,7 @@ _0RL_lcfn_01397986aa812c46_30000000(omniCallDescriptor* cd, omniServant* svnt)
 // Code for ClientMessageboardInterface::deleteMessage
 
 // Proxy call descriptor class. Mangled signature:
-//  _cboolean_i_clong_i_cMessageData
+//  _cboolean_i_clong_i_cstring
 class _0RL_cd_01397986aa812c46_40000000
   : public omniCallDescriptor
 {
@@ -319,24 +319,23 @@ public:
   static const char* const _user_exns[];
 
   ::CORBA::Long arg_0;
-  MessageData_var arg_1_;
-  const MessageData* arg_1;
+  ::CORBA::String_var arg_1_;
+  const char* arg_1;
   ::CORBA::Boolean result;
 };
 
 void _0RL_cd_01397986aa812c46_40000000::marshalArguments(cdrStream& _n)
 {
   arg_0 >>= _n;
-  (const MessageData&) *arg_1 >>= _n;
+  _n.marshalString(arg_1,0);
 
 }
 
 void _0RL_cd_01397986aa812c46_40000000::unmarshalArguments(cdrStream& _n)
 {
   (::CORBA::Long&)arg_0 <<= _n;
-  arg_1_ = new MessageData;
-  (MessageData&)arg_1_ <<= _n;
-  arg_1 = &arg_1_.in();
+  arg_1_ = _n.unmarshalString(0);
+  arg_1 = arg_1_.in();
 
 }
 
@@ -362,16 +361,16 @@ _0RL_lcfn_01397986aa812c46_50000000(omniCallDescriptor* cd, omniServant* svnt)
 {
   _0RL_cd_01397986aa812c46_40000000* tcd = (_0RL_cd_01397986aa812c46_40000000*)cd;
   _impl_ClientMessageboardInterface* impl = (_impl_ClientMessageboardInterface*) svnt->_ptrToInterface(ClientMessageboardInterface::_PD_repoId);
-  tcd->result = impl->deleteMessage(tcd->arg_0, *tcd->arg_1);
+  tcd->result = impl->deleteMessage(tcd->arg_0, tcd->arg_1);
 
 
 }
 
-::CORBA::Boolean _objref_ClientMessageboardInterface::deleteMessage(::CORBA::Long uid, const ::MessageData& msgData)
+::CORBA::Boolean _objref_ClientMessageboardInterface::deleteMessage(::CORBA::Long uid, const char* messageID)
 {
   _0RL_cd_01397986aa812c46_40000000 _call_desc(_0RL_lcfn_01397986aa812c46_50000000, "deleteMessage", 14);
   _call_desc.arg_0 = uid;
-  _call_desc.arg_1 = &(::MessageData&) msgData;
+  _call_desc.arg_1 = messageID;
 
   _invoke(_call_desc);
   return _call_desc.result;
