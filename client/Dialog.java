@@ -93,7 +93,7 @@ public class Dialog {
 				int port=test.getFatherPort();
 				test.disconnectToServer();
 				System.out.println(ip+port);
-				System.out.println("Moechten sie jetzt verbindne");
+				System.out.println("Moechten sie jetzt verbindne (y eingbene)");
 				scan = new Scanner(System.in);
 				String eingabe=scan.nextLine();
 				
