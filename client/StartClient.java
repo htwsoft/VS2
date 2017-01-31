@@ -57,8 +57,12 @@ public class StartClient {
 	public MessageData msg;
 	private ClientMessageboardInterface mbImpl;
 	boolean shutdown;
-
+	ArrayList<MessageData> messageList;
+	
 	public StartClient() {
+		this.messageList = new ArrayList<MessageData>();
+		
+
 		String[] url = new String[] { "-ORBInitialPort", "6000", "-ORBInitialHost", "127.0.0.1" };
 
 		String method = "DataServiceName1"; // registrierter Name der
@@ -97,13 +101,33 @@ public class StartClient {
 	}
 
 	public boolean deleteMessage(int uid, String messageID) {
+		int arrayPosAlt=0;
+		ArrayList<MessageData> messageListneu = new ArrayList<MessageData>();
+		MessageData[] tempArray = mbImpl.getMessages();
+		
+		if(!this.mbImpl.deleteMessage(uid, messageID)){
+			for(int a=0;a<messageList.size();a++){
+				if(messageList.get(a).id.equals(messageID)){
+					if(messageList.get(a).uid==uid){
+						
+						for (int y = 0; y < tempArray.length; y++) {
+							
+							if((tempArray[y].uid==messageList.get(a).uid)||(tempArray[y].text.equals(messageList.get(a).text))||(tempArray[y].uName.equals(messageList.get(a).uName))){
+								return this.mbImpl.deleteMessage(tempArray[y].uid, tempArray[y].id);
+							}
+						}
+						
+					}
+				}
+			}
+			
+		}
 
 		return this.mbImpl.deleteMessage(uid, messageID);
 	}
 
 	public ArrayList<MessageData> getMessage() {
-
-		ArrayList<MessageData> messageList = new ArrayList<MessageData>();
+		messageList.clear();
 		MessageData[] tempArray = mbImpl.getMessages();
 
 		for (int y = 0; y < tempArray.length; y++) {
@@ -148,10 +172,12 @@ public class StartClient {
 
 		test.writeUser(username);
 		int i;
-
-		while (true) {
-			System.out.println("\n Was möchten Sie machen?" + 
-						"\nNachricht schreiben :1" 
+		boolean beenden=false;
+		
+		while (!beenden) {
+			System.out.println("\n Was möchten Sie machen?"
+					+ "\nBeenden:0 " 
+					+ "\nNachricht schreiben :1" 
 						+ "\nNachricht löschen 2:"
 					+ "\nNachricht ersetzen: 3" 
 						+ "\nNachricht Ausgabe: 4 " + "\n -----> ");
@@ -170,9 +196,14 @@ public class StartClient {
 				System.out.println("Loeschen (geht noch nicht muss noch angepasst werden ):");
 				System.out.println("UID:");
 				loeschuid = scan.nextInt();
-                messageID = messageListtest.get(0).id;
-                System.out.println("Message-ID : "+ messageID +"\n ");
-				test.deleteMessage(loeschuid, messageID);
+				System.out.println("ID:");
+				scan = new Scanner(System.in);
+               			messageID = scan.nextLine();
+                
+				if(!test.deleteMessage(loeschuid, messageID)){
+					System.out.println("UID: "+loeschuid+" und/oder "
+							+ "ID: "+messageID+ " sind falsch ");
+				}
 				break;
 
 			case 3:
@@ -186,7 +217,13 @@ public class StartClient {
 				System.out.println("UID : \n ");
 				scan = new Scanner(System.in);
 				loeschuid = scan.nextInt();
-				test.setMessage(messagea, loeschuid, bName);
+				
+				if(!test.setMessage(messagea, loeschuid, bName)){
+					System.out.println("UID: "+loeschuid+" und/oder "
+							+ "Massage: "+messagea
+							+ " Bname: bName"
+							+ " sind falsch ");
+				}
 				break;
 			case 4:
 				
@@ -194,11 +231,19 @@ public class StartClient {
 				messageListtest=test.getMessage();
 				for(int y=0;y<messageListtest.size();y++){
 					System.out.println("TEXT:"+messageListtest.get(y).text+
-							" BNAME:"+messageListtest.get(y).uName+
-							" UID:"+messageListtest.get(y).uid);
+							" -BNAME:"+messageListtest.get(y).uName+
+							" -UID:"+messageListtest.get(y).uid+
+							" -ID:"+messageListtest.get(y).id);
 				}
 				break;
-		
+				
+			case 0:
+				System.out.println("Beendet");
+				beenden=true;
+				break;
+			default:
+				System.out.println("bitte gib eine richtige Eingabe!\n");
+				break;
 
 			}
 
