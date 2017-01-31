@@ -1,3 +1,8 @@
+/*
+ * ClientServer.cpp
+ *      Author: Marco Palumbo
+ */
+
 #include "./ClientServer.h"
 #include "./VS2_kleinSK.cc"
 #include "./Message.h"
@@ -36,7 +41,7 @@ ConnectInformationData * ClientServer::connectToFather()
 {
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
-    connectInformation = this->messageBoard->connectToFather();
+    connectInformation = this->messageBoard->getConnectInformationFather();
     ciData = this->getConnectInformationData(connectInformation);
     return ciData;
 }
@@ -47,7 +52,7 @@ ConnectInformationData * ClientServer::connectToChild(const char* childName)
     string strChildName(childName);
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
-    connectInformation = this->messageBoard->connectToChild(strChildName);
+    connectInformation = this->messageBoard->getConnectInformationChild(strChildName);
     ciData = this->getConnectInformationData(connectInformation);
     return ciData;
 }

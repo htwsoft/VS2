@@ -1,3 +1,9 @@
+/*
+ * ClientServer.h
+ *
+ *      Author: Marco Palumbo
+ */
+
 #ifndef CLIENTSERVER_H_
 #define CLIENTSERVER_H_
 

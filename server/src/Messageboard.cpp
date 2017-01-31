@@ -61,15 +61,6 @@ void Messageboard::setHighlightedMessage(Message * message)
     }
 }
 
-//Speichern eines neuen Childs
-void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
-{
-	BoardInformation * child = 0;
-	child = new BoardInformation(name, id, connectInformation);
-	childs.push_back(child);
-	saveBoard();
-}
-
 /* das komplette board(also alle Informationen und Messages) in einer XML datei speichern */
 void Messageboard::saveBoard()
 {
@@ -636,17 +627,9 @@ Message * Messageboard::getPreviousMessage()
 }
 
 bool Messageboard::setMessage(string message, int uid, string uName)
-{
-	if(confirmAdminRights(uid))
-	{
-		highlighted->setUid(uid);highlighted->setMessage(message);
-		return true;
-	}
-	else if(confirmMessageRights(uid))
-	{
-		highlighted->setUid(uid);highlighted->setMessage(message);
-		return true;
-	}
+{	
+    highlighted->setUid(uid);
+    highlighted->setMessage(message);
 	return false;
 }
 
@@ -684,36 +667,11 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	return true;
 }
 
-//TO-DO XML-Abfrage
-bool Messageboard::confirmAdminRights(int uid)
-{
-	bool assert = true; //XML-Abfrage, pr¸fe uid. sprich abfrage auf admin. Ueberpruefung mit der Datenbank vom Login-Server
-	return assert;
-}
-
-//TO-DO
-bool Messageboard::confirmMessageRights(int uid)
-{
-	bool assert = false ;//XML-Abfrage, pr¸fe uid. sprich ob eigent¸mer der nachricht
-	assert = highlighted->getUid() == uid;
-	return true;
-}
-
 bool Messageboard::deleteMessage(int uid)
 {
-	if(confirmAdminRights(uid))
-	{
-		erase();
-		saveBoard();
-		return true;
-	}
-	else if(confirmMessageRights(uid))
-	{
-		erase();
-		saveBoard();
-		return true;
-	}
-	return false;
+	erase();
+	saveBoard();
+	return true;
 }
 
 void Messageboard::erase()
@@ -762,89 +720,63 @@ void Messageboard::erase()
 }
 
 //<--------------------------------------------- Ab hier auslagern in MessageBoard-Server-Klasse?
-ConnectInformation * Messageboard::connectToFather()
+ConnectInformation * Messageboard::getConnectInformationFather()
 {
 	return father->getConnectInformation();
 }
 
-ConnectInformation * Messageboard::connectToChild(string childName)
+ConnectInformation * Messageboard::getConnectInformationChild(string childName)
 {
-	for(int i = 0; i < this->childs.size(); i++)
+    ConnectInformation * connectInformation = NULL;
+	for(unsigned int i = 0; i < this->childs.size(); i++)
 	{
 		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
-			return childs[i]->getConnectInformation();
+			connectInformation = childs[i]->getConnectInformation();
 		}
 	}
+    return connectInformation;
 }
 
-//TO-DO Verbindungen zu anderen Servern, weiﬂ noch nicht genau wie das funktioniert in CORBA :D
-bool Messageboard::iterateChilds(string message, int uid, string uName, bool schalter)
+unsigned int Messageboard::getConnectInformationChildIndex(string childName)
 {
-	bool assert;
-	for(int i = 0; i < NUM_CHILDREN; i++)
+    unsigned int index = 0;
+	for(unsigned int i = 0; i < this->childs.size(); i++)
 	{
-		//Verbindung aufbauen zu childs[i]nacheinander(ConnectInformation)
-		assert = publishChild(message, uid, uName, schalter);
-		//Verbindung abbauen zum aktuellen childs[i]
-		if(!assert)
-			return false;
-	}
-	return assert;
-}
-
-//TO-DO
-bool Messageboard::publishOnFather(string message, int uid, string uName)
-{
-	//Verbindung aufbauen zu father
-	return publishFather(message, uid, uName);
-}
-
-//TO-DO
-bool Messageboard::publishChild(string message, int uid, string uName, bool schalter)
-{
-	if(confirmAdminRights(uid) && NUM_CHILDREN > 1)//Ueberpruefung mit der Datenbank vom Login-Server und ob Knoten ueberhaupt kinder hat
-	{
-		createNewMessage(message, uid, uName);
-		if(schalter)
+		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
-			iterateChilds(message, uid, uName, schalter);
+			index = i;
 		}
-		return true;
 	}
-	else
-		return false;
+    return index;
 }
 
-bool Messageboard::publishFather(string message, int uid, string uName)
+void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
 {
-	if(confirmAdminRights(uid))
-	{
-		createNewMessage(message, uid, uName);
-		return true;
-	}
-	else
-		return false;
-}
-//TO-DO
-void Messageboard::notifyFather()
-{
-	//Verbindung aufbauen zu ConnectInformation father und dort dann sagen er soll dich als kind speichern
-	//saveChildrenInformation(id,name,connectInformation);//aufruf dieser Funktion auf vaterseite!
-	//Verbindung abbauen
+    BoardInformation * boardInformation = NULL;
+    ConnectInformation * worker = NULL;
+    unsigned int merker = 0;
+    //Pr¸fen ob Childsvorhaden sind
+    if(childs.size() > 0)
+    {
+        //Pr¸fen ob child schon vorhanden ist
+        worker = this->getConnectInformationChild(name);
+        merker = this->getConnectInformationChildIndex(name);
+    }
+    boardInformation = new BoardInformation(name, id, connectInformation);
+    //Pr¸efen ob Child existiert
+    if(worker != NULL)
+    {
+        delete childs[merker];
+        childs[merker] = boardInformation;
+    }
+    else
+    {
+        childs.push_back(boardInformation);
+    }
+    this->saveBoard();
 }
 
-//TO-DO
-void Messageboard::notifyChildren()
-{
-	for(int i = 0; i < NUM_CHILDREN; i++)
-	{
-		//Verbindung aufbauen zu childs[i]
-		//saveFatherInformation(id, name, connectInformation);//Funktion auf seite der kinder aufrufen!
-		//Verbindung abbauen
-	}
-}
-//TO-DO
 void Messageboard::saveFatherInformation(int id, string name, ConnectInformation * connectInformation)
 {
 	if(this->father != NULL)
@@ -852,5 +784,5 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 		delete this->father;
 	}
 	father = new BoardInformation(name, id, connectInformation);
-	saveBoard();
+	this->saveBoard();
 }
