@@ -73,6 +73,7 @@ class Messageboard
 		bool confirmMessageRights(int);
 		bool deleteMessage(int);
 		void erase();
+        int getChildCount();
 		ConnectInformation * connectToFather(); //auslagern in Messageboard server?
 		ConnectInformation * connectToChild(string); //auslagern in Messageboard server?
 		bool iterateChilds(string, int, string, bool); //auslagern in Messageboard server?

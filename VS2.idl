@@ -2,7 +2,7 @@ module VS2
 {
     typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
 	
-	struct ConnectInformation
+	struct ConnectInformationData
 	{
 		string ip;
 		long port;
@@ -20,7 +20,7 @@ module VS2
 	
 	interface ClientMessageboardInterface
 	{
-		string getFatherName();// MessageBoard hat fatherId-> abruf xml datei auf fathername
+		string getFatherName();//MessageBoard hat fatherId-> abruf xml datei auf fathername
 		array_of_String getChildNames();
 		//Message getMessage(); nicht sicher ob notwendig. vlt beim connect?
 		boolean setMessage(in string message, in long uid, in string uName);
@@ -31,7 +31,7 @@ module VS2
 		ConnectInformation connectToFather();
 		ConnectInformation connectToChild(in string childName);
 		boolean iterateChilds(in string message, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
-		boolean publishOnFather(in string message, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
+		boolean publishOnFather(in string message, in long uid, in string uName); //Nachricht auf Vater veröffentlichen
 	};
 	
 	interface ServerMessageboardInterface//interface zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig)

@@ -164,6 +164,24 @@ private:
   array_of_String_out& operator=(const array_of_String_var&);
 };
 
+struct ConnectInformationData {
+  typedef _CORBA_ConstrType_Variable_Var<ConnectInformationData> _var_type;
+
+  
+  ::CORBA::String_member ip;
+
+  ::CORBA::Long port;
+
+
+
+  void operator>>= (cdrStream &) const;
+  void operator<<= (cdrStream &);
+};
+
+typedef ConnectInformationData::_var_type ConnectInformationData_var;
+
+typedef _CORBA_ConstrType_Variable_OUT_arg< ConnectInformationData,ConnectInformationData_var > ConnectInformationData_out;
+
 struct MessageData {
   typedef _CORBA_ConstrType_Variable_Var<MessageData> _var_type;
 
@@ -366,12 +384,19 @@ class _objref_ClientMessageboardInterface :
 {
 public:
   // IDL operations
+  char* getFatherName();
+  array_of_String* getChildNames();
   array_of_MessageData* getMessages();
-  ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName);
+  MessageData* setHighlightedMessage(const char* messageID);
+  MessageData* getHighlightedMessage();
+  MessageData* getMessageWithId(const char* messageID);
+  ::CORBA::Boolean setMessage(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName);
   ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const char* messageID);
   ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName);
   MessageData* getNextMessage();
   MessageData* getPreviousMessage();
+  ConnectInformationData* connectToFather();
+  ConnectInformationData* connectToChild(const char* childName);
 
   // Constructors
   inline _objref_ClientMessageboardInterface()  { _PR_setobj(0); }  // nil
@@ -406,12 +431,19 @@ class _impl_ClientMessageboardInterface :
 public:
   virtual ~_impl_ClientMessageboardInterface();
 
+  virtual char* getFatherName() = 0;
+  virtual array_of_String* getChildNames() = 0;
   virtual array_of_MessageData* getMessages() = 0;
-  virtual ::CORBA::Boolean setMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;
+  virtual MessageData* setHighlightedMessage(const char* messageID) = 0;
+  virtual MessageData* getHighlightedMessage() = 0;
+  virtual MessageData* getMessageWithId(const char* messageID) = 0;
+  virtual ::CORBA::Boolean setMessage(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName) = 0;
   virtual ::CORBA::Boolean deleteMessage(::CORBA::Long uid, const char* messageID) = 0;
   virtual ::CORBA::Boolean createNewMessage(const char* message, ::CORBA::Long uid, const char* uName) = 0;
   virtual MessageData* getNextMessage() = 0;
   virtual MessageData* getPreviousMessage() = 0;
+  virtual ConnectInformationData* connectToFather() = 0;
+  virtual ConnectInformationData* connectToChild(const char* childName) = 0;
   
 public:  // Really protected, workaround for xlC
   virtual _CORBA_Boolean _dispatch(omniCallHandle&);

@@ -529,7 +529,29 @@ string Messageboard::getFatherName()
 
 string * Messageboard::getChildNames()
 {
-	return NULL;
+    int childCount = childs.size();
+    string * childNames = NULL;
+    string name = "";
+    int zaehler = 0;
+    BoardInformation * child;
+    childNames = new string[childCount];
+	if(this->childs.size() > 0)
+	{
+		//alle Childs suchen und in der XML speichern
+		for(iterChilds=this->childs.begin(); iterChilds<this->childs.end(); iterChilds++)
+		{
+			child = *iterChilds;
+			name = child->getName();
+            childNames[zaehler] = name;
+            zaehler++;
+		}
+	}	   
+    return childNames;
+}
+
+int Messageboard::getChildCount()
+{
+    return childs.size();
 }
 
 Message * Messageboard::getHighlightedMessage()
@@ -747,14 +769,13 @@ ConnectInformation * Messageboard::connectToFather()
 
 ConnectInformation * Messageboard::connectToChild(string childName)
 {
-	for(int i = 0; i < NUM_CHILDREN; i++)
+	for(int i = 0; i < this->childs.size(); i++)
 	{
 		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
 			return childs[i]->getConnectInformation();
 		}
 	}
-	throw "Keine Childs vorhanden!\n";
 }
 
 //TO-DO Verbindungen zu anderen Servern, weiﬂ noch nicht genau wie das funktioniert in CORBA :D
