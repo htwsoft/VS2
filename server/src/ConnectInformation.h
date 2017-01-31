@@ -9,6 +9,10 @@
 #ifndef CONNECTINFORMATION_H_
 #define CONNECTINFORMATION_H_
 
+#include <string>
+
+using namespace std;
+
 class ConnectInformation
 {
 	private:

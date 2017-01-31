@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import org.omg.CORBA.*;
 import org.omg.CORBA.ORBPackage.InvalidName;
+import VS2.*;
 
 
 public class StartClient {
@@ -21,7 +22,7 @@ public class StartClient {
 	private String fatherName;
 	
 	public MessageData msg;
-	private ClientMessageboardInterface mbImpl;
+	private MessageboardServerInterface mbImpl;
 	boolean shutdown;
 	
 	
@@ -46,7 +47,7 @@ public class StartClient {
 			// part of the Interoperable naming Service.
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 
-			mbImpl = ClientMessageboardInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
+			mbImpl = MessageboardServerInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
 			
 			
 			

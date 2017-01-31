@@ -93,6 +93,7 @@ char * MessageboardServer::getFatherName()
     char * cFatherName = NULL;
     cout << "Procedure getFatherName() called" << endl;
     fatherName = this->messageBoard->getFatherName();
+    cFatherName = new char[fatherName.length()];
     strcpy(cFatherName, fatherName.c_str());
     return cFatherName;
 }
@@ -106,14 +107,23 @@ array_of_String * MessageboardServer::getChildNames()
     int anzChilds = 0;
     cout << "Procedure getChildNames() called" << endl;
     arrayChildNames = new array_of_String();
-    arrayChildNames->length(anzChilds);
     childNames = this->messageBoard->getChildNames();
     anzChilds = this->messageBoard->getChildCount();
-    for(int i = 0; i<anzChilds; i++)
+    if(anzChilds >  0)
     {
-        childName = childNames[i];
-        (*arrayChildNames)[i] = childName.c_str();            
-    }    
+        arrayChildNames->length(anzChilds);
+        for(int i = 0; i<anzChilds; i++)
+        {
+            childName = childNames[i];
+            (*arrayChildNames)[i] = childName.c_str();        
+        }   
+    }
+    else
+    {
+        //Wenn keine Childs vorhanden Array mit leerString
+        arrayChildNames->length(1);
+        (*arrayChildNames)[0] = "";
+    }
     return arrayChildNames;
 }
 
@@ -233,11 +243,11 @@ array_of_MessageData* MessageboardServer::getMessages()
         vMessage.push_back(worker);
         worker = this->messageBoard->getNextMessage();
     }
+    arrayMessageData = new array_of_MessageData();
     //Vector in arrayMessageData speichern
     if(vMessage.size() > 0)
     {
         //neues Array erstellen
-        arrayMessageData = new array_of_MessageData();
         arrayMessageData->length(vMessage.size());  
         for(iterMessage=vMessage.begin(); iterMessage<vMessage.end(); iterMessage++)
 		{
@@ -246,6 +256,14 @@ array_of_MessageData* MessageboardServer::getMessages()
             (*arrayMessageData)[zaehler] = (*workerData);  
             zaehler++;             
         }
+    }
+    else
+    {
+        //Wenn keine Messages vorhanden Array mit leerdaten erzeugen
+        arrayMessageData->length(1);
+        workerData = new MessageData();
+        (*arrayMessageData)[0] = (*workerData);
+        this->junkData.push_back(workerData);
     }
     return arrayMessageData;
 }

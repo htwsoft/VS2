@@ -29,14 +29,17 @@ clean:
 
 
 
-server01: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o StartServer.cpp
-	$(CXX) $(CFLAGS) -o StartServer Message.o Messageboard.o XMLWorker.o FileWorker.o MessageboardServer.o $(LIBS) StartServer.cpp
+server01: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
+	$(CXX) $(CFLAGS) -o StartServer Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
 	
 
 #Files fuer MessageBoard
 
 MessageboardServer.o: $(SERVERSOURCEPATH)MessageboardServer.cpp $(SERVERSOURCEPATH)MessageboardServer.h $(SERVERSOURCEPATH)VS2.hh
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)MessageboardServer.cpp
+
+ServerClient.o: $(SERVERSOURCEPATH)ServerClient.cpp $(SERVERSOURCEPATH)ServerClient.h $(SERVERSOURCEPATH)VS2.hh
+	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)ServerClient.cpp
 
 FileWorker.o: $(XMLSOURCEPATH)FileWorker.cpp $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)FileWorker.cpp 

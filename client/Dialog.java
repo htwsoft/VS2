@@ -1,5 +1,7 @@
+
 import java.util.ArrayList;
 import java.util.Scanner;
+import VS2.*;
 
 public class Dialog {
 
@@ -13,7 +15,7 @@ public class Dialog {
         MessageData msgData;
 		int loeschuid;
 		StartClient test;
-//		StartClient test = new StartClient("127.0.0.1",6000);
+		//StartClient test = new StartClient("127.0.0.1",6000);
 		test = new StartClient(args);
 		Scanner scan = new Scanner(System.in);
 		System.out.println("Username:");
@@ -57,7 +59,8 @@ public class Dialog {
 				break;
 
 			case 3:
-			 System.out.println(test.getFatherName());
+                String [] childs =  test.getChildNames();
+			    System.out.println(childs[0]);
 //				System.out.println("Ersetzen : \n ");
 //				System.out.println("Message : ");
 //				Scanner scan11 = new Scanner(System.in);
@@ -93,7 +96,7 @@ public class Dialog {
 				int port=test.getFatherPort();
 				test.disconnectToServer();
 				System.out.println(ip+port);
-				System.out.println("Moechten sie jetzt verbindne");
+				System.out.println("Moechten sie jetzt verbindne (y eingbene)");
 				scan = new Scanner(System.in);
 				String eingabe=scan.nextLine();
 				
