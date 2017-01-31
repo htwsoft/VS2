@@ -3,28 +3,28 @@
  *      Author: Marco Palumbo
  */
 
-#include "./ClientServer.h"
-#include "./VS2_kleinSK.cc"
+#include "./MessageboardServer.h"
+#include "./VS2SK.cc"
 #include "./Message.h"
 #include "./ConnectInformation.h"
 #include <cstring>
 #include <vector>
 
 /* Kosntruktor der ClientServer-Klasse */
-ClientServer::ClientServer()
+MessageboardServer::MessageboardServer()
 {
     this->messageBoard = new Messageboard("./messageboard.xml");
 }
 
 /* Destruktor der ClientServer-Klasse*/
-ClientServer::~ClientServer()
+MessageboardServer::~MessageboardServer()
 {
     this->clearJunkData();       
     delete this->messageBoard;
 }
 
 /* Wandelt die daten eines ConnectInformation Objektes in ConnectInformationData */
-ConnectInformationData * ClientServer::getConnectInformationData(ConnectInformation * connectInformation)
+ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectInformation * connectInformation)
 {
     ConnectInformationData * ciData = NULL;
     if(connectInformation != NULL)
@@ -37,7 +37,7 @@ ConnectInformationData * ClientServer::getConnectInformationData(ConnectInformat
 }
 
 /* Liefert die ConnectInformationData fuer den Vater */
-ConnectInformationData * ClientServer::connectToFather()
+ConnectInformationData * MessageboardServer::connectToFather()
 {
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
@@ -47,7 +47,7 @@ ConnectInformationData * ClientServer::connectToFather()
 }
 
 /* Liefert die ConnectInformationData für ein Child */
-ConnectInformationData * ClientServer::connectToChild(const char* childName)
+ConnectInformationData * MessageboardServer::connectToChild(const char* childName)
 {
     string strChildName(childName);
     ConnectInformation * connectInformation = NULL;
@@ -58,7 +58,7 @@ ConnectInformationData * ClientServer::connectToChild(const char* childName)
 }
 
 /* Loeschen der erstelleten MessageData-Objekte */
-void ClientServer::clearJunkData()
+void MessageboardServer::clearJunkData()
 {
 	if(this->junkData.size() > 0)
 	{
@@ -75,7 +75,7 @@ void ClientServer::clearJunkData()
 }
 
 /* setzen der Highlighted Message des Boards */
-MessageData* ClientServer::setHighlightedMessage(const char* messageID)
+MessageData* MessageboardServer::setHighlightedMessage(const char* messageID)
 {
     Message * msg = NULL;
     MessageData * mData = NULL;
@@ -86,7 +86,7 @@ MessageData* ClientServer::setHighlightedMessage(const char* messageID)
 }
 
 /* Liefert den Namen des Fatherboards */
-char * ClientServer::getFatherName()
+char * MessageboardServer::getFatherName()
 {
 
     string fatherName = "";
@@ -98,7 +98,7 @@ char * ClientServer::getFatherName()
 }
 
 /* Liefert die Namen aller Childs */
-array_of_String * ClientServer::getChildNames()
+array_of_String * MessageboardServer::getChildNames()
 {
     string * childNames = NULL;
     string childName = "";
@@ -118,7 +118,7 @@ array_of_String * ClientServer::getChildNames()
 }
 
 /* liefert die MessageData zu einer uebergebenen Message */
-MessageData * ClientServer::getMessageData(Message * msg)
+MessageData * MessageboardServer::getMessageData(Message * msg)
 {
     MessageData * mData = NULL;
     if(msg != NULL)    
@@ -133,7 +133,7 @@ MessageData * ClientServer::getMessageData(Message * msg)
 }
 
 /* Liefert die zuletzt ausewaehlte Message vom Board */
-MessageData* ClientServer::getHighlightedMessage()
+MessageData* MessageboardServer::getHighlightedMessage()
 {
     Message * msg = NULL;
     MessageData * mData = NULL;
@@ -148,7 +148,7 @@ MessageData* ClientServer::getHighlightedMessage()
 }
 
 /* Anfragen einer bestimmten Nachricht */
-MessageData * ClientServer::getMessageWithId(const char* messageID)
+MessageData * MessageboardServer::getMessageWithId(const char* messageID)
 {
     MessageData * mData = NULL;
     Message * msg = NULL;
@@ -165,7 +165,7 @@ MessageData * ClientServer::getMessageWithId(const char* messageID)
 }
 
 /* sucht eine Message anhand der ID und liefert diese zurueck */
-Message * ClientServer::searchMessage(string messageID)
+Message * MessageboardServer::searchMessage(string messageID)
 {
     bool notFound = true;
     Message * worker = NULL;
@@ -189,7 +189,7 @@ Message * ClientServer::searchMessage(string messageID)
 }
 
 /* Neue Nachricht erstellen */
-CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
+CORBA::Boolean MessageboardServer::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
 {
     bool created = false;
     cout << "Procedure createNewMessage() called" << endl;
@@ -200,7 +200,7 @@ CORBA::Boolean ClientServer::createNewMessage(const char* message, ::CORBA::Long
 }
 
 /* uebergeben Nachricht loeschen Nachricht loeschen */
-CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid, const char* messageID)
+CORBA::Boolean MessageboardServer::deleteMessage(::CORBA::Long uid, const char* messageID)
 {
     bool deleted = false;
     Message * message = NULL;
@@ -216,7 +216,7 @@ CORBA::Boolean ClientServer::deleteMessage(::CORBA::Long uid, const char* messag
 }
 
 /* Liefert alle Messages in einem Array */
-array_of_MessageData* ClientServer::getMessages()
+array_of_MessageData* MessageboardServer::getMessages()
 {
     CORBA::ULong zaehler = 0;
     Message * worker = NULL;
@@ -251,7 +251,7 @@ array_of_MessageData* ClientServer::getMessages()
 }
 
 /* aktuelle Nachricht aendern */
-CORBA::Boolean ClientServer::setMessage(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName)
+CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName)
 {
     Message * msg = NULL;
     bool setOk = false;   
@@ -272,7 +272,7 @@ CORBA::Boolean ClientServer::setMessage(const char* message, const char* message
 
 
 /* Vorherige Nachricht an Client senden */
-MessageData * ClientServer::getPreviousMessage()
+MessageData * MessageboardServer::getPreviousMessage()
 {
     Message * msg = NULL;
     MessageData * mData = NULL; 
@@ -287,7 +287,7 @@ MessageData * ClientServer::getPreviousMessage()
 }
 
 /* Naechste Nachricht an Client senden */
-MessageData * ClientServer::getNextMessage()
+MessageData * MessageboardServer::getNextMessage()
 {    
     Message * msg = NULL;
     MessageData * mData = NULL;  

@@ -5,10 +5,11 @@
 #include <assert.h>
 #include <signal.h>
 #include <unistd.h>
-#include "./src/ClientServer.h"
-#include "./src/VS2_klein.hh"
+#include "./src/MessageboardServer.h"
+#include "./src/VS2.hh"
 
 using namespace std;
+using namespace VS2;
 
 int main(int argc, char ** args)
 {
@@ -36,13 +37,13 @@ int main(int argc, char ** args)
     //------------------------------------------------------------------------
     cout << "Registriere POA ..." << endl;
     CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
-    PortableServer::POA_var _poa = PortableServer::POA::_narrow(obj.in());                                                                           
+    PortableServer::POA_var _poa = PortableServer::POA::_narrow(obj);                                                                           
     //------------------------------------------------------------------------
     // Operations defined in object interface invoked via an object reference.
     // Instance of CRequestSocketStream_i servant is initialized.
     //------------------------------------------------------------------------     
-    cout << "Create ClientServer-Objekt ..." << endl;
-    ClientServer * clientServer = new ClientServer();                                                               
+    cout << "Create MessageboardServer-Objekt ..." << endl;
+    PortableServer::Servant_var<MessageboardServer> messageboardServer = new MessageboardServer();                                                               
     //------------------------------------------------------------------------
     // ObjectId_var class defined in poa.h
     // typedef String_var ObjectId_var; CORBA_ORB.h
@@ -52,18 +53,18 @@ int main(int argc, char ** args)
     // Servant object activated in RootPOA.
     // (Object id used for various POA operations.)
     //------------------------------------------------------------------------
-    PortableServer::ObjectId_var clientServer_oid
-                                = _poa->activate_object(clientServer);
+    PortableServer::ObjectId_var messageboardServer_oid
+                                = _poa->activate_object(messageboardServer);
                                                                                 
     //------------------------------------------------------------------------
     // Obtain object reference from servant and register in naming service(??)
     //------------------------------------------------------------------------
-    CORBA::Object_var SA_obj = clientServer->_this();
+    CORBA::Object_var SA_obj = messageboardServer->_this();
                                                                                 
     //------------------------------------------------------------------------
     // Obtain a reference to the object, and print it out as string IOR.
     //------------------------------------------------------------------------
-    CORBA::String_var sior(orb->object_to_string(SA_obj.in()));
+    CORBA::String_var sior(orb->object_to_string(SA_obj));
     cerr << "'" << (char*)sior << "'" << endl;
                                                                                 
     //========================================================================
@@ -76,11 +77,11 @@ int main(int argc, char ** args)
     //------------------------------------------------------------------------
     cout << "Bind NameService ..." << endl;
     CORBA::Object_var obj1=orb->resolve_initial_references("NameService");
-    assert(!CORBA::is_nil(obj1.in()));                                  
+    assert(!CORBA::is_nil(obj1));                                  
     //------------------------------------------------------------------------
     // narrow this to the naming context
     //------------------------------------------------------------------------
-    CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(obj1.in());
+    CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(obj1);
     assert(!CORBA::is_nil(nc.in()));
                                                                                 
     //------------------------------------------------------------------------
@@ -93,7 +94,7 @@ int main(int argc, char ** args)
     nc->rebind (name,SA_obj.in());                                                                              
     //========================================================================
                                                                                 
-    clientServer->_remove_ref();
+    messageboardServer->_remove_ref();
                                                                                 
     //------------------------------------------------------------------------
     // Activate the POA manager
