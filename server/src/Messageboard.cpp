@@ -32,9 +32,9 @@ Messageboard::Messageboard(string xmlPath)
 	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
-	this->highlighted = NULL;
 	this->initBoardXML();
-	this->highlighted = this->first;
+    //Auf NULL setzen damit die erste Nachricht geladen wird
+    this->highlighted = NULL;
 	//hier orb starten, sprich port ˆffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groﬂ)
 }
 
@@ -52,13 +52,13 @@ Messageboard::Messageboard(int id, string name)
 	
 }
 
-//Speichern eines neuen Childs
-void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
+/* setzen der Highlighted Message */
+void Messageboard::setHighlightedMessage(Message * message)
 {
-	BoardInformation * child = 0;
-	child = new BoardInformation(name, id, connectInformation);
-	childs.push_back(child);
-	saveBoard();
+    if(message != NULL)
+    {
+        this->highlighted = message;
+    }
 }
 
 /* das komplette board(also alle Informationen und Messages) in einer XML datei speichern */
@@ -520,7 +520,29 @@ string Messageboard::getFatherName()
 
 string * Messageboard::getChildNames()
 {
-	return NULL;
+    int childCount = childs.size();
+    string * childNames = NULL;
+    string name = "";
+    int zaehler = 0;
+    BoardInformation * child;
+    childNames = new string[childCount];
+	if(this->childs.size() > 0)
+	{
+		//alle Childs suchen und in der XML speichern
+		for(iterChilds=this->childs.begin(); iterChilds<this->childs.end(); iterChilds++)
+		{
+			child = *iterChilds;
+			name = child->getName();
+            childNames[zaehler] = name;
+            zaehler++;
+		}
+	}	   
+    return childNames;
+}
+
+int Messageboard::getChildCount()
+{
+    return childs.size();
 }
 
 Message * Messageboard::getHighlightedMessage()
@@ -534,37 +556,80 @@ Message * Messageboard::getHighlightedMessage()
 	return message;
 }
 
+/* Setzt die Highlighted-Message auf First */
+void Messageboard::setLastMessageToHighlighted()
+{
+	this->highlighted = this->first; 
+}
+
+/* Setzt die Highlighted-Message auf Last  */
+void Messageboard::setFirstMessageToHighlighted()
+{
+	this->highlighted = this->last;
+}
+
+/* Liefert die erste Message des Boards zurueck */
+Message * Messageboard::getFirstMessage()
+{
+    this->highlighted = this->first;
+    return this->first;
+    
+}
+
+/*  Liefert die letzte Message des Boards zurueck */
+Message * Messageboard::getLastMessage()
+{
+    this->highlighted = this->last;
+    return this->last;
+}
+
+
+/* Liefert die naechte Nachricht des Messageboards */
 Message * Messageboard::getNextMessage()
 {
-	if(highlighted->getNext() != NULL)
-	{
-		highlighted = highlighted->getNext();
+    //Pruefen ob eine Nachricht existiert
+    if(this->first != NULL)
+    {
+        //Pruefen ob bereits eine Nahricht angezeigt wurde
+        if(this->highlighted == NULL)
+        {
+            //es wurde noch keine Nachricht gezeigt
+            this->highlighted = this->first;
+        }
+        else
+	    {
+		    highlighted = highlighted->getNext();
 
-	}
+	    }
+    }
 	return highlighted;
 }
 
+/* Liefert die vor Nachricht der letzten Message */
 Message * Messageboard::getPreviousMessage()
 {
-	if(highlighted->getPrevious() != NULL)
-	{
-		highlighted = highlighted->getPrevious();
-	}
+    //Pruefen ob eine Nachricht existiert
+    if(this->first != NULL)
+    {
+        //Pruefen ob bereits eine Nahricht angezeigt wurde
+        if(this->highlighted == NULL)
+        {
+            //es wurde noch keine Nachricht gezeigt
+            this->highlighted = this->first;
+        }
+        else
+	    {
+		    highlighted = highlighted->getPrevious();
+
+	    }
+    }
 	return highlighted;
 }
 
 bool Messageboard::setMessage(string message, int uid, string uName)
-{
-	if(confirmAdminRights(uid))
-	{
-		highlighted->setUid(uid);highlighted->setMessage(message);
-		return true;
-	}
-	else if(confirmMessageRights(uid))
-	{
-		highlighted->setUid(uid);highlighted->setMessage(message);
-		return true;
-	}
+{	
+    highlighted->setUid(uid);
+    highlighted->setMessage(message);
 	return false;
 }
 
@@ -575,6 +640,7 @@ bool Messageboard::createNewMessage(string message, int uid, string uName)
 	messageId = this->createNewMessageId();
 	return this->createNewMessage(message, messageId, uid, uName, true);
 }
+
 /* erstellt eine neu Message mit der uebergeben MessageId */
 bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
 {
@@ -587,13 +653,12 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	}
 	else
 	{
-		//Pruefen ob die Message waehren des Init erstell wird
 		neu = new Message(message, mid, uid, 0, this->first, uName);
 		this->first->setPrevious(neu);
 		this->first = neu;
 		highlighted = neu;		
 	}
-	
+    //Pruefen ob die Message waehren des Init erstell wirds
 	if(withSave)
 	{
 		this->saveBoard();
@@ -602,36 +667,11 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	return true;
 }
 
-//TO-DO XML-Abfrage
-bool Messageboard::confirmAdminRights(int uid)
-{
-	bool assert = true; //XML-Abfrage, pr¸fe uid. sprich abfrage auf admin. Ueberpruefung mit der Datenbank vom Login-Server
-	return assert;
-}
-
-//TO-DO
-bool Messageboard::confirmMessageRights(int uid)
-{
-	bool assert = false ;//XML-Abfrage, pr¸fe uid. sprich ob eigent¸mer der nachricht
-	assert = highlighted->getUid() == uid;
-	return assert;
-}
-
 bool Messageboard::deleteMessage(int uid)
 {
-	if(confirmAdminRights(uid))
-	{
-		erase();
-		saveBoard();
-		return true;
-	}
-	else if(confirmMessageRights(uid))
-	{
-		erase();
-		saveBoard();
-		return true;
-	}
-	return false;
+	erase();
+	saveBoard();
+	return true;
 }
 
 void Messageboard::erase()
@@ -680,90 +720,63 @@ void Messageboard::erase()
 }
 
 //<--------------------------------------------- Ab hier auslagern in MessageBoard-Server-Klasse?
-ConnectInformation * Messageboard::connectToFather()
+ConnectInformation * Messageboard::getConnectInformationFather()
 {
 	return father->getConnectInformation();
 }
 
-ConnectInformation * Messageboard::connectToChild(string childName)
+ConnectInformation * Messageboard::getConnectInformationChild(string childName)
 {
-	for(int i = 0; i < NUM_CHILDREN; i++)
+    ConnectInformation * connectInformation = NULL;
+	for(unsigned int i = 0; i < this->childs.size(); i++)
 	{
 		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
-			return childs[i]->getConnectInformation();
+			connectInformation = childs[i]->getConnectInformation();
 		}
 	}
-	throw "Keine Childs vorhanden!\n";
+    return connectInformation;
 }
 
-//TO-DO Verbindungen zu anderen Servern, weiﬂ noch nicht genau wie das funktioniert in CORBA :D
-bool Messageboard::iterateChilds(string message, int uid, string uName, bool schalter)
+unsigned int Messageboard::getConnectInformationChildIndex(string childName)
 {
-	bool assert;
-	for(int i = 0; i < NUM_CHILDREN; i++)
+    unsigned int index = 0;
+	for(unsigned int i = 0; i < this->childs.size(); i++)
 	{
-		//Verbindung aufbauen zu childs[i]nacheinander(ConnectInformation)
-		assert = publishChild(message, uid, uName, schalter);
-		//Verbindung abbauen zum aktuellen childs[i]
-		if(!assert)
-			return false;
-	}
-	return assert;
-}
-
-//TO-DO
-bool Messageboard::publishOnFather(string message, int uid, string uName)
-{
-	//Verbindung aufbauen zu father
-	return publishFather(message, uid, uName);
-}
-
-//TO-DO
-bool Messageboard::publishChild(string message, int uid, string uName, bool schalter)
-{
-	if(confirmAdminRights(uid) && NUM_CHILDREN > 1)//Ueberpruefung mit der Datenbank vom Login-Server und ob Knoten ueberhaupt kinder hat
-	{
-		createNewMessage(message, uid, uName);
-		if(schalter)
+		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
-			iterateChilds(message, uid, uName, schalter);
+			index = i;
 		}
-		return true;
 	}
-	else
-		return false;
+    return index;
 }
 
-bool Messageboard::publishFather(string message, int uid, string uName)
+void Messageboard::saveChildrenInformation(int id, string name, ConnectInformation * connectInformation)
 {
-	if(confirmAdminRights(uid))
-	{
-		createNewMessage(message, uid, uName);
-		return true;
-	}
-	else
-		return false;
-}
-//TO-DO
-void Messageboard::notifyFather()
-{
-	//Verbindung aufbauen zu ConnectInformation father und dort dann sagen er soll dich als kind speichern
-	//saveChildrenInformation(id,name,connectInformation);//aufruf dieser Funktion auf vaterseite!
-	//Verbindung abbauen
+    BoardInformation * boardInformation = NULL;
+    ConnectInformation * worker = NULL;
+    unsigned int merker = 0;
+    //Pr¸fen ob Childsvorhaden sind
+    if(childs.size() > 0)
+    {
+        //Pr¸fen ob child schon vorhanden ist
+        worker = this->getConnectInformationChild(name);
+        merker = this->getConnectInformationChildIndex(name);
+    }
+    boardInformation = new BoardInformation(name, id, connectInformation);
+    //Pr¸efen ob Child existiert
+    if(worker != NULL)
+    {
+        delete childs[merker];
+        childs[merker] = boardInformation;
+    }
+    else
+    {
+        childs.push_back(boardInformation);
+    }
+    this->saveBoard();
 }
 
-//TO-DO
-void Messageboard::notifyChildren()
-{
-	for(int i = 0; i < NUM_CHILDREN; i++)
-	{
-		//Verbindung aufbauen zu childs[i]
-		//saveFatherInformation(id, name, connectInformation);//Funktion auf seite der kinder aufrufen!
-		//Verbindung abbauen
-	}
-}
-//TO-DO
 void Messageboard::saveFatherInformation(int id, string name, ConnectInformation * connectInformation)
 {
 	if(this->father != NULL)
@@ -771,5 +784,5 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 		delete this->father;
 	}
 	father = new BoardInformation(name, id, connectInformation);
-	saveBoard();
+	this->saveBoard();
 }

@@ -1,11 +1,11 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 5 </mcounter>
-  <idcounter> 10005 </idcounter>
+  <mcounter> 6 </mcounter>
+  <idcounter> 10012 </idcounter>
   <messages>
-    <message id="14-10005">
-      <text> Eine neue Message </text>
-      <uid> 1000 </uid>
+    <message id="14-10012">
+      <text> Ein Test </text>
+      <uid> 12345 </uid>
     </message>
     <message id="14-10004">
       <text> Eine neue Message </text>

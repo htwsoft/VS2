@@ -51,6 +51,7 @@ class Messageboard
 		void saveChildConnectInformations(XMLNode * fatherNode);
 		void saveFatherConnectInformation(XMLNode * fatherNode);
 		bool createNewMessage(string, string, int, string, bool = true);
+        unsigned int getConnectInformationChildIndex(string);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
 		Messageboard(int, string); //Konstruktor zum anlegen eines neuen Boards
@@ -62,21 +63,19 @@ class Messageboard
 		Message * getNextMessage();
 		Message * getPreviousMessage();
 		Message * getHighlightedMessage();
+        Message * getFirstMessage();
+        Message * getLastMessage();
+        void setLastMessageToHighlighted();
+        void setFirstMessageToHighlighted();
+        void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
 		bool createNewMessage(string, int, string);
-		bool confirmAdminRights(int);
-		bool confirmMessageRights(int);
 		bool deleteMessage(int);
 		void erase();
-		ConnectInformation * connectToFather(); //auslagern in Messageboard server?
-		ConnectInformation * connectToChild(string); //auslagern in Messageboard server?
-		bool iterateChilds(string, int, string, bool); //auslagern in Messageboard server?
-		bool publishOnFather(string, int, string); //auslagern in Messageboard server?
+        int getChildCount();
+		ConnectInformation * getConnectInformationFather();
+		ConnectInformation * getConnectInformationChild(string);
 		//Server-Server
 		void saveFatherInformation(int, string, ConnectInformation *);
 		void saveChildrenInformation(int, string, ConnectInformation *);
-		bool publishChild(string, int, string, bool); //auslagern in Messageboard server?
-		bool publishFather(string,int,string); //auslagern in Messageboard server?
-		void notifyFather(); //auslagern in Messageboard server?
-		void notifyChildren(); //auslagern in Messageboard server?
 };
