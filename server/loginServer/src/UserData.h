@@ -20,6 +20,7 @@ class UserData
 	public:
 		UserData(string userName,string password){this->userName=userName;this->password=password;}
 		string getUserName()const{return userName;}
+		void setUserName(string userName){this->userName=userName;}
 		string getPassword()const{return password;}
 };
 
