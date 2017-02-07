@@ -1,0 +1,5 @@
+Vorgehen zum testen:
+
+1. Mit cmd: "start orbd -ORBInitialPort 1050"   //oder irgendein Port
+2. In ..\CORBA\out\production\CORBA\StartServer.class den Server mit Parametern "-ORBInitialPort 1050 -ORBInitialHost localhost" starten
+3. In ..\CorbaAdditionClient\out\production\CorbaAdditionClient den Client mit Parametern "--ORBInitialPort 1050 -ORBInitialHost localhost" starten
