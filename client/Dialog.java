@@ -15,8 +15,8 @@ public class Dialog {
 		MessageData msgData;
 		int loeschuid;
 		StartClient test;
-		 test = new StartClient("127.0.0.1",6000);
-//		test = new StartClient(args);
+	//	 test = new StartClient("127.0.0.1",6000);
+		test = new StartClient(args);
 		 System.out.println("Benutzer name:");
 		Scanner scan = new Scanner(System.in);
 		String username = scan.nextLine();
