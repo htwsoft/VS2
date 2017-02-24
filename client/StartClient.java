@@ -10,8 +10,7 @@ import org.omg.CORBA.*;
 import VS2.*;
 
 public class StartClient {
-	UserData userData;
-	LoginInformation loginInfo;
+	private RegisterLogin regLogin;
 
 	private int uid = 12345;
 	private String message;
@@ -21,7 +20,7 @@ public class StartClient {
 	private MessageboardServerInterface mbImpl;
 	private LoginServerInterface dbImpl;
 	boolean shutdown;
-	boolean angemeldet = true;//wenn db da ist auf false setzten
+	
 	private ArrayList<MessageData> messageList;
 	private ArrayList<String> childList;
 
@@ -52,12 +51,15 @@ public class StartClient {
 		}
 	}
 	public StartClient(String uName, String pWord){
-		if(loginBenutzer(uName,pWord)){
+		regLogin = new RegisterLogin();
+		if(regLogin.login(new UserData(uName, pWord))){
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();
 			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
 			this.connectToServer();
 		}
+		else
+			throw new Exception("Loginfehler!");
 		
 	}
 	/*
@@ -85,30 +87,6 @@ public class StartClient {
 			// "-ORBInitialHost", ip };
 			this.url = url;
 			this.connectToServer();
-		
-	}
-
-	/*
-	 * login wenn werte leer sind kommt false
-	 */
-
-	public boolean loginBenutzer(String uName, String pWord) {
-		if (uName.isEmpty() || pWord.isEmpty()) {
-			angemeldet = false;
-			return false;
-		} else {
-			this.userData =new UserData(uName,pWord);
-			loginDB();
-			angemeldet = true;
-			return true;
-		}
-	}
-
-	/*
-	 * TODO Datenbank implimentieren
-	 */
-	private void loginDB() {
-//		this.loginInfo =new LoginInformation(this.dbImpl.login(userData).adminRights,this.dbImpl.login(userData).server);
 		
 	}
 
