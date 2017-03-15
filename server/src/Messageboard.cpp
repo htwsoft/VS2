@@ -755,6 +755,7 @@ void Messageboard::saveChildrenInformation(int id, string name, ConnectInformati
 {
     BoardInformation * boardInformation = NULL;
     ConnectInformation * worker = NULL;
+    ConnectInformation * newCI = NULL;
     unsigned int merker = 0;
     //Prüfen ob Childsvorhaden sind
     if(childs.size() > 0)
@@ -763,7 +764,9 @@ void Messageboard::saveChildrenInformation(int id, string name, ConnectInformati
         worker = this->getConnectInformationChild(name);
         merker = this->getConnectInformationChildIndex(name);
     }
-    boardInformation = new BoardInformation(name, id, connectInformation);
+    //erstellen eines neuen CI-Feldes da übergebener Zeiger nicht weiter verwendet werden kan
+    newCI = new ConnectInformation(connectInformation->getIp(), connectInformation->getPort()); 
+    boardInformation = new BoardInformation(name, id, newCI);
     //Prüefen ob Child existiert
     if(worker != NULL)
     {
@@ -779,10 +782,13 @@ void Messageboard::saveChildrenInformation(int id, string name, ConnectInformati
 
 void Messageboard::saveFatherInformation(int id, string name, ConnectInformation * connectInformation)
 {
+    ConnectInformation * newCI = NULL;
 	if(this->father != NULL)
 	{
 		delete this->father;
 	}
-	father = new BoardInformation(name, id, connectInformation);
+    //erstellen eines neuen CI-Feldes da übergebener Zeiger nicht weiter verwendet werden kann
+    newCI = new ConnectInformation(connectInformation->getIp(), connectInformation->getPort());
+	this->father = new BoardInformation(name, id, newCI);
 	this->saveBoard();
 }

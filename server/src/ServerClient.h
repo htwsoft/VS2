@@ -23,9 +23,18 @@ class ServerClient
         CORBA::ORB_var orb;                                                                            
         CORBA::Object_var orbObj;      // ORB Object
         CORBA::Object_var resObj;     // Resolved id to object reference
-        VS2::MessageboardServerInterface_var m_Data; // Resolved and narrowed CORBA object for proxy calls                                                                          
+        VS2::MessageboardServerInterface_var m_Data; // Resolved and narrowed CORBA object for proxy calls     
+        int initParameterCount = 4; //
+        char * initParameter[4];
+        void createInitParameter();
+        char * copyString(string zeichen);
+        ConnectInformation * connectInformation = 0;                                                                     
     public:
         ServerClient(ConnectInformation * connectInformation);
+        void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation);
+        void saveChildInformation(int id, string name, const ConnectInformation * connectInformation);
+        ConnectInformation connectToFather(); 
+        ConnectInformation connectToChild(string childName);
         ~ServerClient();
 };
 

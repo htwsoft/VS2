@@ -48,9 +48,9 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         CORBA::Boolean publishChild(const char* message, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter){return false;};
         CORBA::Boolean publishFather(const char* message, ::CORBA::Long uid, const char* uName){return false;};
         void notifyFather(){};
-        void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData){};
+        void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData);
         void notifyChildren(){};
-        void saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData){};        
+        void saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData);        
 };
 
 

@@ -23,6 +23,7 @@ MessageboardServer::~MessageboardServer()
     delete this->messageBoard;
 }
 
+
 /* Wandelt die daten eines ConnectInformation Objektes in ConnectInformationData */
 ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectInformation * connectInformation)
 {
@@ -36,11 +37,39 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
+
+/* speichert die neuen Kontakt-Infos des Vaters */
+void MessageboardServer::saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
+{
+    string strName(name);
+    string strIp(ciData.ip); 
+    ConnectInformation * newCI = NULL;
+    cout << "Procedure saveFatherInformation() called" << endl;
+    newCI = new ConnectInformation(strIp, ciData.port);
+    //saveFatherInformation(int id, string name, ConnectInformation * connectInformation)
+    this->messageBoard->saveFatherInformation(id, strName, newCI);
+    delete newCI;
+}
+
+/* speichert die neuen Kontakt-Infos eines Childs */
+void MessageboardServer::saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
+{
+    string strName(name);
+    string strIp(ciData.ip); 
+    ConnectInformation * newCI = NULL;
+    cout << "Procedure saveChildInformation() called" << endl;
+    newCI = new ConnectInformation(strIp, ciData.port);
+    //saveFatherInformation(int id, string name, ConnectInformation * connectInformation)
+    this->messageBoard->saveChildrenInformation(id, strName, newCI);
+    delete newCI;
+} 
+
 /* Liefert die ConnectInformationData fuer den Vater */
 ConnectInformationData * MessageboardServer::connectToFather()
 {
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
+    cout << "Procedure connectToFather() called" << endl;
     connectInformation = this->messageBoard->getConnectInformationFather();
     ciData = this->getConnectInformationData(connectInformation);
     return ciData;
@@ -52,6 +81,7 @@ ConnectInformationData * MessageboardServer::connectToChild(const char* childNam
     string strChildName(childName);
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
+    cout << "Procedure connectToChild() called" << endl;
     connectInformation = this->messageBoard->getConnectInformationChild(strChildName);
     ciData = this->getConnectInformationData(connectInformation);
     return ciData;
@@ -79,6 +109,7 @@ MessageData* MessageboardServer::setHighlightedMessage(const char* messageID)
 {
     Message * msg = NULL;
     MessageData * mData = NULL;
+    cout << "Procedure setHighlightedMessage() called" << endl;
     msg = this->searchMessage(messageID);
     mData = this->getMessageData(msg);  
     return mData;

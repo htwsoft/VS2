@@ -32,6 +32,8 @@ clean:
 server01: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
 	$(CXX) $(CFLAGS) -o StartServer Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
 	
+server02: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServerClient.cpp
+	$(CXX) $(CFLAGS) -o StartServerClient Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServerClient.cpp
 
 #Files fuer MessageBoard
 
@@ -51,6 +53,6 @@ Message.o: $(SERVERSOURCEPATH)Message.cpp $(SERVERSOURCEPATH)Message.h
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)Message.cpp 
 	
 #Files fuer XML
-	
+
 XMLWorker.o: $(XMLSOURCEPATH)XMLWorker.cpp $(XMLSOURCEPATH)XMLWorker.h $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)XMLWorker.cpp
