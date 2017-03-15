@@ -33,6 +33,7 @@ class ServerClient
         ServerClient(ConnectInformation * connectInformation);
         void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation);
         void saveChildInformation(int id, string name, const ConnectInformation * connectInformation);
+        void notifyFather(); 
         ConnectInformation connectToFather(); 
         ConnectInformation connectToChild(string childName);
         ~ServerClient();

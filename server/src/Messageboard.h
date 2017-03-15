@@ -25,6 +25,7 @@ class Messageboard
 	    XMLWorker * xml;
 		int size;
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
+        string name;
 		BoardInformation * father;
 		vector<BoardInformation *> childs;
 		vector<BoardInformation *>::iterator iterChilds;
@@ -65,6 +66,7 @@ class Messageboard
 		Message * getHighlightedMessage();
         Message * getFirstMessage();
         Message * getLastMessage();
+        BoardInformation * getBoardInformation();
         void setLastMessageToHighlighted();
         void setFirstMessageToHighlighted();
         void setHighlightedMessage(Message * message);

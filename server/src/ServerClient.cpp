@@ -94,6 +94,12 @@ ConnectInformation ServerClient::connectToFather()
     return newCI;
 }
 
+/* Funktion nur zum Testen*/
+void ServerClient::notifyFather()
+{
+    this->m_Data->notifyFather();
+}
+
 /* Liefert die ConnectInformationen eines Childs */ 
 ConnectInformation ServerClient::connectToChild(string childName)
 {

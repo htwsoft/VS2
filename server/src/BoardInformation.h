@@ -15,8 +15,23 @@ class BoardInformation
 		{
 			this->name = name; 
 			this->id = id; 
-			this->connectInformation = connectInformation;
+            if(connectInformation != NULL)
+            {
+			    this->connectInformation = new ConnectInformation(connectInformation->getIp(), connectInformation->getPort());
+            }
+            else
+            {
+                this->connectInformation = NULL;
+            }
 		};
+
+		BoardInformation(string name, int id, string ip, int port)
+		{
+			this->name = name; 
+			this->id = id; 
+			this->connectInformation = new ConnectInformation(ip, port);
+		};   
+     
 		~BoardInformation(){delete this->connectInformation;};
 		string getName(){return this->name;};
 		int getId(){return this->id;};

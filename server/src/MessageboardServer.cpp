@@ -7,6 +7,8 @@
 #include "./VS2SK.cc"
 #include "./Message.h"
 #include "./ConnectInformation.h"
+#include "./BoardInformation.h"
+#include "./ServerClient.h"
 #include <cstring>
 #include <vector>
 
@@ -37,6 +39,27 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
+//Teilt dem Vater-Board mit das es jetzt ein Kind von Ihm ist
+void MessageboardServer::notifyFather()
+{
+    ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
+    ConnectInformation * ciFather = NULL;
+    ConnectInformation * ciMB = NULL;
+    BoardInformation * mbInformation = NULL; //Daten des Server-Boards
+    string name = "";
+    int id = 0;
+    //Daten des Server-Boards auslesen
+    mbInformation = this->messageBoard->getBoardInformation();
+    name = mbInformation->getName();
+    id = mbInformation->getId();
+    ciMB = mbInformation->getConnectInformation();
+    //Verbindung zum Vater-Board aufbauen
+    ciFather = this->messageBoard->getConnectInformationFather();
+    sc = new ServerClient(ciFather);
+    //Child-Infos beim Vater speichern
+    sc->saveChildInformation(id, name , ciMB); 
+    delete sc;
+}
 
 /* speichert die neuen Kontakt-Infos des Vaters */
 void MessageboardServer::saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
