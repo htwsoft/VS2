@@ -1,35 +1,46 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 3 </mcounter>
-  <idcounter> 3 </idcounter>
+  <mcounter> 6 </mcounter>
+  <idcounter> 10012 </idcounter>
   <messages>
-    <message id="12">
+    <message id="14-10012">
+      <text> Ein Test </text>
+      <uid> 12345 </uid>
+    </message>
+    <message id="14-10004">
+      <text> Eine neue Message </text>
+      <uid> 1000 </uid>
+    </message>
+    <message id="14-10003">
       <text> bla fassel 1 </text>
       <uid> 353646 </uid>
     </message>
-    <message id="13"> 
+    <message id="14-10002">
       <text> bla fassel 2 </text>
       <uid> 4657 </uid>
     </message>
-    <message id="14"> 
+    <message id="14-10001">
       <text> bla fassel 3 </text>
       <uid> 891011 </uid>
     </message>
   </messages>
-  <connectInfos>
-	<father>
-	  <ip> 192.168.1.2 </ip>
-	  <port> 65001 </port>
-	</father>
-	<childs>
-	  <child>
-	    <ip> 192.168.1.3 </ip>
-		<port> 65000 </port>
-	  </child>
-	  <child>
-	    <ip> 192.168.1.4 </ip>
-		<port> 65002 </port>
-	  </child>
-	</childs>
-  </connectInfos>
+  <connectInformations>
+    <father id="1">
+      <name> Father 1 </name>
+      <ip> 192.168.1.2 </ip>
+      <port> 65001 </port>
+    </father>
+    <childs>
+      <child id="3">
+        <name> Child 2 </name>
+        <ip> 192.168.1.3 </ip>
+        <port> 65000 </port>
+      </child>
+      <child id="2">
+        <name> Child 1 </name>
+        <ip> 192.168.1.4 </ip>
+        <port> 65002 </port>
+      </child>
+    </childs>
+  </connectInformations>
 </messageboard>

@@ -16,6 +16,7 @@
 #include "../XMLWorker/source/XMLWorker.h"
 #include "./Message.h"
 #include "./ConnectInformation.h"
+#include "./BoardInformation.h"
 
 class Messageboard
 {
@@ -23,57 +24,58 @@ class Messageboard
 	    string xmlPath;
 	    XMLWorker * xml;
 		int size;
-		int id;
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
-		string name; //name des Boards
-		int fatherId; //ID des Vaterboards
-		string fatherName; //Name des Vaterboards
-		int * childIds; //ID's der Childboards
-		string * childNames; //Name der Childboards
-		ConnectInformation * father;
-		vector<ConnectInformation *> childs;
-		vector<ConnectInformation *>::iterator iterChilds;
+		BoardInformation * father;
+		vector<BoardInformation *> childs;
+		vector<BoardInformation *>::iterator iterChilds;
 		Message * first;
 		Message * last;
 		Message * highlighted;
-		ConnectInformation * connectInformation;
-		void initBoard();
+		BoardInformation * boardInformation; //BoardInformatioenen 
+		void initBoardXML();
 		void initMessages();
 		void initMessage(XMLNode *);
 		void initMessageIdCounter();
-		void initBoardName();
+		void initBoardInformations();
 		void initConnectInfos();
 		void initFatherNodeConnectInfos(XMLNode * node);
 		void initChildConnectInfos(XMLNode * node);
 		void initChild(XMLNode * node);
 		void clearMessages();
-		void clearConnectInformations();
-		string createNewMessageId(){return "";};
+		void clearBoardInformations();
+		string intToStr(int number);
+		string createNewMessageId();
+		void saveMessages(XMLNode * fatherNode);
+		void saveBoardInformations(XMLNode * fatherNode);
+		void saveConnectInformations(XMLNode * fatherNode);
+		void saveChildConnectInformations(XMLNode * fatherNode);
+		void saveFatherConnectInformation(XMLNode * fatherNode);
+		bool createNewMessage(string, string, int, string, bool = true);
+        unsigned int getConnectInformationChildIndex(string);
 	public:
-		Messageboard(string);//initboard ueber xml-datei?
+		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
+		Messageboard(int, string); //Konstruktor zum anlegen eines neuen Boards
 		~Messageboard();
-		void saveMessages();
+		void saveBoard();
 		//Client-Server
 		string getFatherName();
 		string * getChildNames();
 		Message * getNextMessage();
 		Message * getPreviousMessage();
 		Message * getHighlightedMessage();
+        Message * getFirstMessage();
+        Message * getLastMessage();
+        void setLastMessageToHighlighted();
+        void setFirstMessageToHighlighted();
+        void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
-		bool createNewMessage(string, string, int, string);
-		bool confirmAdminRights(int);
-		bool confirmMessageRights(int);
+		bool createNewMessage(string, int, string);
 		bool deleteMessage(int);
 		void erase();
-		ConnectInformation * connectToFather();
-		ConnectInformation * connectToChild(string);
-		bool iterateChilds(string, int, string, bool);
-		bool publishOnFather(string, int, string);
+        int getChildCount();
+		ConnectInformation * getConnectInformationFather();
+		ConnectInformation * getConnectInformationChild(string);
 		//Server-Server
-		bool publishChild(string, int, string, bool);
-		bool publishFather(string,int,string);
-		void notifyFather();
-		void saveChildrenInformation(int, string, ConnectInformation);
-		void notifyChildren();
-		void saveFatherInformation(int, string, ConnectInformation);
+		void saveFatherInformation(int, string, ConnectInformation *);
+		void saveChildrenInformation(int, string, ConnectInformation *);
 };

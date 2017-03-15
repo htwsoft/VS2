@@ -9,8 +9,9 @@
 #ifndef CONNECTINFORMATION_H_
 #define CONNECTINFORMATION_H_
 
+#include <string>
 
-#endif /* CONNECTINFORMATION_H_ */
+using namespace std;
 
 class ConnectInformation
 {
@@ -25,6 +26,7 @@ class ConnectInformation
 		void setPort(int port){this->port=port;}
 };
 
+#endif /* CONNECTINFORMATION_H_ */
 
 
 

@@ -1,0 +1,65 @@
+module VS2
+{
+   //Definition string[], da IDL nicht kennt    
+    typedef sequence<string> array_of_String;
+
+	struct ConnectInformationData
+	{
+		string ip;
+		long port;
+	};
+
+	struct UserData
+	{
+		string userName;
+		string password;
+	};
+	
+	struct LoginInformation
+	{
+		boolean adminRights;
+		ConnectInformationData server;
+	};
+		
+    struct MessageData
+	{
+		long uid;
+		string id;
+		string uName;
+		string text;
+	};
+	
+	typedef sequence<MessageData> array_of_MessageData;    
+
+	interface MessageboardServerInterface
+    {
+        string getFatherName();//MessageBoard hat fatherId-> abruf xml datei auf fathername
+		array_of_String getChildNames();
+        array_of_MessageData getMessages();
+        MessageData setHighlightedMessage(in string messageID);
+        MessageData getHighlightedMessage();
+        MessageData getMessageWithId(in string messageID);
+        boolean setMessage(in string message, in string messageID, in long uid, in string uName);
+		boolean deleteMessage(in long uid, in string messageID);
+		boolean createNewMessage(in string message, in long uid, in string uName);
+		MessageData getNextMessage();
+		MessageData getPreviousMessage();
+		ConnectInformationData connectToFather(); //Liefert die Connectinformationen des Fathers
+		ConnectInformationData connectToChild(in string childName); //Liefert die ConnectInformationen des Childs
+		boolean iterateChilds(in string message, in string messageID, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
+		boolean publishOnFather(in string message, in string messageID, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
+        //********** zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig) muss nicht in den Client rein ************************
+		boolean publishChild(in string message, in long uid, in string uName, in boolean schalter);//veröffentliche Nachricht auf Kinderboards
+		boolean publishFather(in string message, in long uid, in string uName);//Veröffentlich Nachricht auf Vaterboard
+		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
+		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData);
+		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
+		void saveChildInformation(in long id, in string name, in ConnectInformationData ciData);
+	};
+	
+    interface LoginServerInterface
+	{
+		LoginInformation login(in UserData uData);
+		boolean reg(in UserData uData, in string regData);
+	};
+};
