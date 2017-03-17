@@ -1,15 +1,17 @@
 module VS2
 {
-	typedef sequence<string> array_of_String;//Definition string[], da IDL nicht kennt
-	
-	struct ConnectInformation
+   //Definition string[], da IDL nicht kennt    
+    typedef sequence<string> array_of_String;
+
+	struct ConnectInformationData
 	{
 		string ip;
 		long port;
 	};
-	
+
 	struct UserData
 	{
+        long userID;
 		string userName;
 		string password;
 	};
@@ -17,49 +19,47 @@ module VS2
 	struct LoginInformation
 	{
 		boolean adminRights;
-		ConnectInformation server;
-	};
-	
-	interface LoginServerInterface
-	{
-		LoginInformation login(in UserData);
-		boolean reg(in UserData, in string);
+		ConnectInformationData server;
 	};
 
-	struct Message
+    struct MessageData
 	{
 		long uid;
-		long id;
+		string id;
 		string uName;
-		string message;
-		sequence<Message> previous;
-		sequence<Message> next;
+		string text;
 	};
-	typedef sequence<MessageData> array_of_MessageData;
-	interface ClientMessageboardInterface
-	{
-		string getFatherName();// MessageBoard hat fatherId-> abruf xml datei auf fathername
+	
+	typedef sequence<MessageData> array_of_MessageData;    
+
+	interface MessageboardServerInterface
+    {
+        string getFatherName();//MessageBoard hat fatherId-> abruf xml datei auf fathername
 		array_of_String getChildNames();
-		//Message getMessage(); nicht sicher ob notwendig. vlt beim connect?
-		boolean setMessage(in string message, in long uid, in string uName);
-		boolean deleteMessage(in long uid);
+        array_of_MessageData getMessages();
+        MessageData setHighlightedMessage(in string messageID);
+        MessageData getHighlightedMessage();
+        MessageData getMessageWithId(in string messageID);
+        boolean setMessage(in string message, in string messageID, in long uid, in string uName);
+		boolean deleteMessage(in long uid, in string messageID);
 		boolean createNewMessage(in string message, in long uid, in string uName);
-		Message getNextMessage();
-		Message getPreviousMessage();
-		ConnectInformation connectToFather();
-		ConnectInformation connectToChild(in string childName);
-		boolean iterateChilds(in string message, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
-		boolean publishOnFather(in string message, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
-	};
-	
-	interface ServerMessageboardInterface//interface zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig)
-	{
-		boolean publishChild(in string message, in long uid, in string uName, in boolean schalter);//veröffentliche Nachricht auf Kinderboards
-		boolean publishFather(in string message, in long uid, in string uName);//Veröffentlich Nachricht auf Vaterboard
+		MessageData getNextMessage();
+		MessageData getPreviousMessage();
+		ConnectInformationData connectToFather(); //Liefert die Connectinformationen des Fathers
+		ConnectInformationData connectToChild(in string childName); //Liefert die ConnectInformationen des Child
+        //********** zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig) muss nicht in den Client rein ************************
+        boolean publishOnChilds(in string message, in string messageID, in UserData uData, in boolean schalter); //Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
+		boolean publishOnFather(in string message, in string messageID, in UserData uData); //Nachricht auf Vater veröffentlichen
+        boolean saveMessage(in string message, in string messageID, in UserData uData); //Wird beim ausführen von publishOnXXX aufgerufen
 		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
-		void saveFatherInformation(in long id, in string name, in ConnectInformation connectInformation);
+		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData);
 		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
-		void saveChildInformation(in long id, in string name, in ConnectInformation connectInformation);
+		void saveChildInformation(in long id, in string name, in ConnectInformationData ciData);
 	};
 	
+    interface LoginServerInterface
+	{
+		LoginInformation login(in UserData uData);
+		boolean reg(in UserData uData, in string regData);
+	};
 };
