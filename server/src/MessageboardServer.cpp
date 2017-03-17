@@ -39,6 +39,116 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
+//Nachricht auf Board-Childs veroeffentlichen. Wenn Schalter = true dann auch auf den Childs der Childs
+CORBA::Boolean MessageboardServer::publishOnChilds(const char * message, const char * messageID, const VS2::UserData& uData, CORBA::Boolean schalter)
+{
+    ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
+    ConnectInformation * ciChild = NULL; //Verbindungsinformation eines Childs
+    bool rValue = true; //Return Value
+    bool workerValue = false;
+    int childCount = 0;
+    string * childNames = 0; //Array fuer ChildNames
+    string childName = ""; //Name eines Childs
+    string strMessage(message);
+    string strMessageID(messageID);
+    cout << "Procedure publishOnChilds() called" << endl;
+    //Prüfen on ChildBoards vorhanden sins
+    childCount = this->messageBoard->getChildCount();
+    if(childCount > 0)
+    {
+        childNames = this->messageBoard->getChildNames();
+        //Verbindung zu den einzelnen childs aufbauen
+        for(int i=0; i<childCount; i++)
+        {
+            childName = childNames[i];
+            //Verbindung zum Child-Board aufbauen
+            ciChild = this->messageBoard->getConnectInformationChild(childName);
+            sc = new ServerClient(ciChild);
+            //Vater-Infos beim Child speichern
+            workerValue = sc->publishMessage(strMessage, strMessageID, uData);
+            //wenn schalter gesetzt und nachricht veroeffentlicht werden konnte 
+            //Nachricht auf den childs des Child veroeffentlichen            
+            if(workerValue)
+            {
+                workerValue = sc->iterateChilds(strMessage, strMessageID, uData);
+            }       
+            //rValue auf false setzen falls ein Fehler aufgetreten ist            
+            if(!workerValue && rValue)
+            {
+                rValue = workerValue;
+            }
+            delete sc;
+        }
+    }            
+    return rValue;
+}
+
+//Nachrichten auf dem Vater-Board veroeffentlichen
+CORBA::Boolean MessageboardServer::publishOnFather(const char * message, const char * messageID, const VS2::UserData& uData)
+{
+    ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
+    bool rValue = false; //Return Value
+    string strMessage(message);
+    string strMessageID(messageID);
+    ConnectInformation * ciFather = NULL;
+    cout << "Procedure publishOnFather() called" << endl;
+    //Verbindung zum Vater-Board aufbauen
+    ciFather = this->messageBoard->getConnectInformationFather();
+    sc = new ServerClient(ciFather);
+    //Nachricht auf Vater veröffentlichen
+    rValue = sc->publishMessage(strMessage, strMessageID, uData);
+    delete sc;
+    return rValue;
+}
+
+//speichert eine Nachricht mit der übergebenen ID im Board
+//wird von einem Vater oder child board verwendet
+CORBA::Boolean MessageboardServer::saveMessage(const char * message, const char * messageID, const VS2::UserData& uData)
+{
+    string strMessage(message);
+    string strMessageID(messageID);
+    string strUserName(uData.userName);
+    cout << "Procedure saveMessage() called" << endl;
+    return this->messageBoard->createNewMessage(strMessage, strMessageID, uData.userID, strUserName);
+}
+
+//Teilt den child boards mit das es nun das Vater-Board ist
+void MessageboardServer::notifyChildren()
+{
+    ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
+    ConnectInformation * ciChild = NULL;
+    ConnectInformation * ciMB = NULL;
+    BoardInformation * mbInformation = NULL; //Daten des Server-Boards
+    string name = "";
+    int id = 0;
+    int childCount = 0;
+    string * childNames = 0; //Array mit Child-Names
+    string childName = "";
+    cout << "Procedure notifyChildren() called" << endl;
+    //Daten des Server-Boards auslesen
+    mbInformation = this->messageBoard->getBoardInformation();
+    name = mbInformation->getName();
+    id = mbInformation->getId();
+    ciMB = mbInformation->getConnectInformation();
+    //Prüfen on ChildBoards vorhanden sins
+    childCount = this->messageBoard->getChildCount();
+    if(childCount > 0)
+    {
+        childNames = this->messageBoard->getChildNames();
+        //Verbindung zu den einzelnen childs aufbauen
+        for(int i=0; i<childCount; i++)
+        {
+            childName = childNames[i];
+            //Verbindung zum Child-Board aufbauen
+            ciChild = this->messageBoard->getConnectInformationChild(childName);
+            sc = new ServerClient(ciChild);
+            //Vater-Infos beim Child speichern
+            sc->saveFatherInformation(id, name , ciMB); 
+            delete sc;
+        }
+    }
+}
+
 //Teilt dem Vater-Board mit das es jetzt ein Kind von Ihm ist
 void MessageboardServer::notifyFather()
 {
@@ -48,6 +158,7 @@ void MessageboardServer::notifyFather()
     BoardInformation * mbInformation = NULL; //Daten des Server-Boards
     string name = "";
     int id = 0;
+    cout << "Procedure notifyFather() called" << endl;
     //Daten des Server-Boards auslesen
     mbInformation = this->messageBoard->getBoardInformation();
     name = mbInformation->getName();

@@ -41,16 +41,15 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         MessageData * getNextMessage();
         MessageData * getPreviousMessage();
 		ConnectInformationData * connectToFather(); //Liefert die ConnectInformationen für den Vater
-		ConnectInformationData * connectToChild(const char* childName); //Liefert die ConnectInformationen für ein Child
-        CORBA::Boolean iterateChilds(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter){return false;};
-        CORBA::Boolean publishOnFather(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName){return false;};
+		ConnectInformationData * connectToChild(const char * childName); //Liefert die ConnectInformationen für ein Child
         //ServerServer Functions
-        CORBA::Boolean publishChild(const char* message, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter){return false;};
-        CORBA::Boolean publishFather(const char* message, ::CORBA::Long uid, const char* uName){return false;};
+        CORBA::Boolean publishOnChilds(const char * message, const char * messageID, const VS2::UserData& uData, CORBA::Boolean schalter);
+        CORBA::Boolean publishOnFather(const char * message, const char * messageID, const VS2::UserData& uData);
+        CORBA::Boolean saveMessage(const char * message, const char * messageID, const VS2::UserData& uData);        
         void notifyFather();
-        void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData);
-        void notifyChildren(){};
-        void saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData);        
+        void saveFatherInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData);
+        void notifyChildren();
+        void saveChildInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData);        
 };
 
 

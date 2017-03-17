@@ -51,7 +51,6 @@ class Messageboard
 		void saveConnectInformations(XMLNode * fatherNode);
 		void saveChildConnectInformations(XMLNode * fatherNode);
 		void saveFatherConnectInformation(XMLNode * fatherNode);
-		bool createNewMessage(string, string, int, string, bool = true);
         unsigned int getConnectInformationChildIndex(string);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
@@ -72,6 +71,7 @@ class Messageboard
         void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
 		bool createNewMessage(string, int, string);
+		bool createNewMessage(string, string, int, string, bool = true);
 		bool deleteMessage(int);
 		void erase();
         int getChildCount();

@@ -34,6 +34,8 @@ class ServerClient
         void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation);
         void saveChildInformation(int id, string name, const ConnectInformation * connectInformation);
         void notifyFather(); 
+        bool publishMessage(string message, string messageID, const VS2::UserData& uData);
+        bool iterateChilds(string message, string messageID, const VS2::UserData& uData);
         ConnectInformation connectToFather(); 
         ConnectInformation connectToChild(string childName);
         ~ServerClient();

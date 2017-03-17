@@ -11,6 +11,7 @@ module VS2
 
 	struct UserData
 	{
+        long userID;
 		string userName;
 		string password;
 	};
@@ -20,7 +21,7 @@ module VS2
 		boolean adminRights;
 		ConnectInformationData server;
 	};
-		
+
     struct MessageData
 	{
 		long uid;
@@ -45,12 +46,11 @@ module VS2
 		MessageData getNextMessage();
 		MessageData getPreviousMessage();
 		ConnectInformationData connectToFather(); //Liefert die Connectinformationen des Fathers
-		ConnectInformationData connectToChild(in string childName); //Liefert die ConnectInformationen des Childs
-		boolean iterateChilds(in string message, in string messageID, in long uid, in string uName, in boolean schalter);//Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
-		boolean publishOnFather(in string message, in string messageID, in long uid, in string uName);//Nachricht auf Vater veröffentlichen
+		ConnectInformationData connectToChild(in string childName); //Liefert die ConnectInformationen des Child
         //********** zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig) muss nicht in den Client rein ************************
-		boolean publishChild(in string message, in long uid, in string uName, in boolean schalter);//veröffentliche Nachricht auf Kinderboards
-		boolean publishFather(in string message, in long uid, in string uName);//Veröffentlich Nachricht auf Vaterboard
+        boolean publishOnChilds(in string message, in string messageID, in UserData uData, in boolean schalter); //Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
+		boolean publishOnFather(in string message, in string messageID, in UserData uData); //Nachricht auf Vater veröffentlichen
+        boolean saveMessage(in string message, in string messageID, in UserData uData); //Wird beim ausführen von publishOnXXX aufgerufen
 		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
 		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData);
 		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist

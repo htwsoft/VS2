@@ -82,6 +82,20 @@ ServerClient::ServerClient(ConnectInformation * connectInformation)
   return;
 }
 
+/* Veroeffentlichen von Nachrichten auf den Childs eines Childs */
+bool ServerClient::iterateChilds(string message, string messageID, const VS2::UserData& uData)
+{
+   return this->m_Data->publishOnChilds(message.c_str(), messageID.c_str(), uData, true);
+}
+
+
+/* veröffentlichen einer Nachricht auf einem Child oder Father-Board */
+/* wird nur von sendendem Board aufgerufen. nicht von Client */
+bool ServerClient::publishMessage(string message, string messageID, const VS2::UserData& uData)
+{
+   return this->m_Data->saveMessage(message.c_str(), messageID.c_str(), uData); 
+}
+
 /* Liefert die ConnectInformationen des Vaters */
 ConnectInformation ServerClient::connectToFather()
 {
@@ -159,5 +173,6 @@ void ServerClient::createInitParameter()
 
 ServerClient::~ServerClient()
 {
+    delete this->connectInformation;
     orb->destroy();
 }

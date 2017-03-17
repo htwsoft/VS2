@@ -190,6 +190,8 @@ _CORBA_MODULE_BEG
     typedef _CORBA_ConstrType_Variable_Var<UserData> _var_type;
 
     
+    ::CORBA::Long userID;
+
     ::CORBA::String_member userName;
 
     ::CORBA::String_member password;
@@ -437,10 +439,9 @@ _CORBA_MODULE_BEG
     MessageData* getPreviousMessage();
     ConnectInformationData* connectToFather();
     ConnectInformationData* connectToChild(const char* childName);
-    ::CORBA::Boolean iterateChilds(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter);
-    ::CORBA::Boolean publishOnFather(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName);
-    ::CORBA::Boolean publishChild(const char* message, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter);
-    ::CORBA::Boolean publishFather(const char* message, ::CORBA::Long uid, const char* uName);
+    ::CORBA::Boolean publishOnChilds(const char* message, const char* messageID, const ::VS2::UserData& uData, ::CORBA::Boolean schalter);
+    ::CORBA::Boolean publishOnFather(const char* message, const char* messageID, const ::VS2::UserData& uData);
+    ::CORBA::Boolean saveMessage(const char* message, const char* messageID, const ::VS2::UserData& uData);
     void notifyFather();
     void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData);
     void notifyChildren();
@@ -492,10 +493,9 @@ _CORBA_MODULE_BEG
     virtual MessageData* getPreviousMessage() = 0;
     virtual ConnectInformationData* connectToFather() = 0;
     virtual ConnectInformationData* connectToChild(const char* childName) = 0;
-    virtual ::CORBA::Boolean iterateChilds(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter) = 0;
-    virtual ::CORBA::Boolean publishOnFather(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName) = 0;
-    virtual ::CORBA::Boolean publishChild(const char* message, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter) = 0;
-    virtual ::CORBA::Boolean publishFather(const char* message, ::CORBA::Long uid, const char* uName) = 0;
+    virtual ::CORBA::Boolean publishOnChilds(const char* message, const char* messageID, const ::VS2::UserData& uData, ::CORBA::Boolean schalter) = 0;
+    virtual ::CORBA::Boolean publishOnFather(const char* message, const char* messageID, const ::VS2::UserData& uData) = 0;
+    virtual ::CORBA::Boolean saveMessage(const char* message, const char* messageID, const ::VS2::UserData& uData) = 0;
     virtual void notifyFather() = 0;
     virtual void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData) = 0;
     virtual void notifyChildren() = 0;
