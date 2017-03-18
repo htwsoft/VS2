@@ -1,3 +1,4 @@
+package client;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -17,11 +18,11 @@ public class Dialog {
 		StartClient test;
 		 test = new StartClient("127.0.0.1",6000);
 //		test = new StartClient(args);
-		 System.out.println("Benutzer name:");
+//		 System.out.println("Benutzer name:");
 		Scanner scan = new Scanner(System.in);
-		String username = scan.nextLine();
+//		String username = scan.nextLine();
 
-		test.loginBenutzer(username, "12345");
+		//test.loginBenutzer(username, "12345");
 		int i;
 		boolean beenden = false;
 
@@ -42,7 +43,7 @@ public class Dialog {
 				Scanner scan1 = new Scanner(System.in);
 				messagea = scan1.nextLine();
 
-				test.schreibeMessage(messagea);
+				System.out.println(test.schreibeMessage(messagea));
 				break;
 
 			case 2:
@@ -100,9 +101,8 @@ public class Dialog {
 
 				if (eingabe.equals("y")) {
 					System.out.println(ip + port);
-					test.loginBenutzer(username, "12345");
+					//test.loginBenutzer(username, "12345");
 					test = new StartClient(ip, port);
-
 				}
 				break;
 			case 6:

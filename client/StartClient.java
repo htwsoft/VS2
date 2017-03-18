@@ -1,3 +1,5 @@
+package client;
+
 /**
  *
  * @author imed
@@ -12,10 +14,14 @@ public class StartClient {
 	private RegisterLogin regLogin;
 
 	private int uid = 12345;
+	private String uName="TEstsalva";
+	private String pWord="FIsche";
+	
 	private String message;
 	private String fatherName;
+	private UserData userData;
 	
-	
+	private LoginInformation loginInfo;
 	private MessageboardServerInterface mbImpl;
 	private LoginServerInterface dbImpl;
 	boolean shutdown;
@@ -23,9 +29,14 @@ public class StartClient {
 	private ArrayList<MessageData> messageList;
 	private ArrayList<String> childList;
 
+	private int portDB=6050; // Bitte den richtigen port eingeben und der muss am besten immer gleich sein
+	private String ipDB="192.168.2.1";
+	 
 	ORB orb;
 	private String[] url=null;
 	private String METHOD = "DataServiceName1";
+
+	
 
 	private void connectToServer() {
 		try {
@@ -42,51 +53,40 @@ public class StartClient {
 			// part of the Interoperable naming Service.
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			mbImpl = MessageboardServerInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
-//			dbImpl = LoginServerInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
 
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e);
 			System.exit(0);
 		}
 	}
-	public StartClient(String uName, String pWord){
-		regLogin = new RegisterLogin();
-		if(regLogin.login(new UserData(uName, pWord))){
-			this.messageList = new ArrayList<MessageData>();
-			this.childList =new ArrayList<String>();
-			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
-			this.connectToServer();
-		}
-		else
-			throw new Exception("Loginfehler!");
-		
-	}
+//	
+//	public StartClient(String uName, String pWord){
+//		regLogin = new RegisterLogin(portDB,ipDB);
+//		if(regLogin.login(new UserData(1,uName, pWord))){
+//			this.messageList = new ArrayList<MessageData>();
+//			this.childList =new ArrayList<String>();
+//			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
+//			this.connectToServer();
+//		}
+//		else
+//			throw new Exception("Loginfehler!");	
+//	}
 	/*
 	 * 
 	 * TODO warte auf DB dann loeschen
 	 */
 	public StartClient(String ip, int port) {
-		
+			userData=new UserData(uid,this.uName,pWord);
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();
 			this.url = new String[] { "-ORBInitialPort", Integer.toString(port), "-ORBInitialHost", ip };
 			//this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
 			this.connectToServer();
-		 
-
 	}
-	/*
-	 * 
-	 */
-	public  StartClient(String[] url) {
-	
-			this.messageList = new ArrayList<MessageData>();
-			// this.url = new String[] { "-ORBInitialPort",
-			// Integer.toString(port),
-			// "-ORBInitialHost", ip };
-			this.url = url;
-			this.connectToServer();
-		
+
+	public void setDBipUport(String ip,int port){
+		this.ipDB=ip;
+		this.portDB=port;
 	}
 
 	/*
@@ -102,7 +102,9 @@ public class StartClient {
 		}
 		return childList;	
 	}
-	
+	/*
+	 * GIbt die einzelnen  IP des Kind
+	 */
 	public String getChildIP(String childname){
 		return this.mbImpl.connectToChild(childname).ip;
 	}
@@ -110,6 +112,7 @@ public class StartClient {
 	public int getChildPort(String childname){
 		return this.mbImpl.connectToChild(childname).port;
 	}
+	
 	/*
 	 * Array von alle Nachrichten
 	 */
@@ -149,11 +152,11 @@ public class StartClient {
 	 * TODO
 	 */
 	public boolean schreibeMessage(String message) {
-		return mbImpl.createNewMessage(message, this.uid, this.userData.userName);
+		return mbImpl.createNewMessage(message, this.uid, this.uName);
 	}
 
 	/*
-	 * gibt die direkt nächste Message
+	 * gibt die direkt n�chste Message
 	 * TODO
 	 */
 	public MessageData getnextMessage() {
@@ -161,7 +164,7 @@ public class StartClient {
 	}
 
 	/*
-	 * gibt die vorhärige Message
+	 * gibt die vorh�rige Message
 	 */
 	public MessageData getPreviousMessage() {
 		return this.mbImpl.getPreviousMessage();
@@ -191,8 +194,8 @@ public class StartClient {
 	 *Sendet Nachircht an alle Kinder
 	 *Return boolean
 	 */
-	public boolean iterateChilds(MessageData tempMData){
-		return this.mbImpl.iterateChilds(tempMData.text,tempMData.id,tempMData.uid,tempMData.uName,this.loginInfo.adminRights);
+	public boolean publishOnChilds(MessageData tempMData){
+		return this.mbImpl.publishOnChilds(tempMData.text,tempMData.id,this.userData,this.loginInfo.adminRights);
 	}
 	
 	/*
@@ -201,7 +204,7 @@ public class StartClient {
 	 *Return boolean 
 	 */
 	public boolean  publishOnFather(MessageData tempMData){
-		return this.mbImpl.publishOnFather(tempMData.text, tempMData.id, tempMData.uid, tempMData.uName);
+		return this.mbImpl.publishOnFather(tempMData.text, tempMData.id,this.userData);
 	}
 	/*
 	 * username abfragen
