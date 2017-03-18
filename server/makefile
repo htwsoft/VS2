@@ -53,6 +53,6 @@ Message.o: $(SERVERSOURCEPATH)Message.cpp $(SERVERSOURCEPATH)Message.h
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)Message.cpp 
 	
 #Files fuer XML
-	
+
 XMLWorker.o: $(XMLSOURCEPATH)XMLWorker.cpp $(XMLSOURCEPATH)XMLWorker.h $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)XMLWorker.cpp

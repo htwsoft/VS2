@@ -82,6 +82,68 @@ ServerClient::ServerClient(ConnectInformation * connectInformation)
   return;
 }
 
+/* Veroeffentlichen von Nachrichten auf den Childs eines Childs */
+bool ServerClient::iterateChilds(string message, string messageID, const VS2::UserData& uData)
+{
+   return this->m_Data->publishOnChilds(message.c_str(), messageID.c_str(), uData, true);
+}
+
+
+/* veröffentlichen einer Nachricht auf einem Child oder Father-Board */
+/* wird nur von sendendem Board aufgerufen. nicht von Client */
+bool ServerClient::publishMessage(string message, string messageID, const VS2::UserData& uData)
+{
+   return this->m_Data->saveMessage(message.c_str(), messageID.c_str(), uData); 
+}
+
+/* Liefert die ConnectInformationen des Vaters */
+ConnectInformation ServerClient::connectToFather()
+{
+    ConnectInformation newCI("", 0);
+    ConnectInformationData * ciData = NULL;
+    ciData = this->m_Data->connectToFather();
+    string strIp(ciData->ip);
+    newCI.setPort(ciData->port);
+    newCI.setIp(strIp);
+    return newCI;
+}
+
+/* Funktion nur zum Testen*/
+void ServerClient::notifyFather()
+{
+    this->m_Data->notifyFather();
+}
+
+/* Liefert die ConnectInformationen eines Childs */ 
+ConnectInformation ServerClient::connectToChild(string childName)
+{
+    ConnectInformation newCI("", 0);
+    ConnectInformationData * ciData = NULL;
+    ciData = this->m_Data->connectToChild(childName.c_str());
+    string strIp(ciData->ip);
+    newCI.setPort(ciData->port);
+    newCI.setIp(strIp);
+    return newCI;
+}
+
+/* speichern von Fathe-Informationen eines Servers */
+void ServerClient::saveFatherInformation(int id, string name, const ConnectInformation * connectInformation)
+{
+    ConnectInformationData ciData;
+    ciData.ip = connectInformation->getIp().c_str();
+    ciData.port = connectInformation->getPort();
+    this->m_Data->saveFatherInformation(id, name.c_str(), ciData);
+}
+
+/* speichern von Child-Informationen eines Servers */
+void ServerClient::saveChildInformation(int id, string name, const ConnectInformation * connectInformation)
+{
+    ConnectInformationData ciData;
+    ciData.ip = connectInformation->getIp().c_str();
+    ciData.port = connectInformation->getPort();
+    this->m_Data->saveChildInformation(id, name.c_str(), ciData);
+}
+
 /* Funktion macht aus einem String ein char * Objekt */
 char * ServerClient::copyString(string zeichen)
 {
@@ -111,5 +173,6 @@ void ServerClient::createInitParameter()
 
 ServerClient::~ServerClient()
 {
+    delete this->connectInformation;
     orb->destroy();
 }

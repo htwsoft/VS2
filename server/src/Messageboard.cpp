@@ -311,7 +311,6 @@ void Messageboard::initChild(XMLNode * node)
 	string strId = "";
 	string nodeName = "";
 	int paramCount = 0;
-	ConnectInformation * connectInformation = NULL;
 	paramCount = node->getChildCount();
 	for(int i=0; i < paramCount; i++)
 	{
@@ -346,8 +345,7 @@ void Messageboard::initChild(XMLNode * node)
 		strId = node->getAttribut(0)->getValue();
 		id = atoi(strId.c_str());	
 	}
-	connectInformation = new ConnectInformation(ip, port);
-	this->childs.push_back(new BoardInformation(name, id, connectInformation));
+	this->childs.push_back(new BoardInformation(name, id, ip, port));
 }
 
 /* Lesen der Father-ConnectInfos aus der XML */
@@ -360,8 +358,7 @@ void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
 	int id = 0;
 	string strId = "";
 	string name = "";
-	ConnectInformation * connectInformation = NULL;
-	
+
 	this->xml->setWorkNode(node);
 	workNode = this->xml->getChildNodeWithName("ip");
 	if(workNode != NULL)
@@ -389,8 +386,7 @@ void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
 	//Pruefen ob Port und IP gefunden wurden
 	if(port > 0 && ip.compare("") != 0)
 	{
-		connectInformation = new ConnectInformation(ip, port);
-		this->father = new BoardInformation(name, id, connectInformation);
+		this->father = new BoardInformation(name, id, ip, port);
 	}
 }
 
@@ -402,7 +398,10 @@ void Messageboard::initBoardInformations()
 	XMLAttribut * idAttr = 0;
 	string name = "";
 	string strId = "";
+    string strPort = "";
+    string ip = "";
 	int id = 0;
+    int port = 0;
 	rootNode = this->xml->getRootNode();
 	if(rootNode != NULL)
 	{
@@ -414,7 +413,20 @@ void Messageboard::initBoardInformations()
 			name = workNode->getValue();
 		}
 					
-		
+		workNode = this->xml->getChildNodeWithName("ip");
+		if(workNode != NULL)
+		{
+			ip = workNode->getValue();
+		}
+
+		workNode = this->xml->getChildNodeWithName("port");
+		if(workNode != NULL)
+		{
+			strPort = workNode->getValue();
+			port = atoi(strPort.c_str());
+            
+		}		
+
 		//suchen der board id
 		if(rootNode->getAttributCount() > 0)
 		{
@@ -423,7 +435,7 @@ void Messageboard::initBoardInformations()
 			id = atoi(strId.c_str());
 		}
 	}
-	this->boardInformation = new BoardInformation(name, id, NULL);
+	this->boardInformation = new BoardInformation(name, id, ip, port);
 }
 
 /* Funktion liest den Message ID Counter aus der XML,
@@ -516,6 +528,12 @@ void Messageboard::initMessage(XMLNode * node)
 string Messageboard::getFatherName()
 {
 	return father->getName();
+}
+
+   
+BoardInformation * Messageboard::getBoardInformation()
+{
+    return this->boardInformation;
 }
 
 string * Messageboard::getChildNames()
@@ -783,6 +801,6 @@ void Messageboard::saveFatherInformation(int id, string name, ConnectInformation
 	{
 		delete this->father;
 	}
-	father = new BoardInformation(name, id, connectInformation);
+	this->father = new BoardInformation(name, id, connectInformation);
 	this->saveBoard();
 }

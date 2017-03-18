@@ -29,7 +29,7 @@ int main(int argc, char ** args)
     // Initialize CORBA ORB - "orb"
     //------------------------------------------------------------------------
 	cout << "Server gestartet..." << endl; 
-    CORBA::ORB_var orb = CORBA::ORB_init(argc, args, "omniORB4");
+    CORBA::ORB_var orb = CORBA::ORB_init(argc, args);
                                                                                 
     //------------------------------------------------------------------------
     // Servant must register with POA in order to be made available for client

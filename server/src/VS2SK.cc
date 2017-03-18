@@ -33,6 +33,7 @@ VS2::ConnectInformationData::operator<<= (cdrStream &_n)
 void
 VS2::UserData::operator>>= (cdrStream &_n) const
 {
+  userID >>= _n;
   _n.marshalString(userName,0);
   _n.marshalString(password,0);
 
@@ -41,6 +42,7 @@ VS2::UserData::operator>>= (cdrStream &_n) const
 void
 VS2::UserData::operator<<= (cdrStream &_n)
 {
+  (::CORBA::Long&)userID <<= _n;
   userName = _n.unmarshalString(0);
   password = _n.unmarshalString(0);
 
@@ -1026,10 +1028,10 @@ VS2::ConnectInformationData* VS2::_objref_MessageboardServerInterface::connectTo
 
 
 //
-// Code for VS2::MessageboardServerInterface::iterateChilds
+// Code for VS2::MessageboardServerInterface::publishOnChilds
 
 // Proxy call descriptor class. Mangled signature:
-//  _cboolean_i_cstring_i_cstring_i_clong_i_cstring_i_cboolean
+//  _cboolean_i_cstring_i_cstring_i_cVS2_mUserData_i_cboolean
 class _0RL_cd_446db2b6595c77cf_71000000
   : public omniCallDescriptor
 {
@@ -1053,10 +1055,9 @@ public:
   const char* arg_0;
   ::CORBA::String_var arg_1_;
   const char* arg_1;
-  ::CORBA::Long arg_2;
-  ::CORBA::String_var arg_3_;
-  const char* arg_3;
-  ::CORBA::Boolean arg_4;
+  VS2::UserData_var arg_2_;
+  const VS2::UserData* arg_2;
+  ::CORBA::Boolean arg_3;
   ::CORBA::Boolean result;
 };
 
@@ -1064,9 +1065,8 @@ void _0RL_cd_446db2b6595c77cf_71000000::marshalArguments(cdrStream& _n)
 {
   _n.marshalString(arg_0,0);
   _n.marshalString(arg_1,0);
-  arg_2 >>= _n;
-  _n.marshalString(arg_3,0);
-  _n.marshalBoolean(arg_4);
+  (const VS2::UserData&) *arg_2 >>= _n;
+  _n.marshalBoolean(arg_3);
 
 }
 
@@ -1076,10 +1076,10 @@ void _0RL_cd_446db2b6595c77cf_71000000::unmarshalArguments(cdrStream& _n)
   arg_0 = arg_0_.in();
   arg_1_ = _n.unmarshalString(0);
   arg_1 = arg_1_.in();
-  (::CORBA::Long&)arg_2 <<= _n;
-  arg_3_ = _n.unmarshalString(0);
-  arg_3 = arg_3_.in();
-  arg_4 = _n.unmarshalBoolean();
+  arg_2_ = new VS2::UserData;
+  (VS2::UserData&)arg_2_ <<= _n;
+  arg_2 = &arg_2_.in();
+  arg_3 = _n.unmarshalBoolean();
 
 }
 
@@ -1105,19 +1105,18 @@ _0RL_lcfn_446db2b6595c77cf_81000000(omniCallDescriptor* cd, omniServant* svnt)
 {
   _0RL_cd_446db2b6595c77cf_71000000* tcd = (_0RL_cd_446db2b6595c77cf_71000000*)cd;
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
-  tcd->result = impl->iterateChilds(tcd->arg_0, tcd->arg_1, tcd->arg_2, tcd->arg_3, tcd->arg_4);
+  tcd->result = impl->publishOnChilds(tcd->arg_0, tcd->arg_1, *tcd->arg_2, tcd->arg_3);
 
 
 }
 
-::CORBA::Boolean VS2::_objref_MessageboardServerInterface::iterateChilds(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter)
+::CORBA::Boolean VS2::_objref_MessageboardServerInterface::publishOnChilds(const char* message, const char* messageID, const ::VS2::UserData& uData, ::CORBA::Boolean schalter)
 {
-  _0RL_cd_446db2b6595c77cf_71000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_81000000, "iterateChilds", 14);
+  _0RL_cd_446db2b6595c77cf_71000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_81000000, "publishOnChilds", 16);
   _call_desc.arg_0 = message;
   _call_desc.arg_1 = messageID;
-  _call_desc.arg_2 = uid;
-  _call_desc.arg_3 = uName;
-  _call_desc.arg_4 = schalter;
+  _call_desc.arg_2 = &(::VS2::UserData&) uData;
+  _call_desc.arg_3 = schalter;
 
   _invoke(_call_desc);
   return _call_desc.result;
@@ -1129,42 +1128,13 @@ _0RL_lcfn_446db2b6595c77cf_81000000(omniCallDescriptor* cd, omniServant* svnt)
 //
 // Code for VS2::MessageboardServerInterface::publishOnFather
 
-// Local call call-back function.
-static void
-_0RL_lcfn_446db2b6595c77cf_91000000(omniCallDescriptor* cd, omniServant* svnt)
-{
-  _0RL_cd_446db2b6595c77cf_b0000000* tcd = (_0RL_cd_446db2b6595c77cf_b0000000*)cd;
-  VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
-  tcd->result = impl->publishOnFather(tcd->arg_0, tcd->arg_1, tcd->arg_2, tcd->arg_3);
-
-
-}
-
-::CORBA::Boolean VS2::_objref_MessageboardServerInterface::publishOnFather(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName)
-{
-  _0RL_cd_446db2b6595c77cf_b0000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_91000000, "publishOnFather", 16);
-  _call_desc.arg_0 = message;
-  _call_desc.arg_1 = messageID;
-  _call_desc.arg_2 = uid;
-  _call_desc.arg_3 = uName;
-
-  _invoke(_call_desc);
-  return _call_desc.result;
-
-
-}
-
-
-//
-// Code for VS2::MessageboardServerInterface::publishChild
-
 // Proxy call descriptor class. Mangled signature:
-//  _cboolean_i_cstring_i_clong_i_cstring_i_cboolean
-class _0RL_cd_446db2b6595c77cf_a1000000
+//  _cboolean_i_cstring_i_cstring_i_cVS2_mUserData
+class _0RL_cd_446db2b6595c77cf_91000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_446db2b6595c77cf_a1000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_446db2b6595c77cf_91000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -1181,67 +1151,66 @@ public:
 
   ::CORBA::String_var arg_0_;
   const char* arg_0;
-  ::CORBA::Long arg_1;
-  ::CORBA::String_var arg_2_;
-  const char* arg_2;
-  ::CORBA::Boolean arg_3;
+  ::CORBA::String_var arg_1_;
+  const char* arg_1;
+  VS2::UserData_var arg_2_;
+  const VS2::UserData* arg_2;
   ::CORBA::Boolean result;
 };
 
-void _0RL_cd_446db2b6595c77cf_a1000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_91000000::marshalArguments(cdrStream& _n)
 {
   _n.marshalString(arg_0,0);
-  arg_1 >>= _n;
-  _n.marshalString(arg_2,0);
-  _n.marshalBoolean(arg_3);
+  _n.marshalString(arg_1,0);
+  (const VS2::UserData&) *arg_2 >>= _n;
 
 }
 
-void _0RL_cd_446db2b6595c77cf_a1000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_91000000::unmarshalArguments(cdrStream& _n)
 {
   arg_0_ = _n.unmarshalString(0);
   arg_0 = arg_0_.in();
-  (::CORBA::Long&)arg_1 <<= _n;
-  arg_2_ = _n.unmarshalString(0);
-  arg_2 = arg_2_.in();
-  arg_3 = _n.unmarshalBoolean();
+  arg_1_ = _n.unmarshalString(0);
+  arg_1 = arg_1_.in();
+  arg_2_ = new VS2::UserData;
+  (VS2::UserData&)arg_2_ <<= _n;
+  arg_2 = &arg_2_.in();
 
 }
 
-void _0RL_cd_446db2b6595c77cf_a1000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_91000000::marshalReturnedValues(cdrStream& _n)
 {
   _n.marshalBoolean(result);
 
 }
 
-void _0RL_cd_446db2b6595c77cf_a1000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_91000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = _n.unmarshalBoolean();
 
 }
 
-const char* const _0RL_cd_446db2b6595c77cf_a1000000::_user_exns[] = {
+const char* const _0RL_cd_446db2b6595c77cf_91000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_b1000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_a1000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_a1000000* tcd = (_0RL_cd_446db2b6595c77cf_a1000000*)cd;
+  _0RL_cd_446db2b6595c77cf_91000000* tcd = (_0RL_cd_446db2b6595c77cf_91000000*)cd;
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
-  tcd->result = impl->publishChild(tcd->arg_0, tcd->arg_1, tcd->arg_2, tcd->arg_3);
+  tcd->result = impl->publishOnFather(tcd->arg_0, tcd->arg_1, *tcd->arg_2);
 
 
 }
 
-::CORBA::Boolean VS2::_objref_MessageboardServerInterface::publishChild(const char* message, ::CORBA::Long uid, const char* uName, ::CORBA::Boolean schalter)
+::CORBA::Boolean VS2::_objref_MessageboardServerInterface::publishOnFather(const char* message, const char* messageID, const ::VS2::UserData& uData)
 {
-  _0RL_cd_446db2b6595c77cf_a1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_b1000000, "publishChild", 13);
+  _0RL_cd_446db2b6595c77cf_91000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_a1000000, "publishOnFather", 16);
   _call_desc.arg_0 = message;
-  _call_desc.arg_1 = uid;
-  _call_desc.arg_2 = uName;
-  _call_desc.arg_3 = schalter;
+  _call_desc.arg_1 = messageID;
+  _call_desc.arg_2 = &(::VS2::UserData&) uData;
 
   _invoke(_call_desc);
   return _call_desc.result;
@@ -1251,25 +1220,25 @@ _0RL_lcfn_446db2b6595c77cf_b1000000(omniCallDescriptor* cd, omniServant* svnt)
 
 
 //
-// Code for VS2::MessageboardServerInterface::publishFather
+// Code for VS2::MessageboardServerInterface::saveMessage
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_c1000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_b1000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_f0000000* tcd = (_0RL_cd_446db2b6595c77cf_f0000000*)cd;
+  _0RL_cd_446db2b6595c77cf_91000000* tcd = (_0RL_cd_446db2b6595c77cf_91000000*)cd;
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
-  tcd->result = impl->publishFather(tcd->arg_0, tcd->arg_1, tcd->arg_2);
+  tcd->result = impl->saveMessage(tcd->arg_0, tcd->arg_1, *tcd->arg_2);
 
 
 }
 
-::CORBA::Boolean VS2::_objref_MessageboardServerInterface::publishFather(const char* message, ::CORBA::Long uid, const char* uName)
+::CORBA::Boolean VS2::_objref_MessageboardServerInterface::saveMessage(const char* message, const char* messageID, const ::VS2::UserData& uData)
 {
-  _0RL_cd_446db2b6595c77cf_f0000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_c1000000, "publishFather", 14);
+  _0RL_cd_446db2b6595c77cf_91000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_b1000000, "saveMessage", 12);
   _call_desc.arg_0 = message;
-  _call_desc.arg_1 = uid;
-  _call_desc.arg_2 = uName;
+  _call_desc.arg_1 = messageID;
+  _call_desc.arg_2 = &(::VS2::UserData&) uData;
 
   _invoke(_call_desc);
   return _call_desc.result;
@@ -1283,11 +1252,11 @@ _0RL_lcfn_446db2b6595c77cf_c1000000(omniCallDescriptor* cd, omniServant* svnt)
 
 // Proxy call descriptor class. Mangled signature:
 //  void
-class _0RL_cd_446db2b6595c77cf_d1000000
+class _0RL_cd_446db2b6595c77cf_c1000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_446db2b6595c77cf_d1000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_446db2b6595c77cf_c1000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -1301,13 +1270,13 @@ public:
   
 };
 
-const char* const _0RL_cd_446db2b6595c77cf_d1000000::_user_exns[] = {
+const char* const _0RL_cd_446db2b6595c77cf_c1000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_e1000000(omniCallDescriptor*, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_d1000000(omniCallDescriptor*, omniServant* svnt)
 {
   
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
@@ -1318,7 +1287,7 @@ _0RL_lcfn_446db2b6595c77cf_e1000000(omniCallDescriptor*, omniServant* svnt)
 
 void VS2::_objref_MessageboardServerInterface::notifyFather()
 {
-  _0RL_cd_446db2b6595c77cf_d1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_e1000000, "notifyFather", 13);
+  _0RL_cd_446db2b6595c77cf_c1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_d1000000, "notifyFather", 13);
 
 
   _invoke(_call_desc);
@@ -1333,11 +1302,11 @@ void VS2::_objref_MessageboardServerInterface::notifyFather()
 
 // Proxy call descriptor class. Mangled signature:
 //  void_i_clong_i_cstring_i_cVS2_mConnectInformationData
-class _0RL_cd_446db2b6595c77cf_f1000000
+class _0RL_cd_446db2b6595c77cf_e1000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_446db2b6595c77cf_f1000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_446db2b6595c77cf_e1000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -1357,7 +1326,7 @@ public:
   const VS2::ConnectInformationData* arg_2;
 };
 
-void _0RL_cd_446db2b6595c77cf_f1000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_e1000000::marshalArguments(cdrStream& _n)
 {
   arg_0 >>= _n;
   _n.marshalString(arg_1,0);
@@ -1365,7 +1334,7 @@ void _0RL_cd_446db2b6595c77cf_f1000000::marshalArguments(cdrStream& _n)
 
 }
 
-void _0RL_cd_446db2b6595c77cf_f1000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_e1000000::unmarshalArguments(cdrStream& _n)
 {
   (::CORBA::Long&)arg_0 <<= _n;
   arg_1_ = _n.unmarshalString(0);
@@ -1376,15 +1345,15 @@ void _0RL_cd_446db2b6595c77cf_f1000000::unmarshalArguments(cdrStream& _n)
 
 }
 
-const char* const _0RL_cd_446db2b6595c77cf_f1000000::_user_exns[] = {
+const char* const _0RL_cd_446db2b6595c77cf_e1000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_02000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_f1000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_f1000000* tcd = (_0RL_cd_446db2b6595c77cf_f1000000*)cd;
+  _0RL_cd_446db2b6595c77cf_e1000000* tcd = (_0RL_cd_446db2b6595c77cf_e1000000*)cd;
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
   impl->saveFatherInformation(tcd->arg_0, tcd->arg_1, *tcd->arg_2);
 
@@ -1393,7 +1362,7 @@ _0RL_lcfn_446db2b6595c77cf_02000000(omniCallDescriptor* cd, omniServant* svnt)
 
 void VS2::_objref_MessageboardServerInterface::saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
 {
-  _0RL_cd_446db2b6595c77cf_f1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_02000000, "saveFatherInformation", 22);
+  _0RL_cd_446db2b6595c77cf_e1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_f1000000, "saveFatherInformation", 22);
   _call_desc.arg_0 = id;
   _call_desc.arg_1 = name;
   _call_desc.arg_2 = &(::VS2::ConnectInformationData&) ciData;
@@ -1410,7 +1379,7 @@ void VS2::_objref_MessageboardServerInterface::saveFatherInformation(::CORBA::Lo
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_12000000(omniCallDescriptor*, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_02000000(omniCallDescriptor*, omniServant* svnt)
 {
   
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
@@ -1421,7 +1390,7 @@ _0RL_lcfn_446db2b6595c77cf_12000000(omniCallDescriptor*, omniServant* svnt)
 
 void VS2::_objref_MessageboardServerInterface::notifyChildren()
 {
-  _0RL_cd_446db2b6595c77cf_d1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_12000000, "notifyChildren", 15);
+  _0RL_cd_446db2b6595c77cf_c1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_02000000, "notifyChildren", 15);
 
 
   _invoke(_call_desc);
@@ -1436,9 +1405,9 @@ void VS2::_objref_MessageboardServerInterface::notifyChildren()
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_22000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_12000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_f1000000* tcd = (_0RL_cd_446db2b6595c77cf_f1000000*)cd;
+  _0RL_cd_446db2b6595c77cf_e1000000* tcd = (_0RL_cd_446db2b6595c77cf_e1000000*)cd;
   VS2::_impl_MessageboardServerInterface* impl = (VS2::_impl_MessageboardServerInterface*) svnt->_ptrToInterface(VS2::MessageboardServerInterface::_PD_repoId);
   impl->saveChildInformation(tcd->arg_0, tcd->arg_1, *tcd->arg_2);
 
@@ -1447,7 +1416,7 @@ _0RL_lcfn_446db2b6595c77cf_22000000(omniCallDescriptor* cd, omniServant* svnt)
 
 void VS2::_objref_MessageboardServerInterface::saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
 {
-  _0RL_cd_446db2b6595c77cf_f1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_22000000, "saveChildInformation", 21);
+  _0RL_cd_446db2b6595c77cf_e1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_12000000, "saveChildInformation", 21);
   _call_desc.arg_0 = id;
   _call_desc.arg_1 = name;
   _call_desc.arg_2 = &(::VS2::ConnectInformationData&) ciData;
@@ -1591,9 +1560,9 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
     return 1;
   }
 
-  if (omni::strMatch(op, "iterateChilds")) {
+  if (omni::strMatch(op, "publishOnChilds")) {
 
-    _0RL_cd_446db2b6595c77cf_71000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_81000000, "iterateChilds", 14, 1);
+    _0RL_cd_446db2b6595c77cf_71000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_81000000, "publishOnChilds", 16, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1601,23 +1570,15 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "publishOnFather")) {
 
-    _0RL_cd_446db2b6595c77cf_b0000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_91000000, "publishOnFather", 16, 1);
+    _0RL_cd_446db2b6595c77cf_91000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_a1000000, "publishOnFather", 16, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
   }
 
-  if (omni::strMatch(op, "publishChild")) {
+  if (omni::strMatch(op, "saveMessage")) {
 
-    _0RL_cd_446db2b6595c77cf_a1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_b1000000, "publishChild", 13, 1);
-    
-    _handle.upcall(this,_call_desc);
-    return 1;
-  }
-
-  if (omni::strMatch(op, "publishFather")) {
-
-    _0RL_cd_446db2b6595c77cf_f0000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_c1000000, "publishFather", 14, 1);
+    _0RL_cd_446db2b6595c77cf_91000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_b1000000, "saveMessage", 12, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1625,7 +1586,7 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "notifyFather")) {
 
-    _0RL_cd_446db2b6595c77cf_d1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_e1000000, "notifyFather", 13, 1);
+    _0RL_cd_446db2b6595c77cf_c1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_d1000000, "notifyFather", 13, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1633,7 +1594,7 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "saveFatherInformation")) {
 
-    _0RL_cd_446db2b6595c77cf_f1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_02000000, "saveFatherInformation", 22, 1);
+    _0RL_cd_446db2b6595c77cf_e1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_f1000000, "saveFatherInformation", 22, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1641,7 +1602,7 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "notifyChildren")) {
 
-    _0RL_cd_446db2b6595c77cf_d1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_12000000, "notifyChildren", 15, 1);
+    _0RL_cd_446db2b6595c77cf_c1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_02000000, "notifyChildren", 15, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1649,7 +1610,7 @@ VS2::_impl_MessageboardServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "saveChildInformation")) {
 
-    _0RL_cd_446db2b6595c77cf_f1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_22000000, "saveChildInformation", 21, 1);
+    _0RL_cd_446db2b6595c77cf_e1000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_12000000, "saveChildInformation", 21, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1791,11 +1752,11 @@ VS2::_objref_LoginServerInterface::_ptrToObjRef(const char* id)
 
 // Proxy call descriptor class. Mangled signature:
 //  _cVS2_mLoginInformation_i_cVS2_mUserData
-class _0RL_cd_446db2b6595c77cf_32000000
+class _0RL_cd_446db2b6595c77cf_22000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_446db2b6595c77cf_32000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_446db2b6595c77cf_22000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -1815,13 +1776,13 @@ public:
   VS2::LoginInformation_var result;
 };
 
-void _0RL_cd_446db2b6595c77cf_32000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_22000000::marshalArguments(cdrStream& _n)
 {
   (const VS2::UserData&) *arg_0 >>= _n;
 
 }
 
-void _0RL_cd_446db2b6595c77cf_32000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_22000000::unmarshalArguments(cdrStream& _n)
 {
   arg_0_ = new VS2::UserData;
   (VS2::UserData&)arg_0_ <<= _n;
@@ -1829,28 +1790,28 @@ void _0RL_cd_446db2b6595c77cf_32000000::unmarshalArguments(cdrStream& _n)
 
 }
 
-void _0RL_cd_446db2b6595c77cf_32000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_22000000::marshalReturnedValues(cdrStream& _n)
 {
   (const VS2::LoginInformation&) result >>= _n;
 
 }
 
-void _0RL_cd_446db2b6595c77cf_32000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_22000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = new VS2::LoginInformation;
   (VS2::LoginInformation&)result <<= _n;
 
 }
 
-const char* const _0RL_cd_446db2b6595c77cf_32000000::_user_exns[] = {
+const char* const _0RL_cd_446db2b6595c77cf_22000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_42000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_32000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_32000000* tcd = (_0RL_cd_446db2b6595c77cf_32000000*)cd;
+  _0RL_cd_446db2b6595c77cf_22000000* tcd = (_0RL_cd_446db2b6595c77cf_22000000*)cd;
   VS2::_impl_LoginServerInterface* impl = (VS2::_impl_LoginServerInterface*) svnt->_ptrToInterface(VS2::LoginServerInterface::_PD_repoId);
   tcd->result = impl->login(*tcd->arg_0);
 
@@ -1859,7 +1820,7 @@ _0RL_lcfn_446db2b6595c77cf_42000000(omniCallDescriptor* cd, omniServant* svnt)
 
 VS2::LoginInformation* VS2::_objref_LoginServerInterface::login(const ::VS2::UserData& uData)
 {
-  _0RL_cd_446db2b6595c77cf_32000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_42000000, "login", 6);
+  _0RL_cd_446db2b6595c77cf_22000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_32000000, "login", 6);
   _call_desc.arg_0 = &(::VS2::UserData&) uData;
 
   _invoke(_call_desc);
@@ -1874,11 +1835,11 @@ VS2::LoginInformation* VS2::_objref_LoginServerInterface::login(const ::VS2::Use
 
 // Proxy call descriptor class. Mangled signature:
 //  _cboolean_i_cVS2_mUserData_i_cstring
-class _0RL_cd_446db2b6595c77cf_52000000
+class _0RL_cd_446db2b6595c77cf_42000000
   : public omniCallDescriptor
 {
 public:
-  inline _0RL_cd_446db2b6595c77cf_52000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
+  inline _0RL_cd_446db2b6595c77cf_42000000(LocalCallFn lcfn, const char* op_, size_t oplen, _CORBA_Boolean upcall=0)
     : omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 0, upcall)
   {
     
@@ -1900,14 +1861,14 @@ public:
   ::CORBA::Boolean result;
 };
 
-void _0RL_cd_446db2b6595c77cf_52000000::marshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_42000000::marshalArguments(cdrStream& _n)
 {
   (const VS2::UserData&) *arg_0 >>= _n;
   _n.marshalString(arg_1,0);
 
 }
 
-void _0RL_cd_446db2b6595c77cf_52000000::unmarshalArguments(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_42000000::unmarshalArguments(cdrStream& _n)
 {
   arg_0_ = new VS2::UserData;
   (VS2::UserData&)arg_0_ <<= _n;
@@ -1917,27 +1878,27 @@ void _0RL_cd_446db2b6595c77cf_52000000::unmarshalArguments(cdrStream& _n)
 
 }
 
-void _0RL_cd_446db2b6595c77cf_52000000::marshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_42000000::marshalReturnedValues(cdrStream& _n)
 {
   _n.marshalBoolean(result);
 
 }
 
-void _0RL_cd_446db2b6595c77cf_52000000::unmarshalReturnedValues(cdrStream& _n)
+void _0RL_cd_446db2b6595c77cf_42000000::unmarshalReturnedValues(cdrStream& _n)
 {
   result = _n.unmarshalBoolean();
 
 }
 
-const char* const _0RL_cd_446db2b6595c77cf_52000000::_user_exns[] = {
+const char* const _0RL_cd_446db2b6595c77cf_42000000::_user_exns[] = {
   0
 };
 
 // Local call call-back function.
 static void
-_0RL_lcfn_446db2b6595c77cf_62000000(omniCallDescriptor* cd, omniServant* svnt)
+_0RL_lcfn_446db2b6595c77cf_52000000(omniCallDescriptor* cd, omniServant* svnt)
 {
-  _0RL_cd_446db2b6595c77cf_52000000* tcd = (_0RL_cd_446db2b6595c77cf_52000000*)cd;
+  _0RL_cd_446db2b6595c77cf_42000000* tcd = (_0RL_cd_446db2b6595c77cf_42000000*)cd;
   VS2::_impl_LoginServerInterface* impl = (VS2::_impl_LoginServerInterface*) svnt->_ptrToInterface(VS2::LoginServerInterface::_PD_repoId);
   tcd->result = impl->reg(*tcd->arg_0, tcd->arg_1);
 
@@ -1946,7 +1907,7 @@ _0RL_lcfn_446db2b6595c77cf_62000000(omniCallDescriptor* cd, omniServant* svnt)
 
 ::CORBA::Boolean VS2::_objref_LoginServerInterface::reg(const ::VS2::UserData& uData, const char* regData)
 {
-  _0RL_cd_446db2b6595c77cf_52000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_62000000, "reg", 4);
+  _0RL_cd_446db2b6595c77cf_42000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_52000000, "reg", 4);
   _call_desc.arg_0 = &(::VS2::UserData&) uData;
   _call_desc.arg_1 = regData;
 
@@ -1987,7 +1948,7 @@ VS2::_impl_LoginServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "login")) {
 
-    _0RL_cd_446db2b6595c77cf_32000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_42000000, "login", 6, 1);
+    _0RL_cd_446db2b6595c77cf_22000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_32000000, "login", 6, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;
@@ -1995,7 +1956,7 @@ VS2::_impl_LoginServerInterface::_dispatch(omniCallHandle& _handle)
 
   if (omni::strMatch(op, "reg")) {
 
-    _0RL_cd_446db2b6595c77cf_52000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_62000000, "reg", 4, 1);
+    _0RL_cd_446db2b6595c77cf_42000000 _call_desc(_0RL_lcfn_446db2b6595c77cf_52000000, "reg", 4, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

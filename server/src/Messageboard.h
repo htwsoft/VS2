@@ -25,6 +25,7 @@ class Messageboard
 	    XMLWorker * xml;
 		int size;
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
+        string name;
 		BoardInformation * father;
 		vector<BoardInformation *> childs;
 		vector<BoardInformation *>::iterator iterChilds;
@@ -50,7 +51,6 @@ class Messageboard
 		void saveConnectInformations(XMLNode * fatherNode);
 		void saveChildConnectInformations(XMLNode * fatherNode);
 		void saveFatherConnectInformation(XMLNode * fatherNode);
-		bool createNewMessage(string, string, int, string, bool = true);
         unsigned int getConnectInformationChildIndex(string);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
@@ -65,11 +65,13 @@ class Messageboard
 		Message * getHighlightedMessage();
         Message * getFirstMessage();
         Message * getLastMessage();
+        BoardInformation * getBoardInformation();
         void setLastMessageToHighlighted();
         void setFirstMessageToHighlighted();
         void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
 		bool createNewMessage(string, int, string);
+		bool createNewMessage(string, string, int, string, bool = true);
 		bool deleteMessage(int);
 		void erase();
         int getChildCount();
