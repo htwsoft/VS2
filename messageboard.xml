@@ -1,20 +1,23 @@
-<messageboard id="">
-  <mcounter> 3 </mcounter>
-  <idcounter> 3 </idcounter>
+<messageboard id="0">
+  <name></name>
+  <mcounter> 2 </mcounter>
+  <idcounter> 4 </idcounter>
   <messages>
-    <message id="1"> 
+    <message id="0-4">
+      <text> was geht </text>
+      <uid> 12345 </uid>
+    </message>
+    <message id="1">
       <text> bla fassel 1 </text>
       <uid> 353646 </uid>
     </message>
-    
-    <message id="2"> 
-      <text> bla fassel 2 </text>
-      <uid> 4657 </uid>
-    </message>
-    
-    <message id="3"> 
-      <text> bla fassel 3 </text>
-      <uid> 123 </uid>
+    <message id="">
+      <text></text>
+      <uid> 0 </uid>
     </message>
   </messages>
-</messageboard>  
+  <connectInformations>
+    <father></father>
+    <childs></childs>
+  </connectInformations>
+</messageboard>

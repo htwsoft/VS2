@@ -30,11 +30,16 @@ MessageboardServer::~MessageboardServer()
 ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectInformation * connectInformation)
 {
     ConnectInformationData * ciData = NULL;
-    if(connectInformation != NULL)
+    ciData = new ConnectInformationData();
+    if(connectInformation != NULL)        
     {
-        ciData = new ConnectInformationData();
         ciData->port = connectInformation->getPort();
         ciData->ip = connectInformation->getIp().c_str();
+    }
+    else
+    {
+        ciData->port = 0;
+        ciData->ip = "";
     }
     return ciData;
 }
@@ -79,7 +84,7 @@ CORBA::Boolean MessageboardServer::publishOnChilds(const char * message, const c
             }
             delete sc;
         }
-    }            
+    }       
     return rValue;
 }
 
