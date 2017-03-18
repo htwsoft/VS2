@@ -15,11 +15,7 @@ public class RegisterLogin {
 	String ip;
 	ORB orb;
 	
-	RegisterLogin(int dbPort,String dbIP)
-	{
-		
-		this.url = new String[] { "-ORBInitialPort", Integer.toString(dbPort), "-ORBInitialHost", dbIP };
-
+	public boolean connectLoginServer(){
 		try {
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
 
@@ -35,10 +31,21 @@ public class RegisterLogin {
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			dbImpl = LoginServerInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
 
+			return true;
+			
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e);
-			System.exit(0);
+			return false;
 		}
+		
+	}
+	
+	RegisterLogin(int dbPort,String dbIP)
+	{
+		this.port=dbPort;
+		this.ip= dbIP;
+		this.url = new String[] { "-ORBInitialPort", Integer.toString(this.port), "-ORBInitialHost", this.ip };
+		
 	}
 	
 	public boolean register(UserData userData, String regData)

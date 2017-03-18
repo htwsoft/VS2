@@ -11,23 +11,23 @@ import org.omg.CORBA.*;
 import VS2.*;
 
 public class StartClient {
-	private RegisterLogin regLogin;
+	private RegisterLogin regLogin=null;
 
 	private int uid = 12345;
 	private String uName="TEstsalva";
 	private String pWord="FIsche";
 	
-	private String message;
-	private String fatherName;
-	private UserData userData;
+	private String message=null;
+	private String fatherName=null;
+	private UserData userData=null;
 	
-	private LoginInformation loginInfo;
-	private MessageboardServerInterface mbImpl;
-	private LoginServerInterface dbImpl;
-	boolean shutdown;
+	private LoginInformation loginInfo=null;
+	private MessageboardServerInterface mbImpl=null;
+	private LoginServerInterface dbImpl=null;
+	boolean shutdown=false;
 	
-	private ArrayList<MessageData> messageList;
-	private ArrayList<String> childList;
+	private ArrayList<MessageData> messageList=null;
+	private ArrayList<String> childList=null;
 
 	private int portDB=6050; // Bitte den richtigen port eingeben und der muss am besten immer gleich sein
 	private String ipDB="192.168.2.1";
@@ -38,50 +38,54 @@ public class StartClient {
 
 	
 
-	private void connectToServer() {
+	private boolean connectToServer() {
 		try {
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
-
 			// create and initialize the ORB
 			this.orb = ORB.init(url, null);
-
 			// get the root naming context
 			org.omg.CORBA.Object objRef;
 			objRef = orb.resolve_initial_references("NameService");
-
 			// Use NamingContextExt instead of NamingContext. This is
 			// part of the Interoperable naming Service.
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			mbImpl = MessageboardServerInterfaceHelper.narrow(ncRef.resolve_str(this.METHOD));
-
+			
+			return true;
+			
 		} catch (Exception e) {
 			System.out.println("ERROR : " + e);
-			System.exit(0);
+//			System.exit(0);
+			return false;
 		}
 	}
-//	
-//	public StartClient(String uName, String pWord){
-//		regLogin = new RegisterLogin(portDB,ipDB);
-//		if(regLogin.login(new UserData(1,uName, pWord))){
-//			this.messageList = new ArrayList<MessageData>();
-//			this.childList =new ArrayList<String>();
-//			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
-//			this.connectToServer();
-//		}
-//		else
-//			throw new Exception("Loginfehler!");	
-//	}
+	
+	
+	
+	
 	/*
 	 * 
 	 * TODO warte auf DB dann loeschen
 	 */
 	public StartClient(String ip, int port) {
+		
 			userData=new UserData(uid,this.uName,pWord);
+			
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();
+			
 			this.url = new String[] { "-ORBInitialPort", Integer.toString(port), "-ORBInitialHost", ip };
 			//this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
 			this.connectToServer();
+	}
+
+	public StartClient(LoginInformation loginInfo) {
+		// TODO Auto-generated constructor stub
+		this.messageList = new ArrayList<MessageData>();
+		this.childList =new ArrayList<String>();
+		
+		this.url = new String[] { "-ORBInitialPort", Integer.toString(loginInfo.server.port), "-ORBInitialHost", loginInfo.server.ip };
+		this.connectToServer();
 	}
 
 	public void setDBipUport(String ip,int port){
