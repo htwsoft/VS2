@@ -57,7 +57,7 @@ public class SOAPClient
 		}
     }
 
-    /* Methode meldet den Benutzer am Server an*/
+    /* Methode meldet den Benutzer am Server an */
     public boolean connectUser(String userName, String passwort)
     {   
         /* Pruefen ob Server verbunden ist um User-Login auszufuehren */
@@ -74,6 +74,12 @@ public class SOAPClient
 	public boolean writeMessage(String message) 
     {
 		return mbImpl.createNewMessage(message, this.userData.userID, this.userData.userName);
+	}
+
+    /* löschen einer Nachricht des Corba-Servers */
+	public boolean deleteMessage(int uid, String messageID) {
+
+		return this.mbImpl.deleteMessage(uid, messageID);
 	}
 
     /**/
