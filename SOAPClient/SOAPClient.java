@@ -77,9 +77,9 @@ public class SOAPClient
 	}
 
     /* löschen einer Nachricht des Corba-Servers */
-	public boolean deleteMessage(int uid, String messageID) {
+	public boolean deleteMessage(String messageID) {
 
-		return this.mbImpl.deleteMessage(uid, messageID);
+		return this.mbImpl.deleteMessage(this.userData.userID, messageID);
 	}
 
     /**/
