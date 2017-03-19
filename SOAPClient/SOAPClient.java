@@ -71,9 +71,10 @@ public class SOAPClient
 	/*
 	 * Methode ruft die CreateNewMessage-Funktion des Corba-Servers auf
 	 */
-	public boolean writeMessage(String message) 
+	public boolean writeMessage(String message, String messageID) 
     {
-		return mbImpl.createNewMessage(message, this.userData.userID, this.userData.userName);
+        messageID = "SOAP-" + messageID;
+		return mbImpl.saveMessage(message, messageID, this.userData);
 	}
 
     /* löschen einer Nachricht des Corba-Servers */
