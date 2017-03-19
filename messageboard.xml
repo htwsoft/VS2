@@ -1,8 +1,12 @@
 <messageboard id="0">
   <name></name>
-  <mcounter> 4 </mcounter>
+  <mcounter> 5 </mcounter>
   <idcounter> 6 </idcounter>
   <messages>
+    <message id="SOAP-10001">
+      <text> Test mit MID </text>
+      <uid> 12345 </uid>
+    </message>
     <message id="0-6">
       <text> Test 2 </text>
       <uid> 12345 </uid>
