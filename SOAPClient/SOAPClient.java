@@ -73,13 +73,16 @@ public class SOAPClient
 	 */
 	public boolean writeMessage(String message, String messageID) 
     {
+        //Zusatzflag um Nachrichten der SOAP-Gruppe zu identifizieren
         messageID = "SOAP-" + messageID;
 		return mbImpl.saveMessage(message, messageID, this.userData);
 	}
 
     /* löschen einer Nachricht des Corba-Servers */
-	public boolean deleteMessage(String messageID) {
-
+	public boolean deleteMessage(String messageID) 
+    {
+        //Zusatzflag um Nachrichten der SOAP-Gruppe zu identifizieren
+        messageID = "SOAP-" + messageID;
 		return this.mbImpl.deleteMessage(this.userData.userID, messageID);
 	}
 
