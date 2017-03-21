@@ -40,21 +40,21 @@ module VS2
         MessageData setHighlightedMessage(in string messageID);
         MessageData getHighlightedMessage();
         MessageData getMessageWithId(in string messageID);
-        boolean setMessage(in string message, in string messageID, in long uid, in string uName);
-		boolean deleteMessage(in long uid, in string messageID);
-		boolean createNewMessage(in string message, in long uid, in string uName);
+        boolean setMessage(in string message, in string messageID, in UserData uData);
+		boolean deleteMessage(in string messageID, in UserData uData);
+		boolean createNewMessage(in string message, in UserData uData);
 		MessageData getNextMessage();
 		MessageData getPreviousMessage();
-		ConnectInformationData connectToFather(); //Liefert die Connectinformationen des Fathers
+		ConnectInformationData connectToFather(in UserData uData); //Liefert die Connectinformationen des Fathers
 		ConnectInformationData connectToChild(in string childName); //Liefert die ConnectInformationen des Child
         //********** zur Kommunikation zwischen Servern(Spezialfälle, daher notwendig) muss nicht in den Client rein ************************
         boolean publishOnChilds(in string message, in string messageID, in UserData uData, in boolean schalter); //Die Nachricht auf allen Kindern veröffentlichen, extra Schalter um auf allen Kindes Kindern zu veröffentlichen?
 		boolean publishOnFather(in string message, in string messageID, in UserData uData); //Nachricht auf Vater veröffentlichen
         boolean saveMessage(in string message, in string messageID, in UserData uData); //Wird beim ausführen von publishOnXXX aufgerufen
-		void notifyFather();//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
-		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData);
-		void notifyChildren();//gebe den Kindern bescheid das du jetzt der Vater bist
-		void saveChildInformation(in long id, in string name, in ConnectInformationData ciData);
+		void notifyFather(in UserData uData);//gebe dem Vater bescheid das du jetzt ein Kind von ihm bist
+		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData, in UserData uData);
+		void notifyChildren(in UserData uData);//gebe den Kindern bescheid das du jetzt der Vater bist
+		void saveChildInformation(in long id, in string name, in ConnectInformationData ciData, in UserData uData);
 	};
 	
     interface LoginServerInterface
