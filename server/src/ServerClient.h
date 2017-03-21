@@ -31,12 +31,12 @@ class ServerClient
         ConnectInformation * connectInformation = 0;                                                                     
     public:
         ServerClient(ConnectInformation * connectInformation);
-        void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation);
-        void saveChildInformation(int id, string name, const ConnectInformation * connectInformation);
-        void notifyFather(); 
+        void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData);
+        void saveChildInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData);
+        void notifyFather(const VS2::UserData& uData); 
         bool publishMessage(string message, string messageID, const VS2::UserData& uData);
         bool iterateChilds(string message, string messageID, const VS2::UserData& uData);
-        ConnectInformation connectToFather(); 
+        ConnectInformation connectToFather(const VS2::UserData& uData); 
         ConnectInformation connectToChild(string childName);
         ~ServerClient();
 };

@@ -97,11 +97,11 @@ bool ServerClient::publishMessage(string message, string messageID, const VS2::U
 }
 
 /* Liefert die ConnectInformationen des Vaters */
-ConnectInformation ServerClient::connectToFather()
+ConnectInformation ServerClient::connectToFather(const VS2::UserData& uData)
 {
     ConnectInformation newCI("", 0);
     ConnectInformationData * ciData = NULL;
-    ciData = this->m_Data->connectToFather();
+    ciData = this->m_Data->connectToFather(uData);
     string strIp(ciData->ip);
     newCI.setPort(ciData->port);
     newCI.setIp(strIp);
@@ -109,9 +109,9 @@ ConnectInformation ServerClient::connectToFather()
 }
 
 /* Funktion nur zum Testen*/
-void ServerClient::notifyFather()
+void ServerClient::notifyFather(const VS2::UserData& uData)
 {
-    this->m_Data->notifyFather();
+    this->m_Data->notifyFather(uData);
 }
 
 /* Liefert die ConnectInformationen eines Childs */ 
@@ -127,21 +127,21 @@ ConnectInformation ServerClient::connectToChild(string childName)
 }
 
 /* speichern von Fathe-Informationen eines Servers */
-void ServerClient::saveFatherInformation(int id, string name, const ConnectInformation * connectInformation)
+void ServerClient::saveFatherInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData)
 {
     ConnectInformationData ciData;
     ciData.ip = connectInformation->getIp().c_str();
     ciData.port = connectInformation->getPort();
-    this->m_Data->saveFatherInformation(id, name.c_str(), ciData);
+    this->m_Data->saveFatherInformation(id, name.c_str(), ciData, uData);
 }
 
 /* speichern von Child-Informationen eines Servers */
-void ServerClient::saveChildInformation(int id, string name, const ConnectInformation * connectInformation)
+void ServerClient::saveChildInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData)
 {
     ConnectInformationData ciData;
     ciData.ip = connectInformation->getIp().c_str();
     ciData.port = connectInformation->getPort();
-    this->m_Data->saveChildInformation(id, name.c_str(), ciData);
+    this->m_Data->saveChildInformation(id, name.c_str(), ciData, uData);
 }
 
 /* Funktion macht aus einem String ein char * Objekt */

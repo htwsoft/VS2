@@ -52,7 +52,10 @@ public class Dialog {
 		System.out.println("Password: ");
 		scan = new Scanner(System.in);
 		passWord = scan.nextLine();
-		userDATA = new UserData(0, benutzterName, passWord);
+		userDATA = new UserData();
+        userDATA.userID = 0;
+        userDATA.userName = benutzterName;
+        userDATA.password = passWord;
 		this.logininfo = dbLogin.login(this.userDATA);
 
 		if (!benutzterName.isEmpty() && !passWord.isEmpty()) {
@@ -76,7 +79,10 @@ public class Dialog {
 		System.out.println("Password: ");
 		scan = new Scanner(System.in);
 		passWord = scan.nextLine();
-		userDATA = new UserData(0, benutzterName, passWord);
+		userDATA = new UserData();
+        userDATA.userID = 0;
+        userDATA.userName = benutzterName;
+        userDATA.password = passWord;
 		// was macht regData
 		String regData = "TEST";
 		if (!benutzterName.isEmpty() && !passWord.isEmpty()) {
@@ -135,7 +141,7 @@ public class Dialog {
 			dialog.clientTest = new StartClient(dialog.logininfo);
 		}
 	*/
-		dialog.clientTest=new StartClient("localhost",6000);
+		dialog.clientTest=new StartClient("10.9.45.43",8000);
 		int i;
 		boolean beenden = false;
 

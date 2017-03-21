@@ -69,7 +69,7 @@ public class StartClient {
 	 */
 	public StartClient(String ip, int port) {
 		
-			userData=new UserData(uid,this.uName,pWord);
+			this.userData = new UserData(this.uid, this.uName, this.pWord);
 			
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();

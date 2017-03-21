@@ -118,7 +118,7 @@ CORBA::Boolean MessageboardServer::saveMessage(const char * message, const char 
 }
 
 //Teilt den child boards mit das es nun das Vater-Board ist
-void MessageboardServer::notifyChildren()
+void MessageboardServer::notifyChildren(const VS2::UserData& uData)
 {
     ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
     ConnectInformation * ciChild = NULL;
@@ -148,14 +148,14 @@ void MessageboardServer::notifyChildren()
             ciChild = this->messageBoard->getConnectInformationChild(childName);
             sc = new ServerClient(ciChild);
             //Vater-Infos beim Child speichern
-            sc->saveFatherInformation(id, name , ciMB); 
+            sc->saveFatherInformation(id, name , ciMB, uData); 
             delete sc;
         }
     }
 }
 
 //Teilt dem Vater-Board mit das es jetzt ein Kind von Ihm ist
-void MessageboardServer::notifyFather()
+void MessageboardServer::notifyFather(const VS2::UserData& uData)
 {
     ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
     ConnectInformation * ciFather = NULL;
@@ -173,12 +173,12 @@ void MessageboardServer::notifyFather()
     ciFather = this->messageBoard->getConnectInformationFather();
     sc = new ServerClient(ciFather);
     //Child-Infos beim Vater speichern
-    sc->saveChildInformation(id, name , ciMB); 
+    sc->saveChildInformation(id, name , ciMB, uData); 
     delete sc;
 }
 
 /* speichert die neuen Kontakt-Infos des Vaters */
-void MessageboardServer::saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
+void MessageboardServer::saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const VS2::UserData& uData)
 {
     string strName(name);
     string strIp(ciData.ip); 
@@ -191,7 +191,7 @@ void MessageboardServer::saveFatherInformation(::CORBA::Long id, const char* nam
 }
 
 /* speichert die neuen Kontakt-Infos eines Childs */
-void MessageboardServer::saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData)
+void MessageboardServer::saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const VS2::UserData& uData)
 {
     string strName(name);
     string strIp(ciData.ip); 
@@ -204,7 +204,7 @@ void MessageboardServer::saveChildInformation(::CORBA::Long id, const char* name
 } 
 
 /* Liefert die ConnectInformationData fuer den Vater */
-ConnectInformationData * MessageboardServer::connectToFather()
+ConnectInformationData * MessageboardServer::connectToFather(const VS2::UserData& uData)
 {
     ConnectInformation * connectInformation = NULL;
     ConnectInformationData * ciData = NULL;
@@ -290,7 +290,7 @@ array_of_String * MessageboardServer::getChildNames()
     }
     else
     {
-        //Wenn keine Childs vorhanden Array mit leerString
+        //Wenn keine Childs vorhanden Array mit lee, const VS2::UserData& uDatarString
         arrayChildNames->length(1);
         (*arrayChildNames)[0] = "";
     }
@@ -369,18 +369,18 @@ Message * MessageboardServer::searchMessage(string messageID)
 }
 
 /* Neue Nachricht erstellen */
-CORBA::Boolean MessageboardServer::createNewMessage(const char* message, ::CORBA::Long uid, const char* uName)
+CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const VS2::UserData& uData)
 {
     bool created = false;
     cout << "Procedure createNewMessage() called" << endl;
     string strMessage(message); //char * in String umwandeln
-    string strUName(uName); //char * in String umwandeln
-    created = this->messageBoard->createNewMessage(strMessage, uid, strUName);
+    string strUserName(uData.userName);
+    created = this->messageBoard->createNewMessage(strMessage, uData.userID, strUserName);
     return created;
 }
 
 /* uebergeben Nachricht loeschen Nachricht loeschen */
-CORBA::Boolean MessageboardServer::deleteMessage(::CORBA::Long uid, const char* messageID)
+CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS2::UserData& uData)
 {
     bool deleted = false;
     Message * message = NULL;
@@ -390,7 +390,7 @@ CORBA::Boolean MessageboardServer::deleteMessage(::CORBA::Long uid, const char* 
     message = this->searchMessage(strMessageID);
     if(message != NULL)
     {
-        deleted = this->messageBoard->deleteMessage(uid); 
+        deleted = this->messageBoard->deleteMessage(uData.userID); 
     } 
     return deleted;
 }
@@ -439,18 +439,18 @@ array_of_MessageData* MessageboardServer::getMessages()
 }
 
 /* aktuelle Nachricht aendern */
-CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* messageID, ::CORBA::Long uid, const char* uName)
+CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* messageID, const VS2::UserData& uData)
 {
     Message * msg = NULL;
     bool setOk = false;   
     string strMessage(message); //char * in String umwandeln
-    string strUName(uName); //char * in String umwandeln
+    string strUName(uData.userName); //char * in String umwandeln
     cout << "Procedure setMessage() called" << endl; 
     msg = this->searchMessage(messageID);
     if(msg != NULL)
     {
         msg->setMessage(strMessage);
-        msg->setUid(uid);
+        msg->setUid(uData.userID);
         msg->setUName(strUName);
         setOk = true;
     }    

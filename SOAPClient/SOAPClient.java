@@ -83,7 +83,7 @@ public class SOAPClient
     {
         //Zusatzflag um Nachrichten der SOAP-Gruppe zu identifizieren
         messageID = "SOAP-" + messageID;
-		return this.mbImpl.deleteMessage(this.userData.userID, messageID);
+		return this.mbImpl.deleteMessage(messageID, this.userData);
 	}
 
     /**/

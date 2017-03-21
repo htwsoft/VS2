@@ -35,21 +35,21 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         array_of_MessageData * getMessages();
         MessageData* getHighlightedMessage();
         MessageData* getMessageWithId(const char * messageID);
-        CORBA::Boolean setMessage(const char* message, const char* messageID, CORBA::Long uid, const char* uName);
-        CORBA::Boolean deleteMessage(CORBA::Long uid, const char * messageID);
-        CORBA::Boolean createNewMessage(const char* message, CORBA::Long uid, const char* uName);
+        CORBA::Boolean setMessage(const char* message, const char* messageID, const VS2::UserData& uData);
+        CORBA::Boolean deleteMessage(const char * messageID, const VS2::UserData& uData);
+        CORBA::Boolean createNewMessage(const char* message, const VS2::UserData& uData);
         MessageData * getNextMessage();
         MessageData * getPreviousMessage();
-		ConnectInformationData * connectToFather(); //Liefert die ConnectInformationen für den Vater
+		ConnectInformationData * connectToFather(const VS2::UserData& uData); //Liefert die ConnectInformationen für den Vater
 		ConnectInformationData * connectToChild(const char * childName); //Liefert die ConnectInformationen für ein Child
         //ServerServer Functions
         CORBA::Boolean publishOnChilds(const char * message, const char * messageID, const VS2::UserData& uData, CORBA::Boolean schalter);
         CORBA::Boolean publishOnFather(const char * message, const char * messageID, const VS2::UserData& uData);
         CORBA::Boolean saveMessage(const char * message, const char * messageID, const VS2::UserData& uData);        
-        void notifyFather();
-        void saveFatherInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData);
-        void notifyChildren();
-        void saveChildInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData);        
+        void notifyFather(const VS2::UserData& uData);
+        void saveFatherInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData, const VS2::UserData& uData);
+        void notifyChildren(const VS2::UserData& uData);
+        void saveChildInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData, const VS2::UserData& uData);        
 };
 
 
