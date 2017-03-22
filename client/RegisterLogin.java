@@ -1,5 +1,3 @@
-package client;
-
 import org.omg.CosNaming.*;
 import org.omg.CORBA.*;
 import VS2.*;

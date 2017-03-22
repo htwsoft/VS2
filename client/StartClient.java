@@ -1,5 +1,3 @@
-package client;
-
 /**
  *
  * @author imed
@@ -136,7 +134,7 @@ public class StartClient {
 	 */
 	public boolean setMessage(String newmessage, String messageID, int uid, String uName) {
 		
-		return this.mbImpl.setMessage(message, messageID, uid, uName);
+		return this.mbImpl.setMessage(message, messageID, this.userData);
 	}
 
 	/*
@@ -148,7 +146,7 @@ public class StartClient {
 	 */
 	public boolean deleteMessage(int uid, String messageID) {
 
-		return this.mbImpl.deleteMessage(uid, messageID);
+		return this.mbImpl.deleteMessage(messageID, this.userData);
 	}
 
 	/*
@@ -156,7 +154,7 @@ public class StartClient {
 	 * TODO
 	 */
 	public boolean schreibeMessage(String message) {
-		return mbImpl.createNewMessage(message, this.uid, this.uName);
+		return mbImpl.createNewMessage(message, this.userData);
 	}
 
 	/*
@@ -179,11 +177,11 @@ public class StartClient {
 	 * start()
 	 */
 	public String getFatherIP() {
-		return mbImpl.connectToFather().ip;
+		return mbImpl.connectToFather(this.userData).ip;
 	}
 
 	public int getFatherPort() {
-		return mbImpl.connectToFather().port;
+		return mbImpl.connectToFather(this.userData).port;
 	}
 	
 	/*

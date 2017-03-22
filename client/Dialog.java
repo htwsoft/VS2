@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import VS2.*;
 
-public class Dialog {
+public class Dialog{
 
 	String benutzterName = null;
 	String passWord = null;
@@ -21,7 +21,7 @@ public class Dialog {
 
 	Scanner scan;
 
-	private boolean connDatenB() {
+	private static boolean connDatenB() {
 		// Login Daten eigben
 		System.out.println("Datenb Daten eigben \n" + "IP: ");
 		scan = new Scanner(System.in);
@@ -44,7 +44,7 @@ public class Dialog {
 
 	}
 
-	private boolean loginDB() {
+	private static boolean loginDB() {
 		System.out.println("Bitte Login Daten eingben:\n" + "Benutzer: ");
 		scan = new Scanner(System.in);
 		benutzterName = scan.nextLine();
@@ -71,7 +71,7 @@ public class Dialog {
 
 	}
 
-	private boolean registerDB() {
+	private static boolean registerDB() {
 		System.out.println("Bitte Login Daten eingben:\n" + "Benutzer: ");
 		scan = new Scanner(System.in);
 		benutzterName = scan.nextLine();
