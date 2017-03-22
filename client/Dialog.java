@@ -1,8 +1,7 @@
-package client;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 import VS2.*;
+import client.*;
 
 public class Dialog{
 
@@ -21,7 +20,7 @@ public class Dialog{
 
 	Scanner scan;
 
-	private static boolean connDatenB() {
+	private boolean connDatenB() {
 		// Login Daten eigben
 		System.out.println("Datenb Daten eigben \n" + "IP: ");
 		scan = new Scanner(System.in);
@@ -44,7 +43,7 @@ public class Dialog{
 
 	}
 
-	private static boolean loginDB() {
+	private boolean loginDB() {
 		System.out.println("Bitte Login Daten eingben:\n" + "Benutzer: ");
 		scan = new Scanner(System.in);
 		benutzterName = scan.nextLine();
@@ -71,7 +70,7 @@ public class Dialog{
 
 	}
 
-	private static boolean registerDB() {
+	private boolean registerDB() {
 		System.out.println("Bitte Login Daten eingben:\n" + "Benutzer: ");
 		scan = new Scanner(System.in);
 		benutzterName = scan.nextLine();
@@ -141,7 +140,7 @@ public class Dialog{
 			dialog.clientTest = new StartClient(dialog.logininfo);
 		}
 	*/
-		dialog.clientTest=new StartClient("10.9.45.43",8000);
+		dialog.clientTest=new StartClient("localhost",8000);
 		int i;
 		boolean beenden = false;
 
