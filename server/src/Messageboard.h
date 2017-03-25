@@ -27,6 +27,7 @@ class Messageboard
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
         string name;
 		BoardInformation * father;
+        BoardInformation * soap; //Connectinformationen einer Soap-Tafel
 		vector<BoardInformation *> childs;
 		vector<BoardInformation *>::iterator iterChilds;
 		Message * first;
@@ -40,6 +41,7 @@ class Messageboard
 		void initBoardInformations();
 		void initConnectInfos();
 		void initFatherNodeConnectInfos(XMLNode * node);
+        void initSoapConnectInfos(XMLNode * node);
 		void initChildConnectInfos(XMLNode * node);
 		void initChild(XMLNode * node);
 		void clearMessages();
@@ -76,6 +78,7 @@ class Messageboard
 		void erase();
         int getChildCount();
 		ConnectInformation * getConnectInformationFather();
+        ConnectInformation * getConnectInformationSoap();
 		ConnectInformation * getConnectInformationChild(string);
 		//Server-Server
 		void saveFatherInformation(int, string, ConnectInformation *);

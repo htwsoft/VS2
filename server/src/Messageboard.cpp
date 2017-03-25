@@ -271,6 +271,10 @@ void Messageboard::initConnectInfos()
 			workNode = this->xml->getChildNodeWithName("father");
 			this->initFatherNodeConnectInfos(workNode);
 			this->xml->setWorkNode(connectInfoNode);
+            //ConnectInfos der Soap-Tafel ermitteln
+			workNode = this->xml->getChildNodeWithName("soap");
+			this->initSoapConnectInfos(workNode);
+			this->xml->setWorkNode(connectInfoNode);
 			//FatherNode fuer Child ConnectInfos finden
 			workNode = this->xml->getChildNodeWithName("childs");
 			this->initChildConnectInfos(workNode);
@@ -346,6 +350,47 @@ void Messageboard::initChild(XMLNode * node)
 		id = atoi(strId.c_str());	
 	}
 	this->childs.push_back(new BoardInformation(name, id, ip, port));
+}
+
+/* Lesen der Soap-ConnectInfos aus der XML */
+void Messageboard::initSoapConnectInfos(XMLNode * node)
+{
+	XMLNode * workNode = 0;
+	string ip = "";
+	int port = 0;
+	string strPort = "";
+	int id = 0;
+	string strId = "";
+	string name = "";
+	this->xml->setWorkNode(node);
+	workNode = this->xml->getChildNodeWithName("ip");
+	if(workNode != NULL)
+	{
+		ip = workNode->getValue();
+	}
+	workNode = this->xml->getChildNodeWithName("port");
+	if(workNode != NULL)
+	{
+		strPort = workNode->getValue();
+		port = atoi(strPort.c_str());
+	}
+	workNode = this->xml->getChildNodeWithName("name");
+	if(workNode != NULL)
+	{
+		name = workNode->getValue();
+	}
+	//Prufen ob id wert angegeben ist
+	if(node->getAttributCount() > 0)
+	{
+		//Auslesend er Message ID
+		strId = node->getAttribut(0)->getValue();
+		id = atoi(strId.c_str());	
+	}
+	//Pruefen ob Port und IP gefunden wurden
+	if(port > 0 && ip.compare("") != 0)
+	{
+		this->soap = new BoardInformation(name, id, ip, port);
+	}
 }
 
 /* Lesen der Father-ConnectInfos aus der XML */
@@ -737,10 +782,14 @@ void Messageboard::erase()
 	}
 }
 
-//<--------------------------------------------- Ab hier auslagern in MessageBoard-Server-Klasse?
 ConnectInformation * Messageboard::getConnectInformationFather()
 {
 	return father->getConnectInformation();
+}
+
+ConnectInformation * Messageboard::getConnectInformationSoap()
+{
+	return soap->getConnectInformation();
 }
 
 ConnectInformation * Messageboard::getConnectInformationChild(string childName)

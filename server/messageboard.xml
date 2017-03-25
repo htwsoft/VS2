@@ -32,6 +32,11 @@
       <ip> 127.0.0.1 </ip>
       <port> 25001 </port>
     </father>
+    <soap id="12">
+      <name> Soap-Tafel </name>
+      <ip> 127.0.0.1 </ip>
+      <port> 25001 </port>    
+    </soap>
     <childs>
       <child id="3">
         <name> Child 2 </name>
