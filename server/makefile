@@ -32,8 +32,8 @@ clean:
 
 
 
-server01: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
-	$(CXX) $(CFLAGS) -o StartServer Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
+server01: SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClient.o Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
+	$(CXX) $(CFLAGS) -o StartServer SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClient.o Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
 	
 server02: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServerClient.cpp
 	$(CXX) $(CFLAGS) -o StartServerClient Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServerClient.cpp
@@ -42,6 +42,9 @@ soap01: SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdso
 	$(CXX) $(CFLAGS) -o RunClient SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o RunClient.cpp
 
 #Files fuer MessageBoard
+
+SoapServerClient.o: $(SERVERSOURCEPATH)SoapServerClient.cpp $(SERVERSOURCEPATH)SoapServerClient.h
+	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)SoapServerClient.cpp
 
 MessageboardServer.o: $(SERVERSOURCEPATH)MessageboardServer.cpp $(SERVERSOURCEPATH)MessageboardServer.h $(SERVERSOURCEPATH)VS2.hh
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)MessageboardServer.cpp
@@ -67,8 +70,8 @@ XMLWorker.o: $(XMLSOURCEPATH)XMLWorker.cpp $(XMLSOURCEPATH)XMLWorker.h $(XMLSOUR
 SoapException.o: $(SOAPREQUESTSPATH)SoapException.cpp $(SOAPREQUESTSPATH)SoapException.h
 	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)SoapException.cpp
 
-SoapDeliverer.o: $(SERVERSOURCEPATH)SoapDeliverer.cpp $(SERVERSOURCEPATH)SoapDeliverer.h
-	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)SoapDeliverer.cpp
+SoapDeliverer.o: $(SOAPSOURCEPATH)SoapDeliverer.cpp $(SOAPSOURCEPATH)SoapDeliverer.h
+	$(CXX) $(CFLAGS) -c $(SOAPSOURCEPATH)SoapDeliverer.cpp
 
 RequestException.o: $(SOAPREQUESTSPATH)RequestException.cpp $(SOAPREQUESTSPATH)RequestException.h
 	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)RequestException.cpp
