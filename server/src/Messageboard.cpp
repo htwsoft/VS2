@@ -22,7 +22,7 @@ Messageboard::~Messageboard()
 	this->clearBoardInformations();
 }
 
-//TO-DO Informationen aus XML laden um Board zu initialisieren, anschließend orb starten(port öffnen und listen)
+//TO-DO Informationen aus XML laden um Board zu initialisieren, anschlieï¿½end orb starten(port ï¿½ffnen und listen)
 Messageboard::Messageboard(string xmlPath)
 {
 	this->xmlPath = xmlPath;
@@ -35,7 +35,7 @@ Messageboard::Messageboard(string xmlPath)
 	this->initBoardXML();
     //Auf NULL setzen damit die erste Nachricht geladen wird
     this->highlighted = NULL;
-	//hier orb starten, sprich port öffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groß)
+	//hier orb starten, sprich port ï¿½ffnen und lauschen (wird in eine neue Klasse ausgelagert da Code sonst zu groï¿½)
 }
 
 /* Konstruktor falls ein neues Board erstellt werden soll */
@@ -67,7 +67,7 @@ void Messageboard::saveBoard()
 	XMLNode * rootNode = 0;
 	XMLNode * messagesNode = 0;
 	XMLNode * connectInformationNode = 0;
-	//Durch Create RootNode wird die zuvor gespeicherte XML gelöscht
+	//Durch Create RootNode wird die zuvor gespeicherte XML gelï¿½scht
 	this->xml->createRootNode("messageboard");
 	rootNode = this->xml->getRootNode();
 	//Speichern der eigenen Informationen des Boards
@@ -86,9 +86,12 @@ void Messageboard::saveConnectInformations(XMLNode * fatherNode)
 {
 	XMLNode * fatherConnectNode = 0;
 	XMLNode * childConnectNode = 0;	
+	XMLNode * soapConnectNode = 0;
 	//Speichern der ConnectInformations des FatherBoards
 	fatherConnectNode = fatherNode->addChild("father", "", false);
 	this->saveFatherConnectInformation(fatherConnectNode);
+	soapConnectNode = fatherNode->addChild("soap", "", false);
+	this->saveSoapConnectInformation(soapConnectNode);
 	//Speichern der ChildConnect Informations in der XML
 	childConnectNode = fatherNode->addChild("childs", "", false);
 	this->saveChildConnectInformations(childConnectNode);
@@ -123,6 +126,27 @@ void Messageboard::saveChildConnectInformations(XMLNode * fatherNode)
 			childNode->addAttribut("id", id);
 		}
 	}		
+}
+
+/* Speichern der ConnectInformations des Soap-Partners in der XML */
+void Messageboard::saveSoapConnectInformation(XMLNode * fatherNode)
+{
+	string id = "";
+	string name = "";
+	string ip = "";
+	string port = "";
+	if(this->soap != NULL)
+	{
+		id = this->intToStr(this->soap->getId());
+		name = this->soap->getName();
+		ip = this->soap->getConnectInformation()->getIp();
+		port = this->intToStr(this->soap->getConnectInformation()->getPort());
+		//Hinzufuegen der richtigen Nodes fuer den vater
+		fatherNode->addChild("name", name, false);
+		fatherNode->addChild("ip", ip, false);
+		fatherNode->addChild("port", port, false);
+		fatherNode->addAttribut("id", id);
+	}
 }
 
 /* Speichern der ConnectInformations des Fathers in der XML */
@@ -823,15 +847,15 @@ void Messageboard::saveChildrenInformation(int id, string name, ConnectInformati
     BoardInformation * boardInformation = NULL;
     ConnectInformation * worker = NULL;
     unsigned int merker = 0;
-    //Prüfen ob Childsvorhaden sind
+    //Prï¿½fen ob Childsvorhaden sind
     if(childs.size() > 0)
     {
-        //Prüfen ob child schon vorhanden ist
+        //Prï¿½fen ob child schon vorhanden ist
         worker = this->getConnectInformationChild(name);
         merker = this->getConnectInformationChildIndex(name);
     }
     boardInformation = new BoardInformation(name, id, connectInformation);
-    //Prüefen ob Child existiert
+    //Prï¿½efen ob Child existiert
     if(worker != NULL)
     {
         delete childs[merker];

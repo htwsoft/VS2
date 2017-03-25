@@ -34,6 +34,8 @@
       <ip> 127.0.0.1 </ip>
       <port> 25001 </port>
     </father>
+    <soap>
+    </soap>
     <childs>
       <child id="3">
         <name> Child 2 </name>

@@ -446,6 +446,9 @@ _CORBA_MODULE_BEG
     void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const ::VS2::UserData& uData);
     void notifyChildren(const ::VS2::UserData& uData);
     void saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const ::VS2::UserData& uData);
+    ::CORBA::Boolean createMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData);
+    ::CORBA::Boolean modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData);
+    ::CORBA::Boolean deleteMessageSoap(const char* messageID, const ::VS2::UserData& uData);
 
     // Constructors
     inline _objref_MessageboardServerInterface()  { _PR_setobj(0); }  // nil
@@ -500,6 +503,9 @@ _CORBA_MODULE_BEG
     virtual void saveFatherInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const ::VS2::UserData& uData) = 0;
     virtual void notifyChildren(const ::VS2::UserData& uData) = 0;
     virtual void saveChildInformation(::CORBA::Long id, const char* name, const ::VS2::ConnectInformationData& ciData, const ::VS2::UserData& uData) = 0;
+    virtual ::CORBA::Boolean createMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData) = 0;
+    virtual ::CORBA::Boolean modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData) = 0;
+    virtual ::CORBA::Boolean deleteMessageSoap(const char* messageID, const ::VS2::UserData& uData) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);

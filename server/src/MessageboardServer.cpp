@@ -43,7 +43,27 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     }
     return ciData;
 }
-    
+
+CORBA::Boolean MessageboardServer::modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData)
+{
+    cout << "Procedure modifyMessageSoap() called" << endl;
+    return this->setMessage(message, messageID, uData);
+}
+
+CORBA::Boolean MessageboardServer::deleteMessageSoap(const char * messageID, const VS2::UserData& uData)
+{
+    cout << "Procedure deleteMessageSoap() called" << endl;
+    return this->deleteMessage(messageID, uData);
+
+}
+
+CORBA::Boolean MessageboardServer::createMessageSoap(const char* message, const char * messageID, CORBA::Long serverNr, const VS2::UserData& uData)
+{
+    cout << "Procedure createMessageSoap() called" << endl;
+    return this->saveMessage(message, messageID, uData);
+}
+
+
 //Nachricht auf Board-Childs veroeffentlichen. Wenn Schalter = true dann auch auf den Childs der Childs
 CORBA::Boolean MessageboardServer::publishOnChilds(const char * message, const char * messageID, const VS2::UserData& uData, CORBA::Boolean schalter)
 {

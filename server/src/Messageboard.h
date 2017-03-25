@@ -53,6 +53,7 @@ class Messageboard
 		void saveConnectInformations(XMLNode * fatherNode);
 		void saveChildConnectInformations(XMLNode * fatherNode);
 		void saveFatherConnectInformation(XMLNode * fatherNode);
+		void saveSoapConnectInformation(XMLNode * fatherNode);
         unsigned int getConnectInformationChildIndex(string);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei

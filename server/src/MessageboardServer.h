@@ -49,7 +49,10 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         void notifyFather(const VS2::UserData& uData);
         void saveFatherInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData, const VS2::UserData& uData);
         void notifyChildren(const VS2::UserData& uData);
-        void saveChildInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData, const VS2::UserData& uData);        
+        void saveChildInformation(CORBA::Long id, const char* name, const VS2::ConnectInformationData& ciData, const VS2::UserData& uData);
+        CORBA::Boolean modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData);
+        CORBA::Boolean deleteMessageSoap(const char * messageID, const VS2::UserData& uData);
+        CORBA::Boolean createMessageSoap(const char* message, const char * messageID, CORBA::Long serverNr, const VS2::UserData& uData);        
 };
 
 

@@ -7,8 +7,11 @@ CC = gcc
 LDXX = g++
 LDFLAGS = 
 LOESCHLISTE = *.o *.exe
-XMLSOURCEPATH = ./XMLWorker/source/
-SERVERSOURCEPATH = ./src/
+XMLSOURCEPATH = XMLWorker/source/
+SERVERSOURCEPATH = src/
+SOAPSOURCEPATH = src/SOAP-Client/src/
+SOAPREQUESTSPATH = src/SOAP-Client/src/requests/
+SOAPSERVERCOMPATH = src/SOAP-Client/src/serverCom/
 OMNI_HOME     = /home/marco/Documents/HTW/Entwicklung/omniORB-4.2.1/
 OMNI_INCLUDES = -I$(OMNI_HOME)/include
 OMNI_LIB_DIR  = $(OMNI_HOME)/lib
@@ -35,6 +38,9 @@ server01: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o
 server02: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServerClient.cpp
 	$(CXX) $(CFLAGS) -o StartServerClient Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServerClient.cpp
 
+soap01: SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o RunClient.cpp
+	$(CXX) $(CFLAGS) -o RunClient SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o RunClient.cpp
+
 #Files fuer MessageBoard
 
 MessageboardServer.o: $(SERVERSOURCEPATH)MessageboardServer.cpp $(SERVERSOURCEPATH)MessageboardServer.h $(SERVERSOURCEPATH)VS2.hh
@@ -56,3 +62,34 @@ Message.o: $(SERVERSOURCEPATH)Message.cpp $(SERVERSOURCEPATH)Message.h
 
 XMLWorker.o: $(XMLSOURCEPATH)XMLWorker.cpp $(XMLSOURCEPATH)XMLWorker.h $(XMLSOURCEPATH)FileWorker.h
 	$(CXX) $(CFLAGS) -c $(XMLSOURCEPATH)XMLWorker.cpp
+
+#Files fuer SoapClient
+SoapException.o: $(SOAPREQUESTSPATH)SoapException.cpp $(SOAPREQUESTSPATH)SoapException.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)SoapException.cpp
+
+SoapDeliverer.o: $(SERVERSOURCEPATH)SoapDeliverer.cpp $(SERVERSOURCEPATH)SoapDeliverer.h
+	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)SoapDeliverer.cpp
+
+RequestException.o: $(SOAPREQUESTSPATH)RequestException.cpp $(SOAPREQUESTSPATH)RequestException.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)RequestException.cpp
+
+SoapRequest.o: $(SOAPREQUESTSPATH)SoapRequest.cpp $(SOAPREQUESTSPATH)SoapRequest.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)SoapRequest.cpp
+
+DeleteRequest.o: $(SOAPREQUESTSPATH)DeleteRequest.cpp $(SOAPREQUESTSPATH)DeleteRequest.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)DeleteRequest.cpp
+
+ModifyRequest.o: $(SOAPREQUESTSPATH)ModifyRequest.cpp $(SOAPREQUESTSPATH)ModifyRequest.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)ModifyRequest.cpp
+
+SendRequest.o: $(SOAPREQUESTSPATH)SendRequest.cpp $(SOAPREQUESTSPATH)SendRequest.h
+	$(CXX) $(CFLAGS) -c $(SOAPREQUESTSPATH)SendRequest.cpp
+
+soapC.o: $(SOAPSERVERCOMPATH)soapC.cpp $(SOAPSERVERCOMPATH)soapH.h
+	$(CXX) $(CFLAGS) -c $(SOAPSERVERCOMPATH)soapC.cpp
+
+soapServerComWebserviceImplPortBindingProxy.o: $(SOAPSERVERCOMPATH)soapServerComWebserviceImplPortBindingProxy.cpp $(SOAPSERVERCOMPATH)serverCom.h $(SOAPSERVERCOMPATH)soapServerComWebserviceImplPortBindingProxy.h
+	$(CXX) $(CFLAGS) -c $(SOAPSERVERCOMPATH)soapServerComWebserviceImplPortBindingProxy.cpp 
+
+stdsoap2.o: $(SOAPSERVERCOMPATH)stdsoap2.cpp $(SOAPSERVERCOMPATH)stdsoap2.h
+	$(CXX) $(CFLAGS) -c $(SOAPSERVERCOMPATH)stdsoap2.cpp
