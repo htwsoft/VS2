@@ -43,7 +43,7 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     }
     return ciData;
 }
-
+    
 //Nachricht auf Board-Childs veroeffentlichen. Wenn Schalter = true dann auch auf den Childs der Childs
 CORBA::Boolean MessageboardServer::publishOnChilds(const char * message, const char * messageID, const VS2::UserData& uData, CORBA::Boolean schalter)
 {

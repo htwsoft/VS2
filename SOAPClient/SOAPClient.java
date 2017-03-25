@@ -85,6 +85,13 @@ public class SOAPClient
         messageID = "SOAP-" + messageID;
 		return this.mbImpl.deleteMessage(messageID, this.userData);
 	}
+ 
+    /* Methode zum aendern einer Nachricht */
+    public boolean setMessage(String message, String messageID)
+    {
+        messageID = "SOAP-" + messageID;
+        return this.mbImpl.setMessage(message, messageID, this.userData);
+    }
 
     /**/
     public boolean isServerConnected()
