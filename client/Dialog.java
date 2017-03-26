@@ -140,7 +140,9 @@ public class Dialog{
 			dialog.clientTest = new StartClient(dialog.logininfo);
 		}
 	*/
-		dialog.clientTest=new StartClient("192.168.178.52",6000);
+		System.out.println("Bitte Ip und port eingeben ./StartClient.sh IP POrt");
+		dialog.clientTest=new StartClient(args[0],Integer.parseInt(args[0]));
+		//dialog.clientTest=new StartClient("192.168.178.52",6000);
 		int i;
 		boolean beenden = false;
 
