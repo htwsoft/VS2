@@ -35,6 +35,7 @@ public class StartClient {
 	ORB orb;
 	private String[] url=null;
 	private String METHOD = "DataServiceName1";
+	private boolean isAdmin=true;
 
 	
 
@@ -54,7 +55,7 @@ public class StartClient {
 			return true;
 			
 		} catch (Exception e) {
-			System.out.println("ERROR (falsche Daten): " + url.toString());
+			System.out.println("ERROR (falsche Daten): " +e);
 //			System.exit(0);
 			return false;
 		}
@@ -69,7 +70,7 @@ public class StartClient {
 	 */
 	public StartClient(String ip, int port) {
 		
-			this.userData = new UserData(this.uid, this.uName, this.pWord);
+			this.userData = new UserData(this.uid, this.uName, this.pWord,this.isAdmin);
 			
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();
@@ -139,7 +140,7 @@ public class StartClient {
 	 */
 	public boolean setMessage(String newmessage, String messageID, int uid, String uName) {
 		
-		return this.mbImpl.setMessage(message, messageID, uid, uName);
+		return this.mbImpl.setMessage(message, messageID, this.userData);
 	}
 
 	/*
@@ -149,9 +150,9 @@ public class StartClient {
 	 * 
 	 * @param messageID
 	 */
-	public boolean deleteMessage(int uid, String messageID) {
+	public boolean deleteMessage( String messageID) {
 
-		return this.mbImpl.deleteMessage(uid, messageID);
+		return this.mbImpl.deleteMessage(messageID, this.userData);
 	}
 
 	/*
@@ -159,7 +160,7 @@ public class StartClient {
 	 * TODO
 	 */
 	public boolean schreibeMessage(String message) {
-		return mbImpl.createNewMessage(message, this.uid, this.uName);
+		return mbImpl.createNewMessage(message, this.userData);
 	}
 
 	/*
@@ -182,11 +183,11 @@ public class StartClient {
 	 * start()
 	 */
 	public String getFatherIP() {
-		return mbImpl.connectToFather().ip;
+		return mbImpl.connectToFather(this.userData).ip;
 	}
 
 	public int getFatherPort() {
-		return mbImpl.connectToFather().port;
+		return mbImpl.connectToFather(this.userData).port;
 	}
 	
 	/*
