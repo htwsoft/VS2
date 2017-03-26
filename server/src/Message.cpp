@@ -7,7 +7,7 @@
 
 #include "./Message.h"
 
-Message::Message(string message, string mid, int uid, Message * previous, Message * next, string uName)
+Message::Message(string message, string mid, int uid, Message * previous, Message * next, string uName, bool shared)
 {
 	this->message=message;
 	this->uid=uid;
@@ -15,6 +15,7 @@ Message::Message(string message, string mid, int uid, Message * previous, Messag
 	this->id = mid;
 	this->previous=previous;
 	this->next=next;
+	this->shared = shared;
 }
 
 Message::~Message()

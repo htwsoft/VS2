@@ -31,6 +31,10 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         bool checkIsAdmin(VS2::UserData& uData);
         bool checkGlobalMessageRights(string messageId);
         bool checkMessageOwner(VS2::UserData& uData, Message * msg);
+        bool deleteMessageOnFather(const char * messageID, const VS2::UserData& uData);
+        bool deleteMessageOnChilds(const char * messageID, const VS2::UserData& uData);
+        bool modifyMessageOnFather(const char* message, const char* messageID, const VS2::UserData& uData);
+        bool modifyMessageOnChilds(const char* message, const char* messageID, const VS2::UserData& uData);       
         void clearJunkData();
         string intToStr(int number);
     public:

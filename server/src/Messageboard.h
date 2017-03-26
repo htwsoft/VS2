@@ -73,8 +73,8 @@ class Messageboard
         void setFirstMessageToHighlighted();
         void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
-		bool createNewMessage(string, int, string);
-		bool createNewMessage(string, string, int, string, bool = true);
+		bool createNewMessage(string, int, string, bool = false);
+		bool createNewMessage(string, string, int, string, bool = true, bool =false);
 		bool deleteMessage(int);
 		void erase();
         int getChildCount();

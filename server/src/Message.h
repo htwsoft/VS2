@@ -25,21 +25,24 @@ class Message
 		string uName;
 		Message * next;
 		Message * previous;
+		bool shared;
 	public:
-		Message(string, string, int, Message * = 0, Message * = 0, string = "");//speichere id in xml datei direkt???
+		Message(string, string, int, Message * = 0, Message * = 0, string = "", bool = false);//speichere id in xml datei direkt???
 		~Message();
 		void setMessage(const string message){this->message=message;}
 		void setId(const string id){this->id=id;}
 		void setUid(const int uid){this->uid=uid;/*setUName(uName=XML)*/}
 		void setUName(const string uName){this->uName=uName;}
+		void setShared(const bool shared){this->shared = shared;}
 		string getMessage(){return this->message;}
 		string getId(){return this->id;}
         string getUName(){return this->uName;}
 		int getUid(){return this->uid;}
 		string toString(){return this->message;}
-		Message * getNext(){return this->next;}; //Funktion damit MessageBoard Next Abrufen kann
-		Message * getPrevious(){return this->previous;}; //Funktion damit MessageBoard previous Abrufen kann
-		void setNext(Message * next){this->next = next;}; //Funktion damit MessageBoard Next zuweisen kann
-		void setPrevious(Message * previous){this->previous = previous;}; //Funktion damit MessageBoard zuweisen Abrufen kann		
+		Message * getNext(){return this->next;} //Funktion damit MessageBoard Next Abrufen kann
+		Message * getPrevious(){return this->previous;} //Funktion damit MessageBoard previous Abrufen kann
+		bool getShared(){return this->shared;}
+		void setNext(Message * next){this->next = next;} //Funktion damit MessageBoard Next zuweisen kann
+		void setPrevious(Message * previous){this->previous = previous;} //Funktion damit MessageBoard zuweisen Abrufen kann		
 };
 #endif /* MESSAGE_H_ */

@@ -88,6 +88,17 @@ bool ServerClient::iterateChilds(string message, string messageID, const VS2::Us
    return this->m_Data->publishOnChilds(message.c_str(), messageID.c_str(), uData, true);
 }
 
+/* loeschen von Nachrichten auf den childs */
+bool ServerClient::deleteMessage(const char * messageID, const VS2::UserData& uData)
+{
+   return this->m_Data->deleteMessage(messageID, uData);
+}
+
+//Aendern einer Nachricht
+bool ServerClient::modifyMessage(const char* message, const char* messageID, const VS2::UserData& uData)
+{
+    return this->m_Data->setMessage(message, messageID, uData);
+}
 
 /* veröffentlichen einer Nachricht auf einem Child oder Father-Board */
 /* wird nur von sendendem Board aufgerufen. nicht von Client */

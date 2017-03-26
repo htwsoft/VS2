@@ -238,6 +238,8 @@ _CORBA_MODULE_BEG
 
     ::CORBA::String_member text;
 
+    ::CORBA::Boolean shared;
+
   
 
     void operator>>= (cdrStream &) const;

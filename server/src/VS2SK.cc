@@ -73,6 +73,7 @@ VS2::MessageData::operator>>= (cdrStream &_n) const
   _n.marshalString(id,0);
   _n.marshalString(uName,0);
   _n.marshalString(text,0);
+  _n.marshalBoolean(shared);
 
 }
 
@@ -83,6 +84,7 @@ VS2::MessageData::operator<<= (cdrStream &_n)
   id = _n.unmarshalString(0);
   uName = _n.unmarshalString(0);
   text = _n.unmarshalString(0);
+  shared = _n.unmarshalBoolean();
 
 }
 

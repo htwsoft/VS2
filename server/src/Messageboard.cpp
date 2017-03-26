@@ -178,6 +178,7 @@ void Messageboard::saveMessages(XMLNode * fatherNode)
 	string message = "";
 	string messageId = "";
 	string userId = "";
+	string shared = "false";
 	//Ab hier werden die nachrichten gespeichert
 	worker = this->first;
 	while(worker != NULL)
@@ -186,11 +187,20 @@ void Messageboard::saveMessages(XMLNode * fatherNode)
 		message = worker->getMessage();
 		messageId = worker->getId();
 		userId = this->intToStr(worker->getUid());
+		if(worker->getShared())
+		{
+			shared = "true";
+		}
+		else
+		{
+			shared = "false";
+		}
 		//erstellen der <message> node
 		messageNode = fatherNode->addChild("message", "", false);
 		messageNode->addChild("text", message, false);
 		messageNode->addChild("uid", userId, false);
 		messageNode->addAttribut("id", messageId);
+		messageNode->addAttribut("shared", shared);
 		//Naechste Nachricht
 		worker = worker->getNext();
 	}
@@ -563,6 +573,7 @@ void Messageboard::initMessage(XMLNode * node)
 	int uid = 0; //User-ID der Message
 	int anzChildNodes = 0; //Anzahl der Nodes Innerhalb einer Message	
 	XMLNode * workNode = 0;
+	bool shared = false;
 	//Abarbeiten der einzelnen Nodes innerhalb einer Message
 	anzChildNodes = node->getChildCount();
 	for(int i=0;  i < anzChildNodes; i++)
@@ -581,6 +592,12 @@ void Messageboard::initMessage(XMLNode * node)
 		if(nodeName.compare("text") == 0)
 		{
 			message = workNode->getValue();
+		}
+		else
+		if(nodeName.compare("text") == 0)
+		{
+			value = workNode->getValue();
+			shared = value.compare("true") == 0;
 		}	
 	}
 	//Prufen ob message-id wert angegeben ist
@@ -591,7 +608,7 @@ void Messageboard::initMessage(XMLNode * node)
 	}
 	
 	//Hier muss noch der Username ermittelt werden
-	this->createNewMessage(message, mid, uid, "", false);	
+	this->createNewMessage(message, mid, uid, "", false, shared);	
 }
 
 string Messageboard::getFatherName()
@@ -721,7 +738,7 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 }
 
 /* speichert eine neue message und erzeugt eine neue MessageId */
-bool Messageboard::createNewMessage(string message, int uid, string uName)
+bool Messageboard::createNewMessage(string message, int uid, string uName, bool shared)
 {
 	string messageId = "";
 	messageId = this->createNewMessageId();
@@ -729,18 +746,18 @@ bool Messageboard::createNewMessage(string message, int uid, string uName)
 }
 
 /* erstellt eine neu Message mit der uebergeben MessageId */
-bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave)
+bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave, bool shared)
 {
 	Message * neu = NULL;
 	if(first == NULL)
 	{
-		neu = new Message(message, mid, uid, 0, 0, uName);
+		neu = new Message(message, mid, uid, 0, 0, uName, shared);
 		this->first = neu;
 		this->last = neu;
 	}
 	else
 	{
-		neu = new Message(message, mid, uid, 0, this->first, uName);
+		neu = new Message(message, mid, uid, 0, this->first, uName, shared);
 		this->first->setPrevious(neu);
 		this->first = neu;
 		highlighted = neu;		

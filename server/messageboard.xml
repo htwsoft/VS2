@@ -8,22 +8,27 @@
     <message id="14-10012">
       <text> Ein Test </text>
       <uid> 12345 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10004">
       <text> Eine neue Message </text>
       <uid> 1000 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10003">
       <text> bla fassel 1 </text>
       <uid> 353646 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10002">
       <text> bla fassel 2 </text>
       <uid> 4657 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10001">
       <text> bla fassel 3 </text>
       <uid> 891011 </uid>
+      <shared> false </shared>
     </message>
   </messages>
   <connectInformations>

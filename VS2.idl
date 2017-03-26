@@ -29,6 +29,7 @@ module VS2
 		string id;
 		string uName;
 		string text;
+        boolean shared;
 	};
 	
 	typedef sequence<MessageData> array_of_MessageData;    
