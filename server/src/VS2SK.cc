@@ -36,6 +36,7 @@ VS2::UserData::operator>>= (cdrStream &_n) const
   userID >>= _n;
   _n.marshalString(userName,0);
   _n.marshalString(password,0);
+  _n.marshalBoolean(isAdmin);
 
 }
 
@@ -45,6 +46,7 @@ VS2::UserData::operator<<= (cdrStream &_n)
   (::CORBA::Long&)userID <<= _n;
   userName = _n.unmarshalString(0);
   password = _n.unmarshalString(0);
+  isAdmin = _n.unmarshalBoolean();
 
 }
 

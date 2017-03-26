@@ -44,6 +44,13 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
+//Funktion prueft ob eine Aktion von einem bestimmten Nutzer ausgefuhrt werden darf
+bool MessageboardServer::confirmAccessRights(string messsageId, VS2::UserData& uData)
+{
+
+}
+
+
 //Funktion liefert true zurueck falls eine Verbindung mit einer Soap-Tafel besteht
 bool MessageboardServer::isConnectedToSoapBoard()
 {

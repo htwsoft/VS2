@@ -14,6 +14,7 @@ module VS2
         long userID;
 		string userName;
 		string password;
+        boolean isAdmin;
 	};
 	
 	struct LoginInformation

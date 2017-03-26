@@ -196,6 +196,8 @@ _CORBA_MODULE_BEG
 
     ::CORBA::String_member password;
 
+    ::CORBA::Boolean isAdmin;
+
   
 
     void operator>>= (cdrStream &) const;
