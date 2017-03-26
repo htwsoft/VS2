@@ -32,8 +32,8 @@ clean:
 
 
 
-server01: SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClient.o Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
-	$(CXX) $(CFLAGS) -o StartServer SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClient.o Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
+server01: SoapServerClient.o SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServer.cpp
+	$(CXX) $(CFLAGS) -o StartServer SoapServerClient.o SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServer.cpp
 	
 server02: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o ServerClient.o StartServerClient.cpp
 	$(CXX) $(CFLAGS) -o StartServerClient Message.o Messageboard.o XMLWorker.o FileWorker.o ServerClient.o MessageboardServer.o $(LIBS) StartServerClient.cpp

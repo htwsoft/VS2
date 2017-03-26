@@ -81,6 +81,7 @@ class Messageboard
 		ConnectInformation * getConnectInformationFather();
         ConnectInformation * getConnectInformationSoap();
 		ConnectInformation * getConnectInformationChild(string);
+		int getSoapBoardId();
 		//Server-Server
 		void saveFatherInformation(int, string, ConnectInformation *);
 		void saveChildrenInformation(int, string, ConnectInformation *);

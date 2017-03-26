@@ -24,6 +24,9 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
 		vector<MessageData *> junkData;
 		vector<MessageData *>::iterator iterjunkData;
         ConnectInformationData * getConnectInformationData(ConnectInformation * connectInformation);
+        bool sendMessageToSoapBoard(const char * message, const char * messageID, int userId);
+        bool deleteMessageOnSoapBoard(const char * messageID);
+        bool modifyMessageOnSoapBoard(const char * message, const char * messageID);
         void clearJunkData();
     public:
         MessageboardServer();

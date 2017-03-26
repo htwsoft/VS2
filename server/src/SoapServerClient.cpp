@@ -39,6 +39,25 @@ int SoapServerClient::strToInt(string strNumber)
 
 }
 
+//Wandeln von Integer in String
+string SoapServerClient::intToStr(int number)
+{
+    string rValue = "";
+	ostringstream converter;
+    try
+    {
+        converter << number;
+	    rValue = converter.str();
+    }
+    catch(...)
+    {
+        rValue = "";
+    }
+    return rValue;
+
+}
+
+
 //Erstellt fuer das SoapBoard die ServerNr der Nachricht
 //wird anhand der MessageID ermittelt. Bei Nachricht des eigenen
 //Boards wird einfach die verknuepfte SOAP-Server-ID verwendet
@@ -73,12 +92,11 @@ int SoapServerClient::createSoapServerNr(string messageID, int soapServerNr, int
             createdServerNr = createdServerNr * (-1);
         }
     } 
-    cout << "ServerNr: " << createdServerNr << endl;
     return createdServerNr;   
 }
 
 //erstellt fuer das SOapBoard die message ID
-int SoapServerClient::createSoapMessageId(string messageID, int soapServerNr)
+int SoapServerClient::createSoapMessageId(string messageID, int soapServerNr, int boardId)
 {
     int strPos = 0;
     int copyLength = 0;
@@ -92,40 +110,44 @@ int SoapServerClient::createSoapMessageId(string messageID, int soapServerNr)
         strPos = messageID.find("SOAP") + 4;
         copyLength = messageID.length()-strPos;
         copyStr = messageID.substr(strPos, copyLength);
-        cout << "MessageID (SOAP): " << copyStr << endl;
         soapMessageID = this->strToInt(copyStr);
     }
     else
     {
         //Aufbau: 14-(BoardID)12345(LaufNr)
         //soapMessageID = soapServerID
+        soapMessageID = this->createSoapServerNr(messageID, soapServerNr, boardId);
         strPos = messageID.find("-") ;
-        //loeschen des "-" zeichen
-        copyStr = messageID.erase(strPos, 1);
-        cout << "MessageID (CORBA): " << copyStr << endl;
+        //loeschen bis inkl. "-" zeichen
+        copyStr = messageID.erase(0, strPos+1);
+        copyStr = this->intToStr(soapMessageID) + copyStr;
         soapMessageID = this->strToInt(copyStr);
+        //MessageId soll negativ sein
+        if(soapMessageID > 0)
+        {
+            soapMessageID = soapMessageID * (-1);
+        }
     }
-    soapMessageID = soapMessageID * (-1);
     cout << "MessageID: " << soapMessageID << endl;
     return soapMessageID;
 }
 
 //Aendern einer Nachricht auf einem SoapBoard
-bool SoapServerClient::modifyMessage(string message, string messageID, int soapServerNr)
+bool SoapServerClient::modifyMessage(string message, string messageID, int soapServerNr, int boardId)
 {
     bool rValue = true;
     SoapRequest * soapRequest = NULL;
     int sendMessageID = 0;
     try
-    {
+    {    
         //ModifyRequest aendern eine Nachricht im Soap-Board an
-        sendMessageID = this->createSoapMessageId(messageID, soapServerNr);
+        sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
        /*  soapRequest = new ModifyRequest(sendMessageID,  message);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
         delete soapRequest; */
 
     }
-    catch ( const string& e )
+    catch (...)
     {
         rValue = false;
     }
@@ -133,7 +155,7 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
 }
 
 //Loeschen einer Nachricht auf einem SoapBoard
-bool SoapServerClient::deleteMessage(int soapServerNr, string messageID)
+bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boardId)
 {
     bool rValue = true;
     SoapRequest * soapRequest = NULL;
@@ -141,13 +163,13 @@ bool SoapServerClient::deleteMessage(int soapServerNr, string messageID)
     try
     {
         //DeleteRequest loescht eine Nachricht im Soap-Board an
-        sendMessageID = this->createSoapMessageId(messageID, soapServerNr);
+        sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
        /* soapRequest = new DeleteRequest(sendMessageID);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
         delete soapRequest; */
 
     }
-    catch ( const string& e )
+    catch (...)
     {
         rValue = false;
     }
@@ -165,18 +187,20 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
     try
     {
         //SendRequest legt eine Nachricht im Soap-Board an
-        sendMessageID = this->createSoapMessageId(messageID, soapServerNr);
+        sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         sendServerNr = this->createSoapServerNr(messageID, soapServerNr, boardId);
+        cout << "ServerNr: " << sendServerNr << endl;
        /* isGlobal = sendServerNr < 0;
         soapRequest = new SendRequest(sendMessageID, userID, sendServerNr, message, isGlobal);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
         delete soapRequest;*/
 
     }
-    catch ( const string& e )
+    catch (...)
     {
         rValue = false;
     }
+
     return rValue;
 }
 

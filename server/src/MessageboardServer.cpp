@@ -9,6 +9,7 @@
 #include "./ConnectInformation.h"
 #include "./BoardInformation.h"
 #include "./ServerClient.h"
+#include "./SoapServerClient.h"
 #include <cstring>
 #include <vector>
 
@@ -43,6 +44,93 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     }
     return ciData;
 }
+
+//Senden einer Nachricht zu einer Verknuepften SOAP-Tafel
+bool MessageboardServer::sendMessageToSoapBoard(const char * message, const char * messageID, int userId)
+{
+    bool rValue = true;
+    ConnectInformation * ciSoap = NULL;
+    string soapAdresse = "";
+    string strMessage(message);
+    string strMessageID(messageID);
+    SoapServerClient * ssc = NULL; //Klasse um mit dem Soap-Server zu kommunizieren
+    int serverId = 0;
+    int boardId = 0;
+    cout << "Procedure sendMessageToSoapBoard() called" << endl;
+    ciSoap = this->messageBoard->getConnectInformationSoap();
+    serverId = this->messageBoard->getSoapBoardId();
+    boardId = this->messageBoard->getBoardInformation()->getId();
+    soapAdresse = ciSoap->getIp();
+    try
+    {
+        ssc = new SoapServerClient(serverId, soapAdresse);
+        ssc->sendMessage(serverId, boardId, strMessage, strMessageID, userId);
+    }
+    catch(...)
+    {
+        rValue = false;
+    }
+    delete ssc;
+    return rValue;
+}
+
+//loeschen einer auf einer Verknuepften SOAP-Tafel
+bool MessageboardServer::deleteMessageOnSoapBoard(const char * messageID)
+{
+    bool rValue = true;
+    ConnectInformation * ciSoap = NULL;
+    string soapAdresse = "";
+    string strMessageID(messageID);
+    SoapServerClient * ssc = NULL; //Klasse um mit dem Soap-Server zu kommunizieren
+    int serverId = 0;
+    int boardId = 0;
+    cout << "Procedure deleteMessageOnSoapBoard() called" << endl;
+    ciSoap = this->messageBoard->getConnectInformationSoap();
+    serverId = this->messageBoard->getSoapBoardId();
+    boardId = this->messageBoard->getBoardInformation()->getId();
+    soapAdresse = ciSoap->getIp();
+    try
+    {
+        ssc = new SoapServerClient(serverId, soapAdresse);
+        ssc->deleteMessage(strMessageID, serverId, boardId);
+    }
+    catch(...)
+    {
+        rValue = false;
+    }
+    delete ssc;
+    return rValue;
+}
+
+//aendern einer auf einer Verknuepften SOAP-Tafel
+bool MessageboardServer::modifyMessageOnSoapBoard(const char * message, const char * messageID)
+{
+    bool rValue = true;
+    ConnectInformation * ciSoap = NULL;
+    string soapAdresse = "";
+    string strMessage(message);
+    string strMessageID(messageID);
+    SoapServerClient * ssc = NULL; //Klasse um mit dem Soap-Server zu kommunizieren
+    int serverId = 0;
+    int boardId = 0;
+    cout << "Procedure modifyMessageOnSoapBoard() called" << endl;
+    ciSoap = this->messageBoard->getConnectInformationSoap();
+    serverId = this->messageBoard->getSoapBoardId();
+    boardId = this->messageBoard->getBoardInformation()->getId();
+    soapAdresse = ciSoap->getIp();
+    try
+    {
+        ssc = new SoapServerClient(serverId, soapAdresse);
+        ssc->modifyMessage(strMessage, strMessageID, serverId, boardId);
+    }
+    catch(...)
+    {
+        rValue = false;
+    }
+    delete ssc;
+    return rValue;
+}
+
 
 CORBA::Boolean MessageboardServer::modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData)
 {

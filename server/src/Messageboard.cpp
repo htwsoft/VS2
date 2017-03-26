@@ -808,12 +808,33 @@ void Messageboard::erase()
 
 ConnectInformation * Messageboard::getConnectInformationFather()
 {
-	return father->getConnectInformation();
+	ConnectInformation * rValue = NULL;
+	if(this->father != NULL)
+	{
+		rValue = father->getConnectInformation();
+	}
+	return rValue;
 }
 
 ConnectInformation * Messageboard::getConnectInformationSoap()
 {
-	return soap->getConnectInformation();
+	ConnectInformation * rValue = NULL;
+	if(this->soap != NULL)
+	{
+		rValue = soap->getConnectInformation();
+	}
+	return rValue;
+}
+
+
+int Messageboard::getSoapBoardId()
+{
+	int rValue = -1;
+	if(this->soap != NULL)
+	{
+		rValue = this->soap->getId();
+	}
+	return rValue;
 }
 
 ConnectInformation * Messageboard::getConnectInformationChild(string childName)
@@ -823,7 +844,10 @@ ConnectInformation * Messageboard::getConnectInformationChild(string childName)
 	{
 		if(childName.compare(this->childs[i]->getName()) == 0)
 		{
-			connectInformation = childs[i]->getConnectInformation();
+			if(childs[i] != NULL)
+			{
+				connectInformation = childs[i]->getConnectInformation();
+			}
 		}
 	}
     return connectInformation;
