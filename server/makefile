@@ -41,6 +41,9 @@ server02: Message.o Messageboard.o FileWorker.o XMLWorker.o MessageboardServer.o
 soap01: SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o RunClient.cpp
 	$(CXX) $(CFLAGS) -o RunClient SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o RunClient.cpp
 
+soaptest: SoapServerClient.o SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClientTest.cpp
+	$(CXX) $(CFLAGS) -o SoapServerClientTest SoapException.o RequestException.o ModifyRequest.o DeleteRequest.o stdsoap2.o soapC.o soapServerComWebserviceImplPortBindingProxy.o SendRequest.o SoapRequest.o SoapDeliverer.o SoapServerClient.o SoapServerClientTest.cpp 
+
 #Files fuer MessageBoard
 
 SoapServerClient.o: $(SERVERSOURCEPATH)SoapServerClient.cpp $(SERVERSOURCEPATH)SoapServerClient.h
@@ -60,6 +63,9 @@ Messageboard.o: $(SERVERSOURCEPATH)Messageboard.cpp $(SERVERSOURCEPATH)Messagebo
 	
 Message.o: $(SERVERSOURCEPATH)Message.cpp $(SERVERSOURCEPATH)Message.h
 	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)Message.cpp 
+
+SoapServerClient.o: $(SERVERSOURCEPATH)SoapServerClient.cpp $(SERVERSOURCEPATH)SoapServerClient.h
+	$(CXX) $(CFLAGS) -c $(SERVERSOURCEPATH)SoapServerClient.cpp
 	
 #Files fuer XML
 
