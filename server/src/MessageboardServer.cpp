@@ -44,12 +44,66 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
-//Funktion prueft ob eine Aktion von einem bestimmten Nutzer ausgefuhrt werden darf
-bool MessageboardServer::confirmAccessRights(string messsageId, VS2::UserData& uData)
+//Funktion liefert true zuruck falls der User ein admin ist
+bool MessageboardServer::checkIsAdmin(VS2::UserData& uData)
 {
-
+    return uData.isAdmin;
+}
+//Umwandeln von int in string
+string MessageboardServer::intToStr(int number)
+{
+    string rValue = "";
+	ostringstream converter;
+    try
+    {
+        converter << number;
+	    rValue = converter.str();
+    }
+    catch(...)
+    {
+        rValue = "";
+    }
+    return rValue;
 }
 
+//funktion liefert true zurueck falls die nachricht nur auf dem Board vorhanden ist
+//und veraendert werden darf
+//wichtig fuer Soap-Messages
+bool MessageboardServer::checkGlobalMessageRights(string messageId)
+{
+    bool rValue = false;
+    int boardId = 0;
+    string strBoardId = "";
+    //Pruefen ob eine Soap-Message mit negativ id eingetragen ist
+    if(messageId.find("SOAP")!=std::string::npos)
+    {
+        //-5-SOAP5123 oder 4-SOAP412
+        if(messageId.substr(0,1).compare("-") != 0)
+        {
+            //Nachricht darf geaendert werden
+            rValue = true;
+        }
+    }
+    else
+    {
+        //Pruefen ob die Nachricht von einem anderen Messageboard kommt
+        //Aufbau Msg: 14-12345
+        boardId = this->messageBoard->getBoardInformation()->getId();
+        strBoardId = this->intToStr(boardId);
+        if(messageId.substr(0,strBoardId.length()).compare(strBoardId) == 0)
+        {
+            //Nachricht ist vom selben Board
+            rValue = true;
+        }
+    }
+    return rValue;
+}
+
+//Liefert true zurueck falls die Nachricht dem User gehoert
+bool checkMessageOwner(VS2::UserData& uData, Message * msg)
+{
+    return uData.userID == msg->getUid();
+}
 
 //Funktion liefert true zurueck falls eine Verbindung mit einer Soap-Tafel besteht
 bool MessageboardServer::isConnectedToSoapBoard()

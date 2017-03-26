@@ -28,11 +28,11 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         bool deleteMessageOnSoapBoard(const char * messageID);
         bool modifyMessageOnSoapBoard(const char * message, const char * messageID);
         bool isConnectedToSoapBoard();
-        bool confirmAccessRights(string messsageId, VS2::UserData& uData);
         bool checkIsAdmin(VS2::UserData& uData);
         bool checkGlobalMessageRights(string messageId);
-        bool checkMessageOwner(VS2::UserData& uData);
+        bool checkMessageOwner(VS2::UserData& uData, Message * msg);
         void clearJunkData();
+        string intToStr(int number);
     public:
         MessageboardServer();
         ~MessageboardServer();
