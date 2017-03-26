@@ -26,7 +26,6 @@ MessageboardServer::~MessageboardServer()
     delete this->messageBoard;
 }
 
-
 /* Wandelt die daten eines ConnectInformation Objektes in ConnectInformationData */
 ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectInformation * connectInformation)
 {
@@ -45,14 +44,81 @@ ConnectInformationData * MessageboardServer::getConnectInformationData(ConnectIn
     return ciData;
 }
 
+//Funktion liefert true zurueck falls eine Verbindung mit einer Soap-Tafel besteht
+bool MessageboardServer::isConnectedToSoapBoard()
+{
+    return this->messageBoard->getConnectInformationSoap() != NULL;
+}
+
+/* aktuelle Nachricht aendern */
+CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* messageID, const VS2::UserData& uData)
+{
+    Message * msg = NULL;
+    bool setOk = false;   
+    string strMessage(message); //char * in String umwandeln
+    string strUName(uData.userName); //char * in String umwandeln
+    cout << "Procedure setMessage() called" << endl; 
+    msg = this->searchMessage(messageID);
+    if(msg != NULL)
+    {
+        msg->setMessage(strMessage);
+        msg->setUid(uData.userID);
+        msg->setUName(strUName);
+        setOk = true;
+        if(this->isConnectedToSoapBoard())
+        {
+          setOk = this->modifyMessageOnSoapBoard(message, messageID);
+        }
+    }    
+    return setOk;
+}
+
+/* uebergeben Nachricht loeschen Nachricht loeschen */
+CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS2::UserData& uData)
+{
+    bool deleted = false;
+    Message * message = NULL;
+    string strMessageID(messageID); //char * in String convertieren
+    cout << "Procedure deleteMessage() called" << endl; 
+    //Suchen der Message um Highlighted zu setzen  
+    message = this->searchMessage(strMessageID);
+    if(message != NULL)
+    {
+        //Pruefen ob eine Verknuepfung zu einer Soap-Tafel besteht
+        deleted = this->messageBoard->deleteMessage(uData.userID);
+        if(this->isConnectedToSoapBoard())
+        {
+            deleted = this->deleteMessageOnSoapBoard(messageID);
+        } 
+    } 
+    return deleted;
+}
+
+/* Neue Nachricht erstellen */
+CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const VS2::UserData& uData)
+{
+    bool created = false;
+    cout << "Procedure createNewMessage() called" << endl;
+    string strMessage(message); //char * in String umwandeln
+    string strUserName(uData.userName);
+    Message * messageObj = NULL;
+    //Pruefen ob eine Verknuepfung zu einer Soap-Tafel besteht
+    created = this->messageBoard->createNewMessage(strMessage, uData.userID, strUserName);
+    if(created && this->isConnectedToSoapBoard())
+    {
+        messageObj = this->messageBoard->getFirstMessage();
+        created = this->sendMessageToSoapBoard(message, messageObj->getId(), uData.userID);
+    }
+    return created;
+}
+
 //Senden einer Nachricht zu einer Verknuepften SOAP-Tafel
-bool MessageboardServer::sendMessageToSoapBoard(const char * message, const char * messageID, int userId)
+bool MessageboardServer::sendMessageToSoapBoard(const char * message, string messageID, int userId)
 {
     bool rValue = true;
     ConnectInformation * ciSoap = NULL;
     string soapAdresse = "";
     string strMessage(message);
-    string strMessageID(messageID);
     SoapServerClient * ssc = NULL; //Klasse um mit dem Soap-Server zu kommunizieren
     int serverId = 0;
     int boardId = 0;
@@ -64,7 +130,7 @@ bool MessageboardServer::sendMessageToSoapBoard(const char * message, const char
     try
     {
         ssc = new SoapServerClient(serverId, soapAdresse);
-        ssc->sendMessage(serverId, boardId, strMessage, strMessageID, userId);
+        ssc->sendMessage(serverId, boardId, strMessage, messageID, userId);
     }
     catch(...)
     {
@@ -476,33 +542,6 @@ Message * MessageboardServer::searchMessage(string messageID)
     return searchedMsg;
 }
 
-/* Neue Nachricht erstellen */
-CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const VS2::UserData& uData)
-{
-    bool created = false;
-    cout << "Procedure createNewMessage() called" << endl;
-    string strMessage(message); //char * in String umwandeln
-    string strUserName(uData.userName);
-    created = this->messageBoard->createNewMessage(strMessage, uData.userID, strUserName);
-    return created;
-}
-
-/* uebergeben Nachricht loeschen Nachricht loeschen */
-CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS2::UserData& uData)
-{
-    bool deleted = false;
-    Message * message = NULL;
-    string strMessageID(messageID); //char * in String convertieren
-    cout << "Procedure deleteMessage() called" << endl; 
-    //Suchen der Message um Highlighted zu setzen  
-    message = this->searchMessage(strMessageID);
-    if(message != NULL)
-    {
-        deleted = this->messageBoard->deleteMessage(uData.userID); 
-    } 
-    return deleted;
-}
-
 /* Liefert alle Messages in einem Array */
 array_of_MessageData* MessageboardServer::getMessages()
 {
@@ -545,27 +584,6 @@ array_of_MessageData* MessageboardServer::getMessages()
     }
     return arrayMessageData;
 }
-
-/* aktuelle Nachricht aendern */
-CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* messageID, const VS2::UserData& uData)
-{
-    Message * msg = NULL;
-    bool setOk = false;   
-    string strMessage(message); //char * in String umwandeln
-    string strUName(uData.userName); //char * in String umwandeln
-    cout << "Procedure setMessage() called" << endl; 
-    msg = this->searchMessage(messageID);
-    if(msg != NULL)
-    {
-        msg->setMessage(strMessage);
-        msg->setUid(uData.userID);
-        msg->setUName(strUName);
-        setOk = true;
-    }    
-    return setOk;
-}
-
-
 
 /* Vorherige Nachricht an Client senden */
 MessageData * MessageboardServer::getPreviousMessage()
