@@ -68,7 +68,10 @@ public class StartClient {
 	 * 
 	 * TODO warte auf DB dann loeschen
 	 */
-	public StartClient(String ip, int port) {
+	public StartClient(String ip, int port,String uName, String pWord) {
+			
+			this.uName=uName;
+			this.pWord=pWord;
 		
 			this.userData = new UserData(this.uid, this.uName, this.pWord,this.isAdmin);
 			

@@ -141,7 +141,14 @@ public class Dialog{
 		}
 	*/
 		System.out.println("Bitte Ip und port eingeben ./StartClient.sh IP POrt");
-		dialog.clientTest=new StartClient(args[0],Integer.parseInt(args[1]));
+		System.out.println("UserName : \n ");
+				scanMain = new Scanner(System.in);
+				bName = scanMain.nextLine();
+		System.out.println("Password : \n ");
+				scanMain = new Scanner(System.in);
+				 String bWord = scanMain.nextLine();
+				
+		dialog.clientTest=new StartClient(args[0],Integer.parseInt(args[1]),baname,bWord);
 		//dialog.clientTest=new StartClient("192.168.178.52",6000);
 		int i;
 		boolean beenden = false;
@@ -180,9 +187,7 @@ public class Dialog{
 				System.out.println("neue Message : ");
 				Scanner scan11 = new Scanner(System.in);
 				messagea = scan11.nextLine();
-				System.out.println("UserName : \n ");
-				scanMain = new Scanner(System.in);
-				bName = scanMain.nextLine();
+				
 				System.out.println("UID : \n ");
 				scanMain = new Scanner(System.in);
 				loeschuid = scanMain.nextInt();
@@ -190,14 +195,14 @@ public class Dialog{
 				scanMain = new Scanner(System.in);
 				String mId = scanMain.nextLine();
 
-				if (!dialog.clientTest.setMessage(messagea, mId, loeschuid, bName)) {
+				if (!dialog.clientTest.setMessage(messagea, mId, loeschuid)) {
 					System.out.println("UID: " + loeschuid + " und/oder " + "Massage: " + messagea + " Bname: bName"
-							+ " sin d falsch ");
+							+ " sind falsch ");
 				}
 				break;
 			case 4:
- 
-				 System.out.println("\n Ausgabe von alle Message auf server:\n");
+
+				System.out.println("\n Ausgabe von alle Message auf server:\n");
 				messageListtest = dialog.clientTest.getMessage();
 				for (int y = 0; y < messageListtest.size(); y++) {
 					System.out.println("TEXT:" + messageListtest.get(y).text + " -BNAME:" + messageListtest.get(y).uName
@@ -217,7 +222,7 @@ public class Dialog{
 				if (eingabe.equals("y")) {
 					System.out.println(ip + port);
 					// test.loginBenutzer(username, "12345");
-					dialog.clientTest = new StartClient(ip, port);
+					dialog.clientTest = new StartClient(ip, port,"salva","si");
 				}
 				break;
 			case 6:
@@ -245,3 +250,4 @@ public class Dialog{
 		}
 	}
 }
+
