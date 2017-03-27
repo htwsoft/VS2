@@ -14,6 +14,7 @@ module VS2
         long userID;
 		string userName;
 		string password;
+        boolean isAdmin;
 	};
 	
 	struct LoginInformation
@@ -28,6 +29,7 @@ module VS2
 		string id;
 		string uName;
 		string text;
+        boolean shared;
 	};
 	
 	typedef sequence<MessageData> array_of_MessageData;    
@@ -55,6 +57,10 @@ module VS2
 		void saveFatherInformation(in long id, in string name, in ConnectInformationData ciData, in UserData uData);
 		void notifyChildren(in UserData uData);//gebe den Kindern bescheid das du jetzt der Vater bist
 		void saveChildInformation(in long id, in string name, in ConnectInformationData ciData, in UserData uData);
+        //Method Calls für SOAP-Server
+        boolean createMessageSoap(in string message, in string messageID, in long serverNr, in UserData uData);
+        boolean modifyMessageSoap(in string message, in string messageID, in long serverNr, in UserData uData);
+        boolean deleteMessageSoap(in string messageID, in UserData uData);
 	};
 	
     interface LoginServerInterface
