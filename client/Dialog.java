@@ -226,13 +226,11 @@ public class Dialog{
 				}
 				break;
 			case 6:
-				String childname = dialog.clientTest.getChildNames().get(0);
+				for(int r=0;r<dialog.clientTest.getChildNames().size();r++){
+				String childname = dialog.clientTest.getChildNames().get(i);
 				System.out.println("Kindname: " + childname + " IP: " + dialog.clientTest.getChildIP(childname)
 						+ " Port" + dialog.clientTest.getChildPort(childname));
-
-				childname = dialog.clientTest.getChildNames().get(1);
-				System.out.println("Kindname: " + childname + " IP: " + dialog.clientTest.getChildIP(childname)
-						+ " Port" + dialog.clientTest.getChildPort(childname));
+				}
 
 				System.out.println(dialog.clientTest.getFatherName());
 				System.out.println(dialog.clientTest.getFatherIP());
@@ -245,13 +243,13 @@ public class Dialog{
 				System.out.println(dialog.clientTest.getFatherPort());
 				
 				messageListtest = dialog.clientTest.getMessage();
-				System.out.println(messageListtest.get(messageListtest.size()-1)+" wird zu vater geschickt");
+				System.out.println(messageListtest.get(messageListtest.size()-1).text+" wird zu vater geschickt");
 				System.out.println(dialog.clientTest.publishOnFather(messageListtest.get(messageListtest.size()-1)));
 				break;
 			case 8:
 				
 				messageListtest = dialog.clientTest.getMessage();
-				System.out.println(messageListtest.get(messageListtest.size()-1)+" wird zu kinder geschickt");
+				System.out.println(messageListtest.get(messageListtest.size()-1).text+" wird zu kinder geschickt");
 				
 				System.out.println(dialog.clientTest.publishOnChilds(messageListtest.get(messageListtest.size()-1)));
 				break;
