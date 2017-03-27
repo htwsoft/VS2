@@ -34,7 +34,8 @@ class MessageboardServer: public POA_VS2::MessageboardServerInterface,
         bool deleteMessageOnFather(const char * messageID, const VS2::UserData& uData);
         bool deleteMessageOnChilds(const char * messageID, const VS2::UserData& uData);
         bool modifyMessageOnFather(const char* message, const char* messageID, const VS2::UserData& uData);
-        bool modifyMessageOnChilds(const char* message, const char* messageID, const VS2::UserData& uData);       
+        bool modifyMessageOnChilds(const char* message, const char* messageID, const VS2::UserData& uData); 
+        string getSoapAdresse(ConnectInformation * connectInformation);      
         void clearJunkData();
         string intToStr(int number);
     public:

@@ -62,8 +62,8 @@
     </father>
     <soap id="1">
       <name> Soap-Tafel </name>
-      <ip> http:/10.9.40.111:8080/TafelWS/serverws?wsdl </ip>
-      <port> 25001 </port>
+      <ip> 10.9.40.111 </ip>
+      <port> 8080 </port>
     </soap>
     <childs>
       <child id="3">

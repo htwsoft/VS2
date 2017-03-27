@@ -211,13 +211,13 @@ CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* m
             setOk = this->modifyMessageOnSoapBoard(message, messageID);
             if(setOk)
             {
-                this->messageBoard->setMessage(message, uData.userID, uData.userName);
+                this->messageBoard->setMessage(strMessage, uData.userID, strUName);
                 setOk = true;
             }
         }
         else
         {
-             this->messageBoard->setMessage(message, uData.userID, uData.userName);
+             this->messageBoard->setMessage(strMessage, uData.userID, strUName);
              setOk = true;
         }
     }    
@@ -252,6 +252,20 @@ CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS
     return deleted;
 }
 
+/*Erstellt die URL fuer Soap Requests */
+string MessageboardServer::getSoapAdresse(ConnectInformation * connectInformation)
+{
+    string rValue = "";
+    string soapIP = "";
+    int soapPort = 0;
+    string strSoapPort = "";
+    soapIP = connectInformation->getIp();
+    soapPort = connectInformation->getPort();  
+    strSoapPort = this->intToStr(soapPort);
+    rValue = "http://" + soapIP + ":" + strSoapPort + "/TafelWS/serverws?wsdl";
+    return rValue;
+} 
+
 /* Neue Nachricht erstellen */
 CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const VS2::UserData& uData)
 {
@@ -282,17 +296,18 @@ bool MessageboardServer::sendMessageToSoapBoard(const char * message, string mes
     bool rValue = true;
     ConnectInformation * ciSoap = NULL;
     string soapAdresse = "";
+    int serverId = 0;
     string strMessage(message);
     SoapServerClient * ssc = NULL; //Klasse um mit dem Soap-Server zu kommunizieren
-    int serverId = 0;
     int boardId = 0;
     cout << "Procedure sendMessageToSoapBoard() called" << endl;
     ciSoap = this->messageBoard->getConnectInformationSoap();
+    soapAdresse = this->getSoapAdresse(ciSoap);
     serverId = this->messageBoard->getSoapBoardId();
     boardId = this->messageBoard->getBoardInformation()->getId();
-    soapAdresse = ciSoap->getIp();
     try
     {
+
         ssc = new SoapServerClient(serverId, soapAdresse);
         rValue = ssc->sendMessage(serverId, boardId, strMessage, messageID, userId);
         delete ssc; 
@@ -317,8 +332,8 @@ bool MessageboardServer::deleteMessageOnSoapBoard(const char * messageID)
     cout << "Procedure deleteMessageOnSoapBoard() called" << endl;
     ciSoap = this->messageBoard->getConnectInformationSoap();
     serverId = this->messageBoard->getSoapBoardId();
+    soapAdresse = this->getSoapAdresse(ciSoap);
     boardId = this->messageBoard->getBoardInformation()->getId();
-    soapAdresse = ciSoap->getIp();
     try
     {
         ssc = new SoapServerClient(serverId, soapAdresse);
@@ -347,7 +362,7 @@ bool MessageboardServer::modifyMessageOnSoapBoard(const char * message, const ch
     ciSoap = this->messageBoard->getConnectInformationSoap();
     serverId = this->messageBoard->getSoapBoardId();
     boardId = this->messageBoard->getBoardInformation()->getId();
-    soapAdresse = ciSoap->getIp();
+    soapAdresse = this->getSoapAdresse(ciSoap);
     try
     {
         ssc = new SoapServerClient(serverId, soapAdresse);
