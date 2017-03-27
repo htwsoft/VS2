@@ -149,9 +149,19 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
         delete soapRequest; 
 
     }
+    catch ( const string& e )
+    {
+        cerr << "MAIN Error: " << e << endl;
+    } catch ( const RequestException& re )
+    {
+        cerr << re << endl;
+    } catch ( const SoapException& se )
+    {
+        cerr << se << endl;
+    }
     catch (...)
     {
-        rValue = false;
+        cout << "Error ocurred" << endl;
     }
     return rValue;
 }
@@ -159,7 +169,7 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
 //Loeschen einer Nachricht auf einem SoapBoard
 bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boardId)
 {
-    bool rValue = true;
+    bool rValue = false;
     SoapRequest * soapRequest = NULL;
     string strValue = "";
     int sendMessageID = 0;
@@ -174,9 +184,19 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
         delete soapRequest;
 
     }
+    catch ( const string& e )
+    {
+        cerr << "MAIN Error: " << e << endl;
+    } catch ( const RequestException& re )
+    {
+        cerr << re << endl;
+    } catch ( const SoapException& se )
+    {
+        cerr << se << endl;
+    }
     catch (...)
     {
-        rValue = false;
+        cout << "Error ocurred" << endl;
     }
     return rValue;
 }
@@ -184,7 +204,7 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
 //Anlegen einer Nachricht auf einem SoapBoard
 bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message, string messageID, int userID)
 {
-    bool rValue = true;
+    bool rValue = false;
     SoapRequest * soapRequest = NULL;
     int sendMessageID = 0;
     int sendServerNr = 0;
@@ -195,8 +215,8 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
         //SendRequest legt eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         sendServerNr = this->createSoapServerNr(messageID, soapServerNr, boardId);
-        cout << "ID: " << sendMessageID << endl;
         isGlobal = sendServerNr < 0;
+        cout << "SendMessage: " << sendMessageID << " / "  << sendServerNr << endl;
         soapRequest = new SendRequest(sendMessageID, userID, sendServerNr, message, isGlobal);
         strValue = this->soapDeliverer->deliver(soapRequest);
         cout << "Soap-Response: " << strValue << endl;
@@ -204,11 +224,20 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
         delete soapRequest;
 
     }
+    catch ( const string& e )
+    {
+        cerr << "MAIN Error: " << e << endl;
+    } catch ( const RequestException& re )
+    {
+        cerr << re << endl;
+    } catch ( const SoapException& se )
+    {
+        cerr << se << endl;
+    }
     catch (...)
     {
-        rValue = false;
+        cout << "Error ocurred" << endl;
     }
-
     return rValue;
 }
 

@@ -1,20 +1,30 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 7 </mcounter>
-  <idcounter> 10015 </idcounter>
+  <mcounter> 9 </mcounter>
+  <idcounter> 10021 </idcounter>
   <messages>
-    <message id="14-10015">
-      <text> weapons of assdestruction </text>
+    <message id="14-10021">
+      <text> Test </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
-    <message id="14-10014">
-      <text> huwerwerw </text>
+    <message id="14-10020">
+      <text> test </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
-    <message id="14-10013">
-      <text> duck duck go </text>
+    <message id="14-10019">
+      <text> Test </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10018">
+      <text> Test </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10017">
+      <text> test </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
@@ -50,7 +60,7 @@
       <ip> 127.0.0.1 </ip>
       <port> 25001 </port>
     </father>
-    <soap id="12">
+    <soap id="1">
       <name> Soap-Tafel </name>
       <ip> http:/10.9.40.111:8080/TafelWS/serverws?wsdl </ip>
       <port> 25001 </port>

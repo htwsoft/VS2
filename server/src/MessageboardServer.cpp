@@ -205,13 +205,20 @@ CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* m
     msg = this->searchMessage(messageID);
     if(msg != NULL)
     {
-        msg->setMessage(strMessage);
-        msg->setUid(uData.userID);
-        msg->setUName(strUName);
-        setOk = true;
+
         if(this->isConnectedToSoapBoard())
         {
-          setOk = this->modifyMessageOnSoapBoard(message, messageID);
+            setOk = this->modifyMessageOnSoapBoard(message, messageID);
+            if(setOk)
+            {
+                this->messageBoard->setMessage(message, uData.userID, uData.userName);
+                setOk = true;
+            }
+        }
+        else
+        {
+             this->messageBoard->setMessage(message, uData.userID, uData.userName);
+             setOk = true;
         }
     }    
     return setOk;
@@ -229,11 +236,18 @@ CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS
     if(message != NULL)
     {
         //Pruefen ob eine Verknuepfung zu einer Soap-Tafel besteht
-        deleted = this->messageBoard->deleteMessage(uData.userID);
         if(this->isConnectedToSoapBoard())
         {
             deleted = this->deleteMessageOnSoapBoard(messageID);
-        } 
+            if(deleted)
+            {
+                deleted = this->messageBoard->deleteMessage(uData.userID);
+            }
+        }
+        else
+        {
+            deleted = this->messageBoard->deleteMessage(uData.userID);
+        }
     } 
     return deleted;
 }
@@ -253,7 +267,11 @@ CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const V
     {
         messageObj = this->messageBoard->getFirstMessage();
         msgID = messageObj->getId();
-        this->sendMessageToSoapBoard(message, msgID, uData.userID);
+        created = this->sendMessageToSoapBoard(message, msgID, uData.userID);
+        if(!created)
+        {
+            this->messageBoard->deleteMessage(uData.userID);
+        }
     }
     return created;
 }
@@ -276,14 +294,13 @@ bool MessageboardServer::sendMessageToSoapBoard(const char * message, string mes
     try
     {
         ssc = new SoapServerClient(serverId, soapAdresse);
-        cout << "SoapServerclient created" << endl;
-        ssc->sendMessage(serverId, boardId, strMessage, messageID, userId);
+        rValue = ssc->sendMessage(serverId, boardId, strMessage, messageID, userId);
+        delete ssc; 
     }
     catch(...)
     {
         rValue = false;
     }
-    delete ssc;
     return rValue;
 }
 
