@@ -206,7 +206,7 @@ public class StartClient {
 	 *Return boolean
 	 */
 	public boolean publishOnChilds(MessageData tempMData){
-		return this.mbImpl.publishOnChilds(tempMData.text,tempMData.id,this.userData,this.loginInfo.adminRights);
+		return this.mbImpl.publishOnChilds(tempMData.text,tempMData.id,this.userData,this.userData.isAdmin);
 	}
 	
 	/*
