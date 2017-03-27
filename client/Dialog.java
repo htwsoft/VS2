@@ -192,12 +192,12 @@ public class Dialog{
 
 				if (!dialog.clientTest.setMessage(messagea, mId, loeschuid, bName)) {
 					System.out.println("UID: " + loeschuid + " und/oder " + "Massage: " + messagea + " Bname: bName"
-							+ " sind falsch ");
+							+ " sin d falsch ");
 				}
 				break;
 			case 4:
-
-				System.out.println("\n Ausgabe von alle Message auf server:\n");
+ 
+				 System.out.println("\n Ausgabe von alle Message auf server:\n");
 				messageListtest = dialog.clientTest.getMessage();
 				for (int y = 0; y < messageListtest.size(); y++) {
 					System.out.println("TEXT:" + messageListtest.get(y).text + " -BNAME:" + messageListtest.get(y).uName

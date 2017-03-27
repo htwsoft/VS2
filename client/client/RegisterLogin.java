@@ -5,7 +5,7 @@ import org.omg.CORBA.*;
 import VS2.*;
 
 public class RegisterLogin {
-	
+	 
 	private static final String METHOD = "DataServiceName";
 	private LoginServerInterface dbImpl;
 	private LoginInformation loginInfo;
