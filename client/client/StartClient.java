@@ -42,7 +42,7 @@ public class StartClient {
 	private boolean connectToServer() {
 		try {
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
-			// create and initialize the ORB
+			 // create and initialize the ORB
 			this.orb = ORB.init(url, null);
 			// get the root naming context
 			org.omg.CORBA.Object objRef;
