@@ -227,7 +227,7 @@ public class Dialog{
 				break;
 			case 6:
 				for(int r=0;r<dialog.clientTest.getChildNames().size();r++){
-				String childname = dialog.clientTest.getChildNames().get(i);
+				String childname = dialog.clientTest.getChildNames().get(r);
 				System.out.println("Kindname: " + childname + " IP: " + dialog.clientTest.getChildIP(childname)
 						+ " Port" + dialog.clientTest.getChildPort(childname));
 				}
