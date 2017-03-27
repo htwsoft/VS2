@@ -205,7 +205,6 @@ CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* m
     msg = this->searchMessage(messageID);
     if(msg != NULL)
     {
-
         if(this->isConnectedToSoapBoard())
         {
             setOk = this->modifyMessageOnSoapBoard(message, messageID);
@@ -228,11 +227,13 @@ CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* m
 CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS2::UserData& uData)
 {
     bool deleted = false;
+    bool msgShared = false;
     Message * message = NULL;
     string strMessageID(messageID); //char * in String convertieren
     cout << "Procedure deleteMessage() called" << endl; 
     //Suchen der Message um Highlighted zu setzen  
     message = this->searchMessage(strMessageID);
+    msgShared = message->getShared();
     if(message != NULL)
     {
         //Pruefen ob eine Verknuepfung zu einer Soap-Tafel besteht
@@ -247,6 +248,12 @@ CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS
         else
         {
             deleted = this->messageBoard->deleteMessage(uData.userID);
+        }
+
+        if(deleted && msgShared)
+        {
+            this->deleteMessageOnFather(messageID, uData);
+            this->deleteMessageOnChilds(messageID, uData);
         }
     } 
     return deleted;
@@ -307,7 +314,6 @@ bool MessageboardServer::sendMessageToSoapBoard(const char * message, string mes
     boardId = this->messageBoard->getBoardInformation()->getId();
     try
     {
-
         ssc = new SoapServerClient(serverId, soapAdresse);
         rValue = ssc->sendMessage(serverId, boardId, strMessage, messageID, userId);
         delete ssc; 
@@ -350,7 +356,7 @@ bool MessageboardServer::deleteMessageOnSoapBoard(const char * messageID)
 //aendern einer auf einer Verknuepften SOAP-Tafel
 bool MessageboardServer::modifyMessageOnSoapBoard(const char * message, const char * messageID)
 {
-    bool rValue = true;
+    bool rValue = false;
     ConnectInformation * ciSoap = NULL;
     string soapAdresse = "";
     string strMessage(message);
@@ -366,7 +372,7 @@ bool MessageboardServer::modifyMessageOnSoapBoard(const char * message, const ch
     try
     {
         ssc = new SoapServerClient(serverId, soapAdresse);
-        ssc->modifyMessage(strMessage, strMessageID, serverId, boardId);
+        rValue = ssc->modifyMessage(strMessage, strMessageID, serverId, boardId);
     }
     catch(...)
     {
@@ -416,53 +422,61 @@ CORBA::Boolean MessageboardServer::publishOnChilds(const char * message, const c
     if(msg != NULL)
     {
         msg->setShared(true);
-    }
-    //Prüfen on ChildBoards vorhanden sins
-    childCount = this->messageBoard->getChildCount();
-    if(childCount > 0)
-    {
-        childNames = this->messageBoard->getChildNames();
-        //Verbindung zu den einzelnen childs aufbauen
-        for(int i=0; i<childCount; i++)
+        this->messageBoard->saveBoard();
+        //Prüfen on ChildBoards vorhanden sins
+        childCount = this->messageBoard->getChildCount();
+        if(childCount > 0)
         {
-            childName = childNames[i];
-            try
+            childNames = this->messageBoard->getChildNames();
+            //Verbindung zu den einzelnen childs aufbauen
+            for(int i=0; i<childCount; i++)
             {
-                //Verbindung zum Child-Board aufbauen
-                ciChild = this->messageBoard->getConnectInformationChild(childName);
-                if(ciChild != NULL)
+                childName = childNames[i];
+                try
                 {
-                    sc = new ServerClient(ciChild);
-                    //Vater-Infos beim Child speichern
-                    workerValue = sc->publishMessage(strMessage, strMessageID, uData);
-                    //wenn schalter gesetzt und nachricht veroeffentlicht werden konnte 
-                    //Nachricht auf den childs des Child veroeffentlichen            
-                    if(workerValue)
+                    //Verbindung zum Child-Board aufbauen
+                    ciChild = this->messageBoard->getConnectInformationChild(childName);
+                    if(ciChild != NULL)
                     {
-                        workerValue = sc->iterateChilds(strMessage, strMessageID, uData);
-                    }       
-                    //rValue auf false setzen falls ein Fehler aufgetreten ist            
-                    delete sc;
+                        try
+                        {
+                            sc = new ServerClient(ciChild);
+                            //Vater-Infos beim Child speichern
+                            workerValue = sc->publishMessage(strMessage, strMessageID, uData);
+                            //wenn schalter gesetzt und nachricht veroeffentlicht werden konnte 
+                            //Nachricht auf den childs des Child veroeffentlichen            
+                            if(workerValue)
+                            {
+                                workerValue = sc->iterateChilds(strMessage, strMessageID, uData);
+                            }       
+                        }
+                        catch(...)
+                        {
+
+                        }
+                        //rValue auf false setzen falls ein Fehler aufgetreten ist            
+                        delete sc;
+                    }
+                    else
+                    {
+                        rValue = true;
+                    }
+                    if(!workerValue && rValue)
+                    {
+                        rValue = workerValue;
+                    }
                 }
-                else
+                catch(...)
                 {
-                    rValue = true;
+                    cout << "Error while publishOnChilds()" << endl;
                 }
-                if(!workerValue && rValue)
-                {
-                    rValue = workerValue;
-                }
-            }
-            catch(...)
-            {
-                cout << "Error while publishOnChilds()" << endl;
             }
         }
-    }
-    else
-    {
-        rValue = true;
-    }       
+        else
+        {
+            rValue = true;
+        }     
+    }  
     return rValue;
 }
 
@@ -496,6 +510,7 @@ bool MessageboardServer::deleteMessageOnFather(const char * messageID, const VS2
     return rValue;
 }
 
+/**/
 bool MessageboardServer::deleteMessageOnChilds(const char * messageID, const VS2::UserData& uData)
 {
    ServerClient * sc = NULL; //Klasse zum Kommunizieren mit einem anderen Server
@@ -558,26 +573,27 @@ CORBA::Boolean MessageboardServer::publishOnFather(const char * message, const c
     if(msg != NULL)
     {
         msg->setShared(true);
-    }
-    //Verbindung zum Vater-Board aufbauen
-    ciFather = this->messageBoard->getConnectInformationFather();
-    if(ciFather != NULL)
-    {
-        try
-        {        
-            sc = new ServerClient(ciFather);
-            //Nachricht auf Vater veröffentlichen
-            rValue = sc->publishMessage(strMessage, strMessageID, uData);
-            delete sc;
-        }
-        catch(...)
+        this->messageBoard->saveBoard();
+        //Verbindung zum Vater-Board aufbauen
+        ciFather = this->messageBoard->getConnectInformationFather();
+        if(ciFather != NULL)
         {
-            cout << "Error while publishOnFather()" << endl;
+            try
+            {        
+                sc = new ServerClient(ciFather);
+                //Nachricht auf Vater veröffentlichen
+                rValue = sc->publishMessage(strMessage, strMessageID, uData);
+                delete sc;
+            }
+            catch(...)
+            {
+                cout << "Error while publishOnFather()" << endl;
+            }
         }
-    }
-    else
-    {
-        rValue = true;
+        else
+        {
+            rValue = true;
+        }
     }
     return rValue;
 }
@@ -876,28 +892,28 @@ array_of_MessageData* MessageboardServer::getMessages()
         vMessage.push_back(worker);
         worker = this->messageBoard->getNextMessage();
     }
-    arrayMessageData = new array_of_MessageData();
-    //Vector in arrayMessageData speichern
-    if(vMessage.size() > 0)
-    {
-        //neues Array erstellen
-        arrayMessageData->length(vMessage.size());  
-        for(iterMessage=vMessage.begin(); iterMessage<vMessage.end(); iterMessage++)
-		{
-            worker = * iterMessage;
-            workerData = this->getMessageData(worker);
-            (*arrayMessageData)[zaehler] = (*workerData);  
-            zaehler++;             
+        arrayMessageData = new array_of_MessageData();
+        //Vector in arrayMessageData speichern
+        if(vMessage.size() > 0)
+        {
+            //neues Array erstellen
+            arrayMessageData->length(vMessage.size());  
+            for(iterMessage=vMessage.begin(); iterMessage<vMessage.end(); iterMessage++)
+            {
+                worker = * iterMessage;
+                workerData = this->getMessageData(worker);
+                (*arrayMessageData)[zaehler] = (*workerData);  
+                zaehler++;             
+            }
         }
-    }
-    else
-    {
-        //Wenn keine Messages vorhanden Array mit leerdaten erzeugen
-        arrayMessageData->length(1);
-        workerData = new MessageData();
-        (*arrayMessageData)[0] = (*workerData);
-        this->junkData.push_back(workerData);
-    }
+        else
+        {
+            //Wenn keine Messages vorhanden Array mit leerdaten erzeugen
+            arrayMessageData->length(1);
+            workerData = new MessageData();
+            (*arrayMessageData)[0] = (*workerData);
+            this->junkData.push_back(workerData);
+        }
     return arrayMessageData;
 }
 

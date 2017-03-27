@@ -12,7 +12,7 @@ ServerClient::ServerClient(ConnectInformation * connectInformation)
     //------------------------------------------------------------------------
     
     //Init parameter für Servclient erstellen
-    this->connectInformation = connectInformation;
+    this->connectInformation = new ConnectInformation(connectInformation->getIp(), connectInformation->getPort());
     this->createInitParameter();
     this->orb = CORBA::ORB_init(this->initParameterCount, this->initParameter, "omniORB4");
                                                                                 

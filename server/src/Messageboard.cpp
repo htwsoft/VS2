@@ -613,7 +613,12 @@ void Messageboard::initMessage(XMLNode * node)
 
 string Messageboard::getFatherName()
 {
-	return father->getName();
+	string rValue = "";
+	if(father != NULL)
+	{
+		rValue = father->getName();
+	}
+	return rValue;
 }
 
    
@@ -640,6 +645,11 @@ string * Messageboard::getChildNames()
             childNames[zaehler] = name;
             zaehler++;
 		}
+	}
+	else
+	{
+		childNames = new string[1];
+		childNames[0] = "";
 	}	   
     return childNames;
 }
@@ -734,6 +744,7 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 {	
     highlighted->setUid(uid);
     highlighted->setMessage(message);
+	this->saveBoard();
 	return false;
 }
 

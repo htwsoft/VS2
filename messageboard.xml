@@ -1,33 +1,8 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 9 </mcounter>
-  <idcounter> 10021 </idcounter>
+  <mcounter> 6 </mcounter>
+  <idcounter> 10013 </idcounter>
   <messages>
-    <message id="14-10021">
-      <text> Test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10020">
-      <text> test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10019">
-      <text> Test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10018">
-      <text> Test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10017">
-      <text> test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
     <message id="14-10012">
       <text> Ein Test </text>
       <uid> 12345 </uid>
@@ -55,26 +30,17 @@
     </message>
   </messages>
   <connectInformations>
-    <father id="1">
-      <name> Father 1 </name>
-      <ip> 127.0.0.1 </ip>
-      <port> 25001 </port>
-    </father>
+    <father></father>
     <soap id="1">
       <name> Soap-Tafel </name>
       <ip> 10.9.40.111 </ip>
       <port> 8080 </port>
     </soap>
     <childs>
-      <child id="3">
-        <name> Child 2 </name>
-        <ip> 192.168.1.3 </ip>
-        <port> 65000 </port>
-      </child>
-      <child id="2">
+      <child id="1">
         <name> Child 1 </name>
-        <ip> 127.0.0.1 </ip>
-        <port> 65001 </port>
+        <ip> 10.9.41.177 </ip>
+        <port> 6000 </port>
       </child>
     </childs>
   </connectInformations>

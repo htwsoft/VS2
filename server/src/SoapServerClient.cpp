@@ -134,7 +134,7 @@ int SoapServerClient::createSoapMessageId(string messageID, int soapServerNr, in
 //Aendern einer Nachricht auf einem SoapBoard
 bool SoapServerClient::modifyMessage(string message, string messageID, int soapServerNr, int boardId)
 {
-    bool rValue = true;
+    bool rValue = false;
     SoapRequest * soapRequest = NULL;
     int sendMessageID = 0;
     string strValue = "";
@@ -147,7 +147,6 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
         cout << "Soap-Response: " << strValue << endl;
         rValue = strValue.find("Done") != std::string::npos;
         delete soapRequest; 
-
     }
     catch ( const string& e )
     {
@@ -163,6 +162,7 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
     {
         cout << "Error ocurred" << endl;
     }
+    delete soapRequest;
     return rValue;
 }
 
@@ -181,8 +181,6 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
         strValue = this->soapDeliverer->deliver(soapRequest);
         cout << "Soap-Response: " << strValue << endl;
         rValue = strValue.find("Done") != std::string::npos;
-        delete soapRequest;
-
     }
     catch ( const string& e )
     {
@@ -198,6 +196,7 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
     {
         cout << "Error ocurred" << endl;
     }
+    delete soapRequest;
     return rValue;
 }
 
@@ -221,8 +220,6 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
         strValue = this->soapDeliverer->deliver(soapRequest);
         cout << "Soap-Response: " << strValue << endl;
         rValue = strValue.find("Done") != std::string::npos;
-        delete soapRequest;
-
     }
     catch ( const string& e )
     {
@@ -238,6 +235,7 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
     {
         cout << "Error ocurred" << endl;
     }
+    delete soapRequest;
     return rValue;
 }
 
