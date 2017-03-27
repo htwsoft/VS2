@@ -200,7 +200,7 @@ void Messageboard::saveMessages(XMLNode * fatherNode)
 		messageNode->addChild("text", message, false);
 		messageNode->addChild("uid", userId, false);
 		messageNode->addAttribut("id", messageId);
-		messageNode->addAttribut("shared", shared);
+		messageNode->addChild("shared", shared, false);
 		//Naechste Nachricht
 		worker = worker->getNext();
 	}

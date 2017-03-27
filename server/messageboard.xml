@@ -39,7 +39,7 @@
     </father>
     <soap id="12">
       <name> Soap-Tafel </name>
-      <ip> 127.0.0.1 </ip>
+      <ip> http:// </ip>
       <port> 25001 </port>    
     </soap>
     <childs>

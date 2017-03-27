@@ -15,7 +15,7 @@ using namespace std;
 //
 SoapServerClient::SoapServerClient(int serverNr, string serverAdresse)
 {
-    //this->soapDeliverer = new SoapDeliverer(serverNr, serverAdresse);
+    this->soapDeliverer = new SoapDeliverer(serverNr, serverAdresse);
 }
 
 bool SoapServerClient::isSoapMessage(string messageID)
@@ -142,9 +142,9 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
     {    
         //ModifyRequest aendern eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
-       /*  soapRequest = new ModifyRequest(sendMessageID,  message);
+        soapRequest = new ModifyRequest(sendMessageID,  message);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
-        delete soapRequest; */
+        delete soapRequest; 
 
     }
     catch (...)
@@ -164,9 +164,9 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
     {
         //DeleteRequest loescht eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
-       /* soapRequest = new DeleteRequest(sendMessageID);
+        soapRequest = new DeleteRequest(sendMessageID);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
-        delete soapRequest; */
+        delete soapRequest;
 
     }
     catch (...)
@@ -190,10 +190,10 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         sendServerNr = this->createSoapServerNr(messageID, soapServerNr, boardId);
         cout << "ServerNr: " << sendServerNr << endl;
-       /* isGlobal = sendServerNr < 0;
+        isGlobal = sendServerNr < 0;
         soapRequest = new SendRequest(sendMessageID, userID, sendServerNr, message, isGlobal);
         cout << this->soapDeliverer->deliver(soapRequest) << endl;
-        delete soapRequest;*/
+        delete soapRequest;
 
     }
     catch (...)

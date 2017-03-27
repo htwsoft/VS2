@@ -211,7 +211,7 @@ CORBA::Boolean MessageboardServer::setMessage(const char* message, const char* m
         setOk = true;
         if(this->isConnectedToSoapBoard())
         {
-          setOk = this->modifyMessageOnSoapBoard(message, messageID);
+          //setOk = this->modifyMessageOnSoapBoard(message, messageID);
         }
     }    
     return setOk;
@@ -232,7 +232,7 @@ CORBA::Boolean MessageboardServer::deleteMessage(const char* messageID, const VS
         deleted = this->messageBoard->deleteMessage(uData.userID);
         if(this->isConnectedToSoapBoard())
         {
-            deleted = this->deleteMessageOnSoapBoard(messageID);
+            //deleted = this->deleteMessageOnSoapBoard(messageID);
         } 
     } 
     return deleted;
@@ -250,8 +250,7 @@ CORBA::Boolean MessageboardServer::createNewMessage(const char* message, const V
     created = this->messageBoard->createNewMessage(strMessage, uData.userID, strUserName, false);
     if(created && this->isConnectedToSoapBoard())
     {
-        messageObj = this->messageBoard->getFirstMessage();
-        created = this->sendMessageToSoapBoard(message, messageObj->getId(), uData.userID);
+        //messageObj = this->messageBoard->getFirstMessage();
     }
     return created;
 }

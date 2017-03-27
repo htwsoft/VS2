@@ -1,31 +1,47 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 5 </mcounter>
-  <idcounter> 10012 </idcounter>
+  <mcounter> 8 </mcounter>
+  <idcounter> 10016 </idcounter>
   <messages>
-    <message id="SOAP-10001">
-      <text> Test </text>
+    <message id="14-10016">
+      <text> hals maul </text>
       <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10015">
+      <text> chistian stinkt </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10014">
+      <text> was geht </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10012">
       <text> Ein Test </text>
       <uid> 12345 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10004">
       <text> Eine neue Message </text>
       <uid> 1000 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10003">
       <text> bla fassel 1 </text>
       <uid> 353646 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10002">
       <text> bla fassel 2 </text>
       <uid> 4657 </uid>
+      <shared> false </shared>
     </message>
     <message id="14-10001">
       <text> bla fassel 3 </text>
       <uid> 891011 </uid>
+      <shared> false </shared>
     </message>
   </messages>
   <connectInformations>
@@ -34,7 +50,10 @@
       <ip> 127.0.0.1 </ip>
       <port> 25001 </port>
     </father>
-    <soap>
+    <soap id="12">
+      <name> Soap-Tafel </name>
+      <ip> http:/ </ip>
+      <port> 25001 </port>
     </soap>
     <childs>
       <child id="3">
