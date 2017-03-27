@@ -128,7 +128,6 @@ int SoapServerClient::createSoapMessageId(string messageID, int soapServerNr, in
             soapMessageID = soapMessageID * (-1);
         }
     }
-    cout << "MessageID: " << soapMessageID << endl;
     return soapMessageID;
 }
 
@@ -138,12 +137,15 @@ bool SoapServerClient::modifyMessage(string message, string messageID, int soapS
     bool rValue = true;
     SoapRequest * soapRequest = NULL;
     int sendMessageID = 0;
+    string strValue = "";
     try
     {    
         //ModifyRequest aendern eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         soapRequest = new ModifyRequest(sendMessageID,  message);
-        cout << this->soapDeliverer->deliver(soapRequest) << endl;
+        strValue = this->soapDeliverer->deliver(soapRequest);
+        cout << "Soap-Response: " << strValue << endl;
+        rValue = strValue.find("Done") != std::string::npos;
         delete soapRequest; 
 
     }
@@ -159,13 +161,16 @@ bool SoapServerClient::deleteMessage(string messageID, int soapServerNr, int boa
 {
     bool rValue = true;
     SoapRequest * soapRequest = NULL;
+    string strValue = "";
     int sendMessageID = 0;
     try
     {
         //DeleteRequest loescht eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         soapRequest = new DeleteRequest(sendMessageID);
-        cout << this->soapDeliverer->deliver(soapRequest) << endl;
+        strValue = this->soapDeliverer->deliver(soapRequest);
+        cout << "Soap-Response: " << strValue << endl;
+        rValue = strValue.find("Done") != std::string::npos;
         delete soapRequest;
 
     }
@@ -184,15 +189,18 @@ bool SoapServerClient::sendMessage(int soapServerNr, int boardId, string message
     int sendMessageID = 0;
     int sendServerNr = 0;
     bool isGlobal = false;
+    string strValue = "";
     try
     {
         //SendRequest legt eine Nachricht im Soap-Board an
         sendMessageID = this->createSoapMessageId(messageID, soapServerNr, boardId);
         sendServerNr = this->createSoapServerNr(messageID, soapServerNr, boardId);
-        cout << "ServerNr: " << sendServerNr << endl;
+        cout << "ID: " << sendMessageID << endl;
         isGlobal = sendServerNr < 0;
         soapRequest = new SendRequest(sendMessageID, userID, sendServerNr, message, isGlobal);
-        cout << this->soapDeliverer->deliver(soapRequest) << endl;
+        strValue = this->soapDeliverer->deliver(soapRequest);
+        cout << "Soap-Response: " << strValue << endl;
+        rValue = strValue.find("Done") != std::string::npos;
         delete soapRequest;
 
     }

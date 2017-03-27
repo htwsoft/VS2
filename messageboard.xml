@@ -1,20 +1,20 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 8 </mcounter>
-  <idcounter> 10016 </idcounter>
+  <mcounter> 7 </mcounter>
+  <idcounter> 10015 </idcounter>
   <messages>
-    <message id="14-10016">
-      <text> hals maul </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
     <message id="14-10015">
-      <text> chistian stinkt </text>
+      <text> weapons of assdestruction </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
     <message id="14-10014">
-      <text> was geht </text>
+      <text> huwerwerw </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10013">
+      <text> duck duck go </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
@@ -52,7 +52,7 @@
     </father>
     <soap id="12">
       <name> Soap-Tafel </name>
-      <ip> http:/ </ip>
+      <ip> http:/10.9.40.111:8080/TafelWS/serverws?wsdl </ip>
       <port> 25001 </port>
     </soap>
     <childs>

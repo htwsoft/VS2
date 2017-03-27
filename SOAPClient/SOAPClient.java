@@ -28,6 +28,7 @@ public class SOAPClient
         this.userData.userID = 12345;
         this.userData.password = "test";
         this.userData.userName = "User1";
+        this.userData.isAdmin = false;
     }
 
     /* Methode stellt die Verbindung zum Server her */

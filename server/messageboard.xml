@@ -37,9 +37,9 @@
       <ip> 127.0.0.1 </ip>
       <port> 25001 </port>
     </father>
-    <soap id="12">
+    <soap id="14">
       <name> Soap-Tafel </name>
-      <ip> http:// </ip>
+      <ip> http://10.9.40.111:8080/TafelWS/serverws?wsdl </ip>
       <port> 25001 </port>    
     </soap>
     <childs>
