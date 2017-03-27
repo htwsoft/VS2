@@ -8,21 +8,28 @@
 
 #include "./LoginServer.h"
 
-static const int LoginServer::COLUMN_UID = 0;
-static const int LoginServer::COLUMN_USER_NAME = 1;
-static const int LoginServer::COLUMN_PASSWORD = 2;
-static const int LoginServer::COLUMN_ADMIN_RIGHTS = 3;
-static const int LoginServer::COLUMN_IP = 4;
-static const int LoginServer::COLUMN_PORT = 5;
-static const int LoginServer::COLUMN_HOMEBOARD = 6;
-static const string LoginServer::DATABSE = "USERDATA";
-static const string LoginServer::UIDCOUNT_TABLE = "UIDCOUNT";
-static const int LoginServer::CONFIRM_USER_DATA = 10;
-static const int LoginServer::INCREMENT_UID = 11;
-static const int LoginServer::REG = 12;
-static const int LoginServer::NEW_DATA = 13;
-static const int LoginServer::USERNAME = 14;
-static const int LoginServer::GET_UID = 15;
+static const int COLUMN_UID = 0;
+static const int COLUMN_USER_NAME = 1;
+static const int COLUMN_PASSWORD = 2;
+static const int COLUMN_ADMIN_RIGHTS = 3;
+static const int COLUMN_IP = 4;
+static const int COLUMN_PORT = 5;
+static const int COLUMN_HOMEBOARD = 6;
+const char* LoginServer::DATABASE = "USERDATA";
+const char* LoginServer::UIDCOUNT_TABLE = "UIDCOUNT";
+int const LoginServer::CONFIRM_USER_DATA = 10;
+int const LoginServer::INCREMENT_UID = 11;
+int const LoginServer::REG = 12;
+int const LoginServer::NEW_DATA = 13;
+int const LoginServer::USERNAME = 14;
+int const LoginServer::GET_UID = 15;
+
+static int getUIdCallback(void* data, int argc, char **argv, char **azColName);
+static int userNameCallback(void* data, int argc, char **argv, char **azColName);
+static int newDataCallback(void *data, int argc, char **argv, char **azColName);
+static int regCallback(void* data, int argc, char **argv, char **azColName);
+static int uIdCallback(void* data, int argc, char **argv, char **azColName);
+static int loginCallback(void* data, int argc, char **argv, char **azColName);
 
 LoginServer::LoginServer()
 {
@@ -80,12 +87,67 @@ LoginServer::LoginServer()
 	    cerr << "Caught unknown exception." << endl;
 	  }
 	  cout << "Server closed" << endl;
-	  return 0;
-};
+}
 
-static const int LoginServer::getUIdCallback()
+static int getUIdCallback(void* data, int argc, char **argv, char **azColName)
 {
-	uIdCount=atoi(argv[0]);
+	LoginServer* ptrToData = (LoginServer*)data;	
+	ptrToData->setUIdCount(atoi(argv[0]));
+	return 0;
+}
+
+static int loginCallback(void* data, int argc, char **argv, char **azColName)
+{
+	LoginServer* ptrToData = (LoginServer*)data;	
+	if(argv[COLUMN_USER_NAME]==ptrToData->getLoginData().getUserName()&&argv[COLUMN_PASSWORD]==ptrToData->getLoginData().getPassword())
+	{
+		ptrToData->getServerInformation().getServer().setIp(argv[COLUMN_IP]);
+		ptrToData->getServerInformation().getServer().setPort(atoi(argv[COLUMN_PORT]));
+		ptrToData->getServerInformation().setUId(atoi(argv[COLUMN_UID]));
+		if(argv[COLUMN_ADMIN_RIGHTS]==(char*)"true")
+			ptrToData->getServerInformation().setAdminRights(true);
+		else
+			ptrToData->getServerInformation().setAdminRights(false);
+		return 0;
+	}
+	else
+	{
+		ptrToData->getLoginData().setUserName("Err USER");
+		return 1;
+	}
+}
+
+static int regCallback(void* data, int argc, char **argv, char **azColName)
+{
+	LoginServer* ptrToData = (LoginServer*)data;	
+	if(argv[COLUMN_HOMEBOARD]==ptrToData->getBoardName())
+	{
+		ptrToData->getServerInformation().getServer().setIp(argv[COLUMN_IP]);
+		ptrToData->getServerInformation().getServer().setPort(atoi(argv[COLUMN_PORT]));
+		return 0;
+	}
+	else
+		return 1;
+
+}
+
+static int newDataCallback(void* data, int argc, char **argv, char **azColName)
+{
+	return 0;
+}
+
+static int userNameCallback(void* data, int argc, char **argv, char **azColName)
+{
+	LoginServer* ptrToData = (LoginServer*)data;	
+	if(argv[COLUMN_USER_NAME]==ptrToData->getLoginData().getUserName())
+		return 1;
+	else
+		return 0;
+}
+
+static int uIdCallback(void* data, int argc, char **argv, char **azColName)
+{
+	return 0;
 }
 
 LoginInformation LoginServer::login(UserData loginData)
@@ -96,36 +158,13 @@ LoginInformation LoginServer::login(UserData loginData)
 }
 
 
-void LoginServer::confirmUserData()
+bool LoginServer::confirmUserData()
 {
-	serverInformation.server.setIp("Err DB");
-	serverInformation.server.setPort("10000");
+	serverInformation.getServer().setIp("Err DB");
+	serverInformation.getServer().setPort(10000);
 	serverInformation.setAdminRights(false);
 	bool assert=openDataBase(CONFIRM_USER_DATA);
-}
-
-static int LoginServer::loginCallback(void *data, int argc, char **argv, char **azColName)
-{
-	if(argv[COLUMN_USER_NAME]==loginData.getUserName()&&argv[COLUMN_PASSWORD]==loginData.getPassword())
-	{
-		serverInformation.server.setIp(argv[COLUMN_IP]);
-		serverInformation.server.setPort(argv[COLUMN_PORT]);
-		if(argv[COLUMN_ADMIN_RIGHTS]=="true")
-			serverInformation.setAdminRights(true);
-		else
-			serverInformation.setAdminRights(false);
-		return 0;
-	}
-	else
-	{
-		serverInformation.server.setUserName("Err USER");
-		return 1;
-	}
-}
-
-static int LoginServer::uIdCallback(void *data, int argc, char **argv, char **azColName)
-{
-	return 0;
+	return assert;
 }
 
 void LoginServer::incrementUIdCount()
@@ -140,28 +179,9 @@ bool LoginServer::reg(UserData loginData, string serverName)
 	return openDataBase(REG, serverName);
 }
 
-static int LoginServer::regCallback(void *data, int argc, char **argv, char **azColName)
-{
-	string serverName = *data;
-	if(argv[COLUMN_HOMEBOARD]==serverName)
-	{
-		serverInformation.server.setIp(argv[COLUMN_IP]);
-		serverInformation.server.setPort(argv[COLUMN_PORT]);
-		return 0;
-	}
-	else
-		return 1;
-
-}
-
 bool LoginServer::createNewData(string serverName)
 {
 	return openDataBase(NEW_DATA, serverName);
-}
-
-static int LoginServer::newDataCallback(void *data, int argc, char **argv, char **azColName)
-{
-	return 0;
 }
 
 bool LoginServer::confirmUserName(string userName)
@@ -170,20 +190,16 @@ bool LoginServer::confirmUserName(string userName)
 	return openDataBase(USERNAME);
 }
 
-static int LoginServer::userNameCallback(void *data, int argc, char **argv, char **azColName)
+bool LoginServer::openDataBase(int callback, string serverName)
 {
-	if(argv[COLUMN_USER_NAME]==loginData.getUserName())
-		return 1;
-	else
-		return 0;
-}
-
-bool LoginServer::openDataBase(int callback, string serverName=" ")
-{
+	this->boardName=serverName;	
 	int rc;
 	bool assert;
 	sqlite3* db;
-	string errMsg;
+	char* errMsg;
+	string sqlCommand;
+	char* count;
+	sprintf(count, "%d", uIdCount);
 	rc=sqlite3_open(DATABASE, &db);
 	if(rc)
 	{
@@ -195,17 +211,16 @@ bool LoginServer::openDataBase(int callback, string serverName=" ")
 		switch(callback)
 		{
 			case CONFIRM_USER_DATA:
-				string sqlCommand = "SELECT "+loginData.getUserName()+" from "+DATABASE;
-				rc=sqlite3_exec(db, sqlCommand, loginCallback, (void*) serverName, &errMsg);
+				sqlCommand = "SELECT "+loginData.getUserName()+" from "+(string)DATABASE;
+				rc=sqlite3_exec(db, sqlCommand.c_str(), loginCallback, (void*)this, &errMsg);
 				if(rc!=SQLITE_OK)
 				{
 					cout << "Err DB: " << sqlite3_errmsg(db) << endl;
 					return false;
 				}break;
 			case INCREMENT_UID:
-				string count = itoa(uIdCount);;
-				string sqlCommand = "UPDATE "+UIDCOUNT_TABLE+" SET UIDCOUNT = "+count;
-				rc=sqlite3_exec(db, sqlCommand, uIdCallback, (void*) serverName, &errMsg);
+				sqlCommand = "UPDATE "+(string)UIDCOUNT_TABLE+" SET UIDCOUNT = "+(string)count;
+				rc=sqlite3_exec(db, sqlCommand.c_str(), uIdCallback, 0, &errMsg);
 				if(rc!=SQLITE_OK)
 				{
 					cout << "Err DB: " << sqlite3_errmsg(db) << endl;
@@ -216,8 +231,8 @@ bool LoginServer::openDataBase(int callback, string serverName=" ")
 						return false;
 				else
 				{
-					string sqlCommand = "SELECT "+serverName+" from "+DATABASE;
-					rc=sqlite3_exec(db, sqlCommand, regCallback, (void*) serverName, &errMsg);
+					sqlCommand = "SELECT "+serverName+" from "+(string)DATABASE;
+					rc=sqlite3_exec(db, sqlCommand.c_str(), regCallback, (void*)this, &errMsg);
 					if(rc!=SQLITE_OK)
 					{
 						cout << "Err DB: " << sqlite3_errmsg(db) << endl;
@@ -227,27 +242,28 @@ bool LoginServer::openDataBase(int callback, string serverName=" ")
 				assert=createNewData(serverName);
 				incrementUIdCount();break;
 			case NEW_DATA:
-				string uidcount = itoa(uIdCount);
-				string sqlCommand = "INSERT INTO"+DATABASE+"(UID,USERNAME,PASSWORD,ADMINRIGHTS,IP,PORT,HOMEBOARD)"
-									+"VALUES("+uidcount+", "+loginData.getUserName()", "+loginData.getPassword()
-									+", false, "+serverInformation.getIp()+", "+serverInformation.getPort()", "+serverName;
-				rc=sqlite3_exec(db, sqlCommand, newDataCallback, (void*) serverName, &errMsg);
+				char* port;
+				sprintf(port, "%d", serverInformation.getServer().getPort());
+				sqlCommand = "INSERT INTO "+(string)DATABASE+"(UID,USERNAME,PASSWORD,ADMINRIGHTS,IP,PORT,HOMEBOARD)"
+					     +"VALUES("+(string)count+", "+loginData.getUserName()+", "+loginData.getPassword()
+					     +", false, "+serverInformation.getServer().getIp()+", "+(string)port+", "+serverName;
+				rc=sqlite3_exec(db, sqlCommand.c_str(), newDataCallback, 0, &errMsg);
 				if(rc!=SQLITE_OK)
 				{
 					cout << "Err DB: " << sqlite3_errmsg(db) << endl;
 					return false;
 				}break;
 			case USERNAME:
-				string sqlCommand = "SELECT "+loginData.getUserName()+" from "+DATABASE;
-				rc=sqlite3_exec(db, sqlCommand, regCallback, (void*) serverName, &errMsg);
+				sqlCommand = "SELECT "+loginData.getUserName()+" from "+(string)DATABASE;
+				rc=sqlite3_exec(db, sqlCommand.c_str(), userNameCallback, (void*)this, &errMsg);
 				if(rc!=SQLITE_OK)
 				{
 					cout << "Err DB: " << sqlite3_errmsg(db) << endl;
 					return false;
 				}break;
 			case GET_UID:
-				string sqlCommand = "SELECT UID FROM "+UIDCOUNT_TABLE;
-				rc=sqlite3_exec(db, sqlCommand, getUIdCallback, (void*) serverName, &errMsg);
+				sqlCommand = "SELECT UID FROM "+(string)UIDCOUNT_TABLE;
+				rc=sqlite3_exec(db, sqlCommand.c_str(), getUIdCallback, (void*)this, &errMsg);
 				if(rc!=SQLITE_OK)
 				{
 					cout << "Err DB: " << sqlite3_errmsg(db) << endl;

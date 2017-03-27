@@ -1,0 +1,56 @@
+# Eigene Regeln zum Übersetzen von C- und C++-Programmen
+# Autor: Folz
+# 2012/2014
+#
+# C++-Compiler
+CXX = g++
+# C-Compiler
+CC = gcc
+
+LOESCHLISTE = *.o *.exe *~ *stackdump
+
+clean:
+	@echo "Folgende Dateien werden geloescht"
+	@echo $(LOESCHLISTE)
+	rm -f *.o *.exe *~ *stackdump
+
+
+### Einfache Regeln für die C++-Programmierung
+
+# Regel, um aus .cpp-Dateien .o-Dateien zu erzeugen
+# $< ist die erste Abhängigkeit
+%.o: %.cpp
+	$(CXX) -c $<
+
+# Regel, um aus .cpp-Dateien eine ausführbare Datei zu erzeugen
+# $@ ist das zu erzeugende Ziel
+# $^ ist die Liste aller Abhängigkeiten dieses Ziels
+%: %.cpp
+	$(CXX) $(CXXFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ $^ 
+
+### Einfache Regeln für die C-Programmierung
+
+# Regel, um aus .c-Dateien .o-Dateien zu erzeugen
+# $< ist die erste Abhängigkeit
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+
+# Regel, um aus .o-Dateien eine ausführbare Datei zu erzeugen
+# $@ ist das zu erzeugende Ziel
+# $^ ist die Liste aller Abhängigkeiten dieses Ziels
+%: %.o
+	$(LD) $(LDFLAGS) -o $@ $^
+
+
+# Regel, um aus .c-Dateien eine ausführbare Datei zu erzeugen
+# $@ ist das zu erzeugende Ziel
+# $^ ist die Liste aller Abhängigkeiten dieses Ziels
+%: %.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+doc: Doxyfile
+	doxygen $<
+	
+Doxyfile:
+	doxygen -g $@
+	

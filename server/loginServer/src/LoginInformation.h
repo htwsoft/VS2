@@ -17,9 +17,12 @@ class LoginInformation
 		bool adminRights;
 		ConnectInformation server;
 	public:
+		LoginInformation();
 		LoginInformation(bool adminRights,ConnectInformation server){this->adminRights=adminRights;this->server=server;}
 		bool getAdminRights()const{return adminRights;}
+		ConnectInformation getServer()const{return server;}
 		void setAdminRights(bool adminRights){this->adminRights=adminRights;}
+		void setUId(int uId){this->uId=uId;}
 		int getUId()const{return uId;}
 };
 
