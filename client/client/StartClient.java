@@ -141,9 +141,9 @@ public class StartClient {
 	/*
 	 * ersetzt die Nachricht
 	 */
-	public boolean setMessage(String newmessage, String messageID, int uid, String uName) {
+	public boolean setMessage(String newmessage, String messageID, int uid) {
 		
-		return this.mbImpl.setMessage(message, messageID, this.userData);
+		return this.mbImpl.setMessage(newmessage, messageID, this.userData);
 	}
 
 	/*

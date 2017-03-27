@@ -143,12 +143,12 @@ public class Dialog{
 		System.out.println("Bitte Ip und port eingeben ./StartClient.sh IP POrt");
 		System.out.println("UserName : \n ");
 				scanMain = new Scanner(System.in);
-				bName = scanMain.nextLine();
+				 String bbName = scanMain.nextLine();
 		System.out.println("Password : \n ");
 				scanMain = new Scanner(System.in);
 				 String bWord = scanMain.nextLine();
 				
-		dialog.clientTest=new StartClient(args[0],Integer.parseInt(args[1]),baname,bWord);
+		dialog.clientTest=new StartClient(args[0],Integer.parseInt(args[1]),bbName,bWord);
 		//dialog.clientTest=new StartClient("192.168.178.52",6000);
 		int i;
 		boolean beenden = false;
