@@ -473,6 +473,10 @@ void Messageboard::initFatherNodeConnectInfos(XMLNode * node)
 	{
 		this->father = new BoardInformation(name, id, ip, port);
 	}
+	else
+	{
+		this->father = NULL;
+	}
 }
 
 /* Liest den MessageboardNamen aus der XML */
@@ -757,6 +761,32 @@ bool Messageboard::setMessage(string message, int uid, string uName)
 	return true;
 }
 
+// Funktion such 
+Message * Messageboard::searchMessage(string messageID)
+{
+    bool notFound = true;
+    Message * worker = NULL;
+    Message * searchedMsg = NULL;
+    //Erste nachricht des Messageboards lesen
+    worker = this->getFirstMessage();
+    while(worker != NULL && notFound)
+    {
+        //Pruefen ob zu suchende Nachricht gefunden wurde
+        if(messageID.compare(worker->getId()) == 0)
+        {
+            //Message wurde gefunden
+            searchedMsg = worker;
+            notFound = false;
+        }
+        else
+        {
+            //Naechste Nachricht lesen falls nicht gefunden
+            worker = this->getNextMessage();
+        }
+    }  
+    return searchedMsg;
+}
+
 /* speichert eine neue message und erzeugt eine neue MessageId */
 bool Messageboard::createNewMessage(string message, int uid, string uName, bool shared)
 {
@@ -769,26 +799,35 @@ bool Messageboard::createNewMessage(string message, int uid, string uName, bool 
 bool Messageboard::createNewMessage(string message, string mid, int uid, string uName, bool withSave, bool shared)
 {
 	Message * neu = NULL;
-	if(first == NULL)
+	Message * worker = NULL;
+	bool created = false;
+	worker = this->searchMessage(mid);
+	//Pruefen ob nachricht schon existiert
+	if(worker != NULL)
 	{
-		neu = new Message(message, mid, uid, 0, 0, uName, shared);
-		this->first = neu;
-		this->last = neu;
+		//Nachricht existiert noch nicht
+		if(first == NULL)
+		{
+			neu = new Message(message, mid, uid, 0, 0, uName, shared);
+			this->first = neu;
+			this->last = neu;
+		}
+		else
+		{
+			neu = new Message(message, mid, uid, 0, this->first, uName, shared);
+			this->first->setPrevious(neu);
+			this->first = neu;
+			highlighted = neu;		
+		}
+		//Pruefen ob die Message waehren des Init erstell wirds
+		if(withSave)
+		{
+			this->saveBoard();
+		}
+		this->size++;
+		created = true;
 	}
-	else
-	{
-		neu = new Message(message, mid, uid, 0, this->first, uName, shared);
-		this->first->setPrevious(neu);
-		this->first = neu;
-		highlighted = neu;		
-	}
-    //Pruefen ob die Message waehren des Init erstell wirds
-	if(withSave)
-	{
-		this->saveBoard();
-	}
-	this->size++;
-	return true;
+	return created;
 }
 
 bool Messageboard::deleteMessage(int uid)

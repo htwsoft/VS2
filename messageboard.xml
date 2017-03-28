@@ -1,8 +1,23 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 7 </mcounter>
+  <mcounter> 11 </mcounter>
   <idcounter> 10012 </idcounter>
   <messages>
+    <message id="-2-SOAP231">
+      <text> JOOUUUUUU SIMON </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="-2-SOAP220">
+      <text> HALLO Das war ein Test </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="-2-SOAP242">
+      <text> Hallo </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
     <message id="14-SOAP112">
       <text> Michael wo bist du </text>
       <uid> 12345 </uid>

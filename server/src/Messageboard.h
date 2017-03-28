@@ -40,6 +40,7 @@ class Messageboard
 		void initMessageIdCounter();
 		void initBoardInformations();
 		void initConnectInfos();
+		Message * searchMessage(string messageID);
 		void initFatherNodeConnectInfos(XMLNode * node);
         void initSoapConnectInfos(XMLNode * node);
 		void initChildConnectInfos(XMLNode * node);
