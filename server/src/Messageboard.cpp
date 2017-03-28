@@ -776,7 +776,9 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
     //Pruefen ob die Message waehren des Init erstell wirds
 	if(withSave)
 	{
+		cout << "Before Save" << endl;
 		this->saveBoard();
+		cout << "After Save" << endl;
 	}
 	this->size++;
 	return true;

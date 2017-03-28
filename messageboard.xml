@@ -1,14 +1,19 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
   <mcounter> 7 </mcounter>
-  <idcounter> 10013 </idcounter>
+  <idcounter> 10015 </idcounter>
   <messages>
-    <message id="14-10001">
+    <message id="14-10015">
+      <text> was geht </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10014">
       <text> bla fassel 3 </text>
       <uid> 12345 </uid>
-      <shared> true </shared>
+      <shared> false </shared>
     </message>
-    <message id="14-10001">
+    <message id="14-10013">
       <text> bla fassel 3 </text>
       <uid> 12345 </uid>
       <shared> false </shared>
@@ -45,7 +50,7 @@
     <childs>
       <child id="1">
         <name> Child 1 </name>
-        <ip> 10.9.41.177 </ip>
+        <ip> 10.9.45.43 </ip>
         <port> 6000 </port>
       </child>
     </childs>

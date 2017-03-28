@@ -34,15 +34,12 @@
   <connectInformations>
     <father>
     </father>
-    <soap id="1">
-      <name> Soap-Tafel </name>
-      <ip> 10.9.40.111 </ip>
-      <port> 8080 </port>    
+    <soap> 
     </soap>
     <childs>
       <child id="1">
         <name> Child 1 </name>
-        <ip> 10.9.41.177 </ip>
+        <ip> 10.9.45.43 </ip>
         <port> 6000 </port>
       </child>
     </childs>
