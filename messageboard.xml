@@ -3,7 +3,7 @@
   <mcounter> 9 </mcounter>
   <idcounter> 10017 </idcounter>
   <messages>
-    <message id="14-10017">
+    <message id="15-10017">
       <text> test </text>
       <uid> 12345 </uid>
       <shared> false </shared>
@@ -13,7 +13,7 @@
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
-    <message id="14-10015">
+    <message id="15-10015">
       <text> was geht </text>
       <uid> 12345 </uid>
       <shared> false </shared>
@@ -56,7 +56,11 @@
   </messages>
   <connectInformations>
     <father></father>
-    <soap></soap>
+    <soap>
+        <name> Soap-Tafel </name>
+        <ip> 10.9.45.43 </ip>
+        <port> 6000 </port>
+    </soap>
     <childs>
       <child id="1">
         <name> Child 1 </name>

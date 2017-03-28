@@ -93,12 +93,16 @@ void Messageboard::saveConnectInformations(XMLNode * fatherNode)
 	XMLNode * soapConnectNode = 0;
 	//Speichern der ConnectInformations des FatherBoards
 	fatherConnectNode = fatherNode->addChild("father", "", false);
+	cout << "save saveFatherConnectInformation" << endl;
 	this->saveFatherConnectInformation(fatherConnectNode);
 	soapConnectNode = fatherNode->addChild("soap", "", false);
+	cout << "save saveSoapConnectInformation" << endl;
 	this->saveSoapConnectInformation(soapConnectNode);
 	//Speichern der ChildConnect Informations in der XML
+	cout << "save saveChildConnectInformations" << endl;
 	childConnectNode = fatherNode->addChild("childs", "", false);
 	this->saveChildConnectInformations(childConnectNode);
+	cout << "saveConnectInformations closed" << endl;
 }
 
 /* speichern der ConnectInformatiosn des Childs */
