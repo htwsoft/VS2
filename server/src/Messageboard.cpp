@@ -30,7 +30,6 @@ Messageboard::Messageboard(string xmlPath)
 	this->size = 0;
 	this->boardInformation = NULL;
 	this->soap = NULL;
-	this->father = NULL;
 	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
@@ -803,7 +802,7 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
 	bool created = false;
 	worker = this->searchMessage(mid);
 	//Pruefen ob nachricht schon existiert
-	if(worker != NULL)
+	if(worker == NULL)
 	{
 		//Nachricht existiert noch nicht
 		if(first == NULL)
