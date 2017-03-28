@@ -71,13 +71,17 @@ void Messageboard::saveBoard()
 	this->xml->createRootNode("messageboard");
 	rootNode = this->xml->getRootNode();
 	//Speichern der eigenen Informationen des Boards
+	cout << "saveBoardInformations" << endl;
 	this->saveBoardInformations(rootNode);
 	//Node "messages" zum speicher der Nachrichten
 	messagesNode = rootNode->addChild("messages", "", false);
-	this->saveMessages(messagesNode);
+	cout << "saveMessages" << endl;
+	this->saveMessages(messagesNode);	
 	connectInformationNode = rootNode->addChild("connectInformations", "", false);
+	cout << "saveConnectInformations" << endl;
 	this->saveConnectInformations(connectInformationNode);
 	//Speichern des Messageboards
+	cout << "saveXML" << endl;
 	this->xml->saveXML(this->xmlPath);
 }
 
@@ -776,9 +780,7 @@ bool Messageboard::createNewMessage(string message, string mid, int uid, string 
     //Pruefen ob die Message waehren des Init erstell wirds
 	if(withSave)
 	{
-		cout << "Before Save" << endl;
 		this->saveBoard();
-		cout << "After Save" << endl;
 	}
 	this->size++;
 	return true;

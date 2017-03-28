@@ -77,7 +77,8 @@ void FileWriter::writeLine(string text, bool withNewLine)
 FileReader::FileReader(string fileName):FileWorker(fileName)
 {
 	//Laden bzw. erzeugend der Datei
-	this->file = fstream(fileName, ios::in | ios::binary);
+	//this->file = fstream(fileName, ios::in | ios::binary);
+	this->file = fstream(fileName, ios::in);
 	if(this->file.is_open())
 	{
 

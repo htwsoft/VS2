@@ -1,8 +1,13 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 8 </mcounter>
-  <idcounter> 10016 </idcounter>
+  <mcounter> 9 </mcounter>
+  <idcounter> 10017 </idcounter>
   <messages>
+    <message id="14-10017">
+      <text> test </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
     <message id="14-10016">
       <text> k </text>
       <uid> 12345 </uid>
