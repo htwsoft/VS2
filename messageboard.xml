@@ -1,55 +1,12 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 15 </mcounter>
-  <idcounter> 10021 </idcounter>
+  <ip> 192.168.1.1 </ip>
+  <port> 6001 </port>
+  <mcounter> 5 </mcounter>
+  <idcounter> 10012 </idcounter>
   <messages>
     <message id="14-10021">
-      <text> sssssssssssssssssssssssss </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10020">
-      <text> bla fassel 3 </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10019">
-      <text> bla fassel 3 </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10018">
-      <text> s </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="15-10017">
-      <text> test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10016">
-      <text> k </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="15-10015">
-      <text> was geht </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10014">
-      <text> bla fassel 3 </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10013">
-      <text> bla fassel 3 </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10012">
-      <text> Ein Test </text>
+      <text> ababa </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
@@ -75,20 +32,17 @@
     </message>
   </messages>
   <connectInformations>
-    <father id="0">
-      <name> Soap-Tafel </name>
-      <ip> 10.9.45.43 </ip>
-      <port> 8080 </port>
+    <father>  
     </father>
-    <soap id="1">
-      <name> Soap-Tafel </name>
-      <ip> 10.9.40.89 </ip>
-      <port> 8080 </port>
+    <soap id="1"> 
+       <name> Soap-Tafel 1 </name>
+       <ip> 10.9.40.89 </ip>
+       <port> 8080 </port>   
     </soap>
     <childs>
       <child id="1">
         <name> Child 1 </name>
-        <ip> 10.9.41.177 </ip>
+        <ip> 10.9.45.43 </ip>
         <port> 6000 </port>
       </child>
     </childs>
