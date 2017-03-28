@@ -750,10 +750,13 @@ Message * Messageboard::getPreviousMessage()
 
 bool Messageboard::setMessage(string message, int uid, string uName)
 {	
-    highlighted->setUid(uid);
-    highlighted->setMessage(message);
-	this->saveBoard();
-	return false;
+	if(this->highlighted != NULL)
+	{
+    	highlighted->setUid(uid);
+    	highlighted->setMessage(message);
+		this->saveBoard();
+	}
+	return true;
 }
 
 /* speichert eine neue message und erzeugt eine neue MessageId */

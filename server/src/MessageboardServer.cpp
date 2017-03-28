@@ -447,16 +447,37 @@ bool MessageboardServer::modifyMessageOnSoapBoard(const char * message, const ch
 //Funktion wird von der Soap-Tafel aufgerufen
 CORBA::Boolean MessageboardServer::modifyMessageSoap(const char* message, const char* messageID, ::CORBA::Long serverNr, const ::VS2::UserData& uData)
 {
-    cout << "Procedure modifyMessageSoap() called" << endl;
-    return this->setMessage(message, messageID, uData);
+    Message * msg = NULL;
+    bool setOk = false;   
+    string strMessage(message); //char * in String umwandeln
+    string strUName(uData.userName); //char * in String umwandeln
+    cout << "Procedure modifyMessageSoap() called" << endl; 
+    msg = this->searchMessage(messageID);
+    //Pruefen ob message existiert und ob der Benutzer die rechte hat die Nachricht zu aendern
+    if((msg != NULL) && this->confirmAdminRights(msg, uData))
+    {
+         //Nachricht soll nur lokal geanedert werden
+        this->messageBoard->setMessage(strMessage, uData.userID, strUName);
+        setOk = true;
+    }    
+    return setOk;
 }
 
 //Funktion wird von der Soap-Tafel aufgerufen
 CORBA::Boolean MessageboardServer::deleteMessageSoap(const char * messageID, const VS2::UserData& uData)
 {
-    cout << "Procedure deleteMessageSoap() called" << endl;
-    return this->deleteMessage(messageID, uData);
-
+    bool deleted = false;
+    Message * message = NULL;
+    string strMessageID(messageID); //char * in String convertieren
+    cout << "Procedure deleteMessageSoap() called" << endl; 
+    //Suchen der Message um Highlighted zu setzen  
+    message = this->searchMessage(strMessageID);
+    //Pruefen ob Nachricht exitiert und die noetigen Rechte vorhanden sind
+    if( (message != NULL)  && this->confirmAdminRights(message, uData))
+    {
+        deleted = this->messageBoard->deleteMessage(uData.userID);
+    } 
+    return deleted;
 }
 
 //Funktion wird von der Soap-Tafel aufgerufen

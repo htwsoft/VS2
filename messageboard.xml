@@ -1,8 +1,28 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 9 </mcounter>
-  <idcounter> 10017 </idcounter>
+  <mcounter> 15 </mcounter>
+  <idcounter> 10021 </idcounter>
   <messages>
+    <message id="14-10021">
+      <text> sssssssssssssssssssssssss </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10020">
+      <text> bla fassel 3 </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10019">
+      <text> bla fassel 3 </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
+    <message id="14-10018">
+      <text> s </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
     <message id="15-10017">
       <text> test </text>
       <uid> 12345 </uid>
@@ -55,16 +75,20 @@
     </message>
   </messages>
   <connectInformations>
-    <father></father>
-    <soap>
-        <name> Soap-Tafel </name>
-        <ip> 10.9.45.43 </ip>
-        <port> 6000 </port>
+    <father id="0">
+      <name> Soap-Tafel </name>
+      <ip> 10.9.45.43 </ip>
+      <port> 8080 </port>
+    </father>
+    <soap id="1">
+      <name> Soap-Tafel </name>
+      <ip> 10.9.40.89 </ip>
+      <port> 8080 </port>
     </soap>
     <childs>
       <child id="1">
         <name> Child 1 </name>
-        <ip> 10.9.45.43 </ip>
+        <ip> 10.9.41.177 </ip>
         <port> 6000 </port>
       </child>
     </childs>
