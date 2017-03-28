@@ -29,6 +29,8 @@ Messageboard::Messageboard(string xmlPath)
 	this->xml = new XMLWorker();
 	this->size = 0;
 	this->boardInformation = NULL;
+	this->soap = NULL;
+	this->father = NULL;
 	this->mIdCounter = 0;
 	this->first = NULL;
 	this->last = NULL;
@@ -424,6 +426,10 @@ void Messageboard::initSoapConnectInfos(XMLNode * node)
 	if(port > 0 && ip.compare("") != 0)
 	{
 		this->soap = new BoardInformation(name, id, ip, port);
+	}
+	else
+	{
+		this->soap = NULL;
 	}
 }
 

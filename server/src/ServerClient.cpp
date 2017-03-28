@@ -33,7 +33,7 @@ bool ServerClient::connectToServer()
                                                                                     
         //------------------------------------------------------------------------
         // The "name text" put forth by CORBA server in name service.
-        // This same name ("DataServiceName1") is used by the CORBA server when
+        // This sam0e name ("DataServiceName1") is used by the CORBA server when
         // binding to the name server (CosNaming::Name).
         //------------------------------------------------------------------------   
         CosNaming::Name _corbaCosName;
