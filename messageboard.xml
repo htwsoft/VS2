@@ -1,8 +1,18 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 6 </mcounter>
+  <mcounter> 7 </mcounter>
   <idcounter> 10013 </idcounter>
   <messages>
+    <message id="14-10001">
+      <text> bla fassel 3 </text>
+      <uid> 12345 </uid>
+      <shared> true </shared>
+    </message>
+    <message id="14-10001">
+      <text> bla fassel 3 </text>
+      <uid> 12345 </uid>
+      <shared> false </shared>
+    </message>
     <message id="14-10012">
       <text> Ein Test </text>
       <uid> 12345 </uid>
@@ -31,11 +41,7 @@
   </messages>
   <connectInformations>
     <father></father>
-    <soap id="1">
-      <name> Soap-Tafel </name>
-      <ip> 10.9.40.111 </ip>
-      <port> 8080 </port>
-    </soap>
+    <soap></soap>
     <childs>
       <child id="1">
         <name> Child 1 </name>

@@ -31,6 +31,7 @@ class ServerClient
         ConnectInformation * connectInformation = 0;                                                                     
     public:
         ServerClient(ConnectInformation * connectInformation);
+        bool connectToServer();
         void saveFatherInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData);
         void saveChildInformation(int id, string name, const ConnectInformation * connectInformation, const VS2::UserData& uData);
         void notifyFather(const VS2::UserData& uData); 
