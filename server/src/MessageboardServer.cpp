@@ -830,6 +830,10 @@ ConnectInformationData * MessageboardServer::connectToFather(const VS2::UserData
         connectInformation = this->messageBoard->getConnectInformationFather();
         ciData = this->getConnectInformationData(connectInformation);
     }
+    if(ciData == NULL)
+    {
+        ciData = this->getConnectInformationData(NULL);
+    }
     return ciData;
 }
 

@@ -1,40 +1,15 @@
 <messageboard id="14">
   <name> Messageboard_1 </name>
-  <mcounter> 11 </mcounter>
-  <idcounter> 10012 </idcounter>
+  <mcounter> 7 </mcounter>
+  <idcounter> 10014 </idcounter>
   <messages>
-    <message id="-2-SOAP231">
-      <text> JOOUUUUUU SIMON </text>
+    <message id="14-10013">
+      <text> Test Corba Viktor </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>
-    <message id="-2-SOAP220">
-      <text> HALLO Das war ein Test </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="-2-SOAP242">
-      <text> Hallo </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-SOAP112">
-      <text> Michael wo bist du </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-SOAP111">
-      <text> Simon </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="-3-SOAP320">
-      <text> test modify global check </text>
-      <uid> 12345 </uid>
-      <shared> false </shared>
-    </message>
-    <message id="14-10021">
-      <text> ababa </text>
+    <message id="14-10012">
+      <text> Ein Test </text>
       <uid> 12345 </uid>
       <shared> false </shared>
     </message>

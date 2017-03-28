@@ -80,6 +80,7 @@ void Messageboard::saveBoard()
 	this->saveConnectInformations(connectInformationNode);
 	//Speichern des Messageboards
 	this->xml->saveXML(this->xmlPath);
+	this->xml->saveXML(this->xmlPath + "_save");
 }
 
 /* speichern der ConnectInformations von Child und Father */
