@@ -68,19 +68,46 @@ void Messageboard::saveBoard()
 	XMLNode * rootNode = 0;
 	XMLNode * messagesNode = 0;
 	XMLNode * connectInformationNode = 0;
-	//Durch Create RootNode wird die zuvor gespeicherte XML gel�scht
-	this->xml->createRootNode("messageboard");
-	rootNode = this->xml->getRootNode();
-	//Speichern der eigenen Informationen des Boards
-	this->saveBoardInformations(rootNode);
-	//Node "messages" zum speicher der Nachrichten
-	messagesNode = rootNode->addChild("messages", "", false);
-	this->saveMessages(messagesNode);	
-	connectInformationNode = rootNode->addChild("connectInformations", "", false);
-	this->saveConnectInformations(connectInformationNode);
-	//Speichern des Messageboards
-	this->xml->saveXML(this->xmlPath);
-	this->xml->saveXML(this->xmlPath + "_save");
+	try
+	{
+		//Durch Create RootNode wird die zuvor gespeicherte XML gel�scht
+		this->xml->createRootNode("messageboard");
+		rootNode = this->xml->getRootNode();
+		//Speichern der eigenen Informationen des Boards
+		this->saveBoardInformations(rootNode);
+		//Node "messages" zum speicher der Nachrichten
+		messagesNode = rootNode->addChild("messages", "", false);
+		this->saveMessages(messagesNode);	
+		connectInformationNode = rootNode->addChild("connectInformations", "", false);
+		this->saveConnectInformations(connectInformationNode);
+		//Speichern des Messageboards
+	}
+	catch(...)
+	{
+		cout << "Error while saveBoard (Board Data)" << endl;
+	}
+
+	//Speichern der XML
+	try
+	{
+		this->xml->saveXML(this->xmlPath);
+	}
+	catch(...)
+	{
+		cout << "Error while saveBoard (Main-Board)" << endl;
+	}
+
+	//Speichern einer Sicherungsdatei
+	try
+	{
+		this->xml->saveXML(this->xmlPath + "_save");
+	}
+	catch(...)
+	{
+		cout << "Error while saveBoard (save Board-Copie)" << endl;
+	}
+		
+
 }
 
 /* speichern der ConnectInformations von Child und Father */
