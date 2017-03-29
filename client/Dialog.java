@@ -187,7 +187,7 @@ public class Dialog{
 		
 		do{
 			
-			System.out.println("Mit welchen Server möchten sie verbinden\n");
+			System.out.println("Mit welchen Server moechten sie verbinden\n");
 			System.out.println("IP "+serDaten1.ip+"  Port"+serDaten1.port+" - 0\n");
 			System.out.println("IP "+serDaten2.ip+"  Port"+serDaten2.port+" - 1 ->");
 			
@@ -259,7 +259,7 @@ public class Dialog{
 				String mId = scanMain.nextLine();
 
 				if (!dialog.clientTest.setMessage(messagea, mId, loeschuid)) {
-					System.out.println("UID: " + loeschuid + " und/oder " + "Massage: " + messagea + " Bname: bName"
+					System.out.println("UID: " + loeschuid + " und/oder " + "Message: " + messagea + " Bname: bName"
 							+ " ist falsch ");
 				}
 				break;
@@ -277,7 +277,7 @@ public class Dialog{
 			
 				do{
 					
-					System.out.println("Mit welchen Server möchten sie verbinden\n");
+					System.out.println("Mit welchen Server moechten sie verbinden\n");
 					System.out.println("IP "+serDaten1.ip+"  Port"+serDaten1.port+" - 0\n");
 					System.out.println("IP "+serDaten2.ip+"  Port"+serDaten2.port+" - 1 "
 							+ "\nAbbrechen 2 ->");
@@ -321,14 +321,14 @@ public class Dialog{
 				
 				messageListtest = dialog.clientTest.getMessage();
 				System.out.println(messageListtest.get(messageListtest.size()-1).text+" wird zu vater geschickt");
-				System.out.println(dialog.clientTest.publishOnFather(messageListtest.get(messageListtest.size()-1)));
+				dialog.clientTest.publishOnFather(messageListtest.get(messageListtest.size()-1));
 				break;
 			case 8:
 				
 				messageListtest = dialog.clientTest.getMessage();
 				System.out.println(messageListtest.get(messageListtest.size()-1).text+" wird zu kinder geschickt");
 				
-				System.out.println(dialog.clientTest.publishOnChilds(messageListtest.get(messageListtest.size()-1)));
+				dialog.clientTest.publishOnChilds(messageListtest.get(messageListtest.size()-1));
 				break;
 			case 0:
 				System.out.println("Beendet");

@@ -45,7 +45,8 @@ public class StartClient {
 			
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
 			 // create and initialize the ORB
-			this.orb = ORB.init(url, null);
+			System.out.println(this.url[1]);
+			this.orb = ORB.init(this.url, null);
 			// get the root naming context
 			org.omg.CORBA.Object objRef;
 			objRef = orb.resolve_initial_references("NameService");
@@ -219,11 +220,43 @@ public class StartClient {
 	
 	/*
 	 *@ Para MessageData
-	 *Sendet Nachircht an Vater
+	 *Sendet Nachircht an Vate
 	 *Return boolean 
 	 */
-	public boolean  publishOnFather(MessageData tempMData){
-		return this.messageAnChildundVater(tempMData);
+	public boolean  publishOnFather(MessageData tempMData) {
+	
+		String vaterIP=this.getFatherIP();
+		
+		if(this.getFatherPort()!=0){
+			int vaterPort=this.getFatherPort();
+			
+			this.url = new String[] { "-ORBInitialPort",Integer.toString(vaterPort), "-ORBInitialHost",vaterIP };
+			this.disconnectToServer();
+		
+			if(this.connectToServer()){
+				this.mbImpl.saveMessage(tempMData.text,tempMData.id , this.userData);
+				
+			}else{
+				System.err.println("Irgenwas stimmt nicht");
+				return false;
+			}
+		
+		this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost",this. loginInfo.server.ip };
+		
+			
+		this.disconnectToServer();
+		if(this.connectToServer()){
+			System.out.println("Connect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
+			
+			System.out.println(tempMData.id+tempMData.text+tempMData.uid);
+			return true;
+			
+		}
+		}
+		System.out.println("Wurde nicht verbunden Father existiert nicht!");
+		return false;
+		
+		
 	}
 	
 	private boolean messageAnChildundVater(MessageData tempMData){
