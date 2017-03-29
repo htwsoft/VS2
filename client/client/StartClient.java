@@ -12,7 +12,8 @@ import VS2.*;
 
 public class StartClient {
 	
-
+	private ArrayList<String> childsNames=new ArrayList<String>();
+	private String myServerName=null;
 	private int uid = 12345;
 	private String uName="TEstsalva";
 	private String pWord="FIsche";
@@ -23,7 +24,6 @@ public class StartClient {
 	
 	private LoginInformation loginInfo=null;
 	private MessageboardServerInterface mbImpl=null;
-	private LoginServerInterface dbImpl=null;
 	boolean shutdown=false;
 	
 	private ArrayList<MessageData> messageList=null;
@@ -31,7 +31,7 @@ public class StartClient {
 
 	private int portDB=6050; // Bitte den richtigen port eingeben und der muss am besten immer gleich sein
 	private String ipDB="192.168.2.1";
-	 
+	 private ConnectInformationData mYserver;
 	ORB orb;
 	private String[] url=null;
 	private String METHOD = "DataServiceName1";
@@ -41,6 +41,8 @@ public class StartClient {
 
 	private boolean connectToServer() {
 		try {
+			
+			
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
 			 // create and initialize the ORB
 			this.orb = ORB.init(url, null);
@@ -78,6 +80,8 @@ public class StartClient {
 			this.messageList = new ArrayList<MessageData>();
 			this.childList =new ArrayList<String>();
 			
+			this.mYserver=new ConnectInformationData(ip,port);
+			this.loginInfo=new LoginInformation(this.isAdmin,this.mYserver);
 			this.url = new String[] { "-ORBInitialPort", Integer.toString(port), "-ORBInitialHost", ip };
 			//this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost", this.loginInfo.server.ip };
 			if(!this.connectToServer()){
@@ -86,12 +90,15 @@ public class StartClient {
 			}
 	}
 
-	public StartClient(LoginInformation loginInfo) {
+	public StartClient(LoginInformation loginInfo,UserData userData) {
 		// TODO Auto-generated constructor stub
 		this.messageList = new ArrayList<MessageData>();
 		this.childList =new ArrayList<String>();
 		
-		this.url = new String[] { "-ORBInitialPort", Integer.toString(loginInfo.server.port), "-ORBInitialHost", loginInfo.server.ip };
+		this.loginInfo=loginInfo;
+		this.userData = userData;
+				
+		this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost",this. loginInfo.server.ip };
 		this.connectToServer();
 	}
 
@@ -126,6 +133,7 @@ public class StartClient {
 	
 	/*
 	 * Array von alle Nachrichten
+	 * 
 	 */
 	public ArrayList<MessageData> getMessage() {
 		messageList.clear();
@@ -206,7 +214,7 @@ public class StartClient {
 	 *Return boolean
 	 */
 	public boolean publishOnChilds(MessageData tempMData){
-		return this.mbImpl.publishOnChilds(tempMData.text,tempMData.id,this.userData,this.userData.isAdmin);
+		return this.messageAnChildundVater(tempMData);
 	}
 	
 	/*
@@ -215,7 +223,43 @@ public class StartClient {
 	 *Return boolean 
 	 */
 	public boolean  publishOnFather(MessageData tempMData){
-		return this.mbImpl.publishOnFather(tempMData.text, tempMData.id,this.userData);
+		return this.messageAnChildundVater(tempMData);
+	}
+	
+	private boolean messageAnChildundVater(MessageData tempMData){
+		
+			
+			childsNames=this.getChildNames();
+			for(int i =0;i<this.childsNames.size();++i ){
+				this.url = new String[] { "-ORBInitialPort", Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port), "-ORBInitialHost",this.mbImpl.connectToChild(this.childsNames.get(i)).ip };
+				System.out.println("Disconnect from -Port "+Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port)+" -IP "+this.mbImpl.connectToChild(this.childsNames.get(i)).ip);
+				this.disconnectToServer();
+				
+				if(this.connectToServer()){
+					System.out.println("Connect from -Port "+Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port)+" -IP "+this.mbImpl.connectToChild(this.childsNames.get(i)).ip);
+					
+					this.mbImpl.saveMessage(tempMData.text,tempMData.id , this.userData);
+					
+				}else{
+					System.err.println("Irgenwas stimmt nicht");
+					return false;
+				}
+			}
+			
+			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost",this. loginInfo.server.ip };
+			
+			System.out.println("Disonnect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
+			
+			this.disconnectToServer();
+			if(this.connectToServer()){
+				System.out.println("Connect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
+				
+				System.out.println(tempMData.id+tempMData.text+tempMData.uid);
+				return true;
+				
+			}
+				
+			return false;
 	}
 	/*
 	 * username abfragen
@@ -225,12 +269,7 @@ public class StartClient {
 	}
 
 	public int getUserID() {
-		return generateID();
-	}
-
-	private int generateID() {
 		return this.uid;
-
 	}
 
 	/*
