@@ -13,29 +13,26 @@ import VS2.*;
 public class StartClient {
 	
 	private ArrayList<String> childsNames=new ArrayList<String>();
-	private String myServerName=null;
-	private int uid = 12345;
-	private String uName="TEstsalva";
-	private String pWord="FIsche";
+	private int uid = 12345;// TEST UID
+	private String uName=null;//usaername
+	private String pWord=null;//password
+	private UserData userData=null;//Klasse um User Daten zu speichern
 	
-	private String message=null;
-	private String fatherName=null;
-	private UserData userData=null;
-	
-	private LoginInformation loginInfo=null;
-	private MessageboardServerInterface mbImpl=null;
+	private LoginInformation loginInfo=null; //Loginfo von Server und rechte
+	private MessageboardServerInterface mbImpl=null;//Corba
 	boolean shutdown=false;
 	
-	private ArrayList<MessageData> messageList=null;
-	private ArrayList<String> childList=null;
+	private ArrayList<MessageData> messageList=null;//Array die ganzen Messages um an den Client zu zeigen
+	private ArrayList<String> childList=null;//Kinder Liste von dem Board an dem ich Angemeldet bin
 
 	private int portDB=6050; // Bitte den richtigen port eingeben und der muss am besten immer gleich sein
 	private String ipDB="192.168.2.1";
-	 private ConnectInformationData mYserver;
+	
+	private ConnectInformationData mYserver;//Server info IP und port
 	ORB orb;
-	private String[] url=null;
-	private String METHOD = "DataServiceName1";
-	private boolean isAdmin=true;
+	private String[] url=null;// url um mit Corba serverzu verbinden
+	private String METHOD = "DataServiceName1";//um mit den richtigen Service zu verbinden
+	private boolean isAdmin=false;// admin rechte 
 
 	
 
@@ -45,7 +42,6 @@ public class StartClient {
 			
 			// Initialisiere ORB und beschaffe Zugang zum 'NameService'
 			 // create and initialize the ORB
-			System.out.println(this.url[1]);
 			this.orb = ORB.init(this.url, null);
 			// get the root naming context
 			org.omg.CORBA.Object objRef;
@@ -150,10 +146,13 @@ public class StartClient {
 	/*
 	 * ersetzt die Nachricht
 	 */
-	public boolean setMessage(String newmessage, String messageID, int uid) {
+	public boolean setMessage(String newmessage, String messageID) {
 		
 		return this.mbImpl.setMessage(newmessage, messageID, this.userData);
 	}
+	
+		
+	
 
 	/*
 	 * loescht die Nachricht
@@ -169,15 +168,15 @@ public class StartClient {
 
 	/*
 	 * schreib eine neue Nachricht
-	 * TODO
+	 * @param message
 	 */
 	public boolean schreibeMessage(String message) {
 		return mbImpl.createNewMessage(message, this.userData);
 	}
 
 	/*
-	 * gibt die direkt n�chste Message
-	 * TODO
+	 * gibt die direkt naechste Message
+	 * 
 	 */
 	public MessageData getnextMessage() {
 		return this.mbImpl.getPreviousMessage();
@@ -191,8 +190,7 @@ public class StartClient {
 	}
 
 	/*
-	 * um mit dem Vater zu verbinden Benutzte erst getFatherIp ud Port und dann
-	 * start()
+	 * fragt den Server die FatherIP
 	 */
 	public String getFatherIP() {
 		return mbImpl.connectToFather(this.userData).ip;
@@ -204,95 +202,102 @@ public class StartClient {
 	
 	/*
 	 * MessageBoard hat fatherId-> abruf xml datei auf fathername
+	 * 
 	 */
 	public String getFatherName() {
 		return this.mbImpl.getFatherName();
 	}
 
 	/*
-	 *@ Para MessageData
-	 *Sendet Nachircht an alle Kinder
-	 *Return boolean
+	 * Sendet Nachircht an alle Kinder
+	 *@ param MessageData
+	 *
+	 *@param return boolean
 	 */
 	public boolean publishOnChilds(MessageData tempMData){
-		return this.messageAnChildundVater(tempMData);
+		this.childsNames=this.getChildNames();
+		if(childsNames!=null){
+			for(int i=0;i<this.childsNames.size();++i){
+				if (!this.sendChildsorFATHER("share",this.mbImpl.connectToChild(this.childsNames.get(i)).ip, this.mbImpl.connectToChild(this.childsNames.get(i)).port, tempMData)){
+					return false;
+				}
+			}
+		}else{
+			return false;
+		}
+		return true;
 	}
 	
 	/*
-	 *@ Para MessageData
-	 *Sendet Nachircht an Vate
-	 *Return boolean 
+	 * Sendet Nachircht an Vater
+	 *@ param MessageData
+	 *
+	 *@param return boolean 
 	 */
 	public boolean  publishOnFather(MessageData tempMData) {
 	
-		String vaterIP=this.getFatherIP();
-		
-		if(this.getFatherPort()!=0){
-			int vaterPort=this.getFatherPort();
-			
-			this.url = new String[] { "-ORBInitialPort",Integer.toString(vaterPort), "-ORBInitialHost",vaterIP };
-			this.disconnectToServer();
-		
-			if(this.connectToServer()){
-				this.mbImpl.saveMessage(tempMData.text,tempMData.id , this.userData);
-				
-			}else{
-				System.err.println("Irgenwas stimmt nicht");
-				return false;
-			}
-		
-		this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost",this. loginInfo.server.ip };
-		
-			
-		this.disconnectToServer();
-		if(this.connectToServer()){
-			System.out.println("Connect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
-			
-			System.out.println(tempMData.id+tempMData.text+tempMData.uid);
+		if(this.sendChildsorFATHER("share",this.getFatherIP(), this.getFatherPort(), tempMData)){
 			return true;
-			
 		}
-		}
-		System.out.println("Wurde nicht verbunden Father existiert nicht!");
+		
 		return false;
 		
 		
 	}
-	
-	private boolean messageAnChildundVater(MessageData tempMData){
-		
-			
-			childsNames=this.getChildNames();
-			for(int i =0;i<this.childsNames.size();++i ){
-				this.url = new String[] { "-ORBInitialPort", Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port), "-ORBInitialHost",this.mbImpl.connectToChild(this.childsNames.get(i)).ip };
-				System.out.println("Disconnect from -Port "+Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port)+" -IP "+this.mbImpl.connectToChild(this.childsNames.get(i)).ip);
-				this.disconnectToServer();
-				
-				if(this.connectToServer()){
-					System.out.println("Connect from -Port "+Integer.toString(this.mbImpl.connectToChild(this.childsNames.get(i)).port)+" -IP "+this.mbImpl.connectToChild(this.childsNames.get(i)).ip);
-					
-					this.mbImpl.saveMessage(tempMData.text,tempMData.id , this.userData);
-					
-				}else{
-					System.err.println("Irgenwas stimmt nicht");
+	public boolean setMessageChild(MessageData tempMData) {
+		this.childsNames=this.getChildNames();
+		if(childsNames!=null){
+			for(int i=0;i<this.childsNames.size();++i){
+				if (!this.sendChildsorFATHER("set",this.mbImpl.connectToChild(this.childsNames.get(i)).ip, this.mbImpl.connectToChild(this.childsNames.get(i)).port, tempMData)){
 					return false;
 				}
 			}
-			
-			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port), "-ORBInitialHost",this. loginInfo.server.ip };
-			
-			System.out.println("Disonnect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
-			
-			this.disconnectToServer();
-			if(this.connectToServer()){
-				System.out.println("Connect from -Port "+Integer.toString(this.loginInfo.server.port)+" -IP "+this.loginInfo.server.ip);
-				
-				System.out.println(tempMData.id+tempMData.text+tempMData.uid);
-				return true;
-				
-			}
-				
+		}else{
 			return false;
+		}
+		return true;
+		
+	}
+		
+		
+	/*
+	 * Funktion um die Nachrichten an Kinder zu senden
+	 * @param MessageData tempData
+	 */
+	
+	
+	private boolean sendChildsorFATHER(String welchefkt,String toIP, int toPort, MessageData tempMData) {
+
+		if (toPort != 0) {
+			// Connect mit der neue IP port
+			this.url = new String[] { "-ORBInitialPort", Integer.toString(toPort), "-ORBInitialHost", toIP };
+			this.disconnectToServer();
+
+			if (this.connectToServer()) {
+				if(welchefkt.equals("share")){
+					this.mbImpl.saveMessage(tempMData.text, tempMData.id, this.userData);
+				}
+				if(welchefkt.equals("set")){
+					this.mbImpl.setMessage(tempMData.text, tempMData.id, this.userData);
+				}
+
+			} else {
+				System.err.println("Irgenwas stimmt nicht");
+				return false;
+			}
+
+			// connect mit den momentanen Verbundenen Server
+			this.url = new String[] { "-ORBInitialPort", Integer.toString(this.loginInfo.server.port),
+					"-ORBInitialHost", this.loginInfo.server.ip };
+
+			this.disconnectToServer();
+			if (this.connectToServer()) {
+				return true;
+			}
+		}
+
+		return false;
+
 	}
 	/*
 	 * username abfragen
@@ -301,6 +306,9 @@ public class StartClient {
 		return this.userData.userName;
 	}
 
+	/*
+	 * userID abfragen
+	 */
 	public int getUserID() {
 		return this.uid;
 	}

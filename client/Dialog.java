@@ -116,7 +116,7 @@ public class Dialog{
 		int auswahl=0;
 		
 		//server IP und Port
-		ConnectInformationData serDaten1=new ConnectInformationData("10.9.45.43",6000);
+		ConnectInformationData serDaten1=new ConnectInformationData("192.168.178.52",6000);
 		ConnectInformationData serDaten2=new ConnectInformationData("10.9.41.177",6000);
 		
 		LoginInformation loginInfo=null;
@@ -214,7 +214,7 @@ public class Dialog{
 			System.out.println("\n Was moechten Sie machen?" + "\nBeenden: 0 " + "\nNachricht schreiben: 1"
 					+ "\nNachricht loeschen: 2" + "\nNachricht ersetzen: 3" + "\nNachricht Ausgabe: 4"
 					+ "\nServer wechseln: 5 (automatisch): " + "\nGebe Vater und kinder Infos: 6" + 
-					"\nNachricht wird zum Vater gesendet: 7"+" \nNachricht an Kinder senden: 8 "+" -----> ");
+					"\nNachricht wird zum Vater gesendet: 7"+" \nNachricht an Kinder senden: 8 "+"\nGeänderte Nachricht an alle Childs weiter senden 9  -----> ");
 			scanMain = new Scanner(System.in);
 			i = scanMain.nextInt();
 			
@@ -250,16 +250,12 @@ public class Dialog{
 				Scanner scan11 = new Scanner(System.in);
 				messagea = scan11.nextLine();
 				
-				System.out.println("UID : \n ");
-				scanMain = new Scanner(System.in);
-				loeschuid = scanMain.nextInt();
-				
 				System.out.println("MessageID : \n ");
 				scanMain = new Scanner(System.in);
 				String mId = scanMain.nextLine();
 
-				if (!dialog.clientTest.setMessage(messagea, mId, loeschuid)) {
-					System.out.println("UID: " + loeschuid + " und/oder " + "Message: " + messagea + " Bname: bName"
+				if (!dialog.clientTest.setMessage(messagea, mId)) {
+					System.out.println("UID: " + mId + " und/oder " + "Message: " + messagea + " Bname: bName"
 							+ " ist falsch ");
 				}
 				break;
@@ -326,9 +322,30 @@ public class Dialog{
 			case 8:
 				
 				messageListtest = dialog.clientTest.getMessage();
-				System.out.println(messageListtest.get(messageListtest.size()-1).text+" wird zu kinder geschickt");
+				System.out.println(messageListtest.get(0).text+" wird zu kinder geschickt");
 				
 				dialog.clientTest.publishOnChilds(messageListtest.get(messageListtest.size()-1));
+				break;
+			case 9:
+				System.out.println("Erstezen an alles CHILDS: entwerder selbst ändern und an alle childs senden oder das geänderte von andere Child an alle Senden  ");
+				messageListtest = dialog.clientTest.getMessage();
+				for(int y =0; y<messageListtest.size();++y){
+					System.out.println("NR "+y+ " Nachricht "+messageListtest.get(y).text);
+					
+				}
+				scanMain = new Scanner(System.in);
+				auswahl = scanMain.nextInt();
+				System.out.println(auswahl);
+				// wenn selbst text geändert dann bitte messageListtest.get(auswahl) und text ändern und fkt aufrufen
+				
+				//messageListtest.get(auswahl).text="test";
+				
+
+				if (!dialog.clientTest.setMessageChild(messageListtest.get(auswahl))) {
+					System.out.println("UID: " + messageListtest.get(auswahl).uid + " und/oder " + "Message: " + messageListtest.get(auswahl).text );
+				}
+			//	System.out.println(messageListtest.get(0).text+" wird zu kinder geschickt");
+				
 				break;
 			case 0:
 				System.out.println("Beendet");
