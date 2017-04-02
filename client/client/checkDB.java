@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Klasse die  versucht beim Start vom client die Daten von der DB ab zu arbeiten
  *  @author Salvatore Simonte
  */
