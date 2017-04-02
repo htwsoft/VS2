@@ -15,7 +15,7 @@ import Datenbank.dbInfo.Fkt;
   */
   
 
-public class StorageMessages implements Serializable    // notwendig um ein StorageMessages Objekt über RMI zu versenden
+public class StorageMessages implements Serializable    
 {
     private static final int EMPF_POS = 0;
     private static final int SEND_POS = 1;

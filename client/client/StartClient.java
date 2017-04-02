@@ -1,4 +1,4 @@
-ï»¿package client;
+package client;
 
 /**
  *
@@ -310,7 +310,7 @@ public class StartClient {
 		
 	}
 	/**
-	 * Die Nachricht die geaendert wurde an alle childs Senden nur admin. wird vom server geprüft
+	 * Die Nachricht die geaendert wurde an alle childs Senden nur admin. wird vom server gepruft
 	 */
 	public boolean setMessageChild(MessageData tempMData) {
 		this.childsNames=this.getChildNames();

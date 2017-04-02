@@ -214,7 +214,7 @@ public class Dialog{
 			System.out.println("\n Was moechten Sie machen?" + "\nBeenden: 0 " + "\nNachricht schreiben: 1"
 					+ "\nNachricht loeschen: 2" + "\nNachricht ersetzen: 3" + "\nNachricht Ausgabe: 4"
 					+ "\nServer wechseln: 5 (automatisch): " + "\nGebe Vater und kinder Infos: 6" + 
-					"\nNachricht wird zum Vater gesendet: 7"+" \nNachricht an Kinder senden: 8 "+"\nGeänderte Nachricht an alle Childs weiter senden 9  -----> ");
+					"\nNachricht wird zum Vater gesendet: 7"+" \nNachricht an Kinder senden: 8 "+"\nGeanderte Nachricht an alle Childs weiter senden 9  -----> ");
 			scanMain = new Scanner(System.in);
 			i = scanMain.nextInt();
 			
@@ -327,7 +327,7 @@ public class Dialog{
 				dialog.clientTest.publishOnChilds(messageListtest.get(messageListtest.size()-1));
 				break;
 			case 9:
-				System.out.println("Erstezen an alles CHILDS: entwerder selbst ändern und an alle childs senden oder das geänderte von andere Child an alle Senden  ");
+				System.out.println("Erstezen an alles CHILDS: entwerder selbst andern und an alle childs senden oder das geanderte von andere Child an alle Senden  ");
 				messageListtest = dialog.clientTest.getMessage();
 				for(int y =0; y<messageListtest.size();++y){
 					System.out.println("NR "+y+ " Nachricht "+messageListtest.get(y).text);
@@ -336,7 +336,7 @@ public class Dialog{
 				scanMain = new Scanner(System.in);
 				auswahl = scanMain.nextInt();
 				//System.out.println(auswahl);
-				// wenn selbst text geändert dann bitte messageListtest.get(auswahl) und text ändern und fkt aufrufen
+				// wenn selbst text geandert dann bitte messageListtest.get(auswahl) und text andern und fkt aufrufen
 				
 				//messageListtest.get(auswahl).text="test";
 				

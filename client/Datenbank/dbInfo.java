@@ -1,7 +1,7 @@
 ï»¿package Datenbank;
 /**
 * 
-* Eine Klasse das den Inhalt einer SPalter der Db enthält
+* Eine Klasse das den Inhalt einer SPalter der Db enthaelt
 *  @author Salvatore Simonte
 */
 public class dbInfo {
