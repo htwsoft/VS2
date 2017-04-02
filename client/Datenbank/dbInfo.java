@@ -1,4 +1,4 @@
-package Datenbank;
+ï»¿package Datenbank;
 /**
 * 
 * Eine Klasse das den Inhalt einer SPalter der Db enthält
