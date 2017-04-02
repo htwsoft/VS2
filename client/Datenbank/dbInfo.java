@@ -1,5 +1,5 @@
-﻿package Datenbank;
-/**
+package Datenbank;
+/*
 * 
 * Eine Klasse das den Inhalt einer SPalter der Db enthaelt
 *  @author Salvatore Simonte

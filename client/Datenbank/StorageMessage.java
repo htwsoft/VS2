@@ -165,7 +165,7 @@ public class StorageMessage {
 		
 		if (!checkMessage(message)) {
 			try {
-				// GIBT mir den groeﬂten wert von id aus und mit ASC den
+				// GIBT mir den groessten wert von id aus und mit ASC den
 				// kleinsten
 				
 				id = getMAX(SPALTEID);
