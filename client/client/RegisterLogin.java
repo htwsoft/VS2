@@ -1,5 +1,5 @@
 package client;
-/**
+/*
  * Klasse um der der DB zu verbinden
  * DB nicht vorhanden
  */
@@ -42,7 +42,7 @@ public class RegisterLogin {
 		}
 		
 	}
-	/**
+	/*
 	 * Sich mit der DB verbinden und die Daten uebergeben
 	 * @param int dbPort String dbIP
 	 */
@@ -53,7 +53,7 @@ public class RegisterLogin {
 		this.url = new String[] { "-ORBInitialPort", Integer.toString(this.port), "-ORBInitialHost", this.ip };
 		
 	}
-	/**
+	/*
 	 * Registrieren
 	 * @param userData
 	 * @param regData
@@ -68,7 +68,7 @@ public class RegisterLogin {
 		return dbImpl.reg(userData, regData);
 	}
 	
-	/**
+	/*
 	 * Anmelden
 	 * @param userData
 	 * @return

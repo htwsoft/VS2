@@ -1,11 +1,11 @@
-﻿package storageSystem;
+package storageSystem;
 
 import java.util.ArrayList;
 import java.io.Serializable;
 import Datenbank.*;
 import Datenbank.dbInfo.Fkt;
 
-/**
+/*
   * Class StorageMessages
   * Speichert Empfaenger (Dienstname), Sender (Dienstname) und dazugehoerige Message.
   * Speichern in dynamischem Array, fluechtig im Programm-Speicher.
@@ -43,7 +43,7 @@ public class StorageMessages implements Serializable
     private synchronized void starten(){
 		messg =new StorageMessage();
 	}
-    /** 
+    /* 
       * Returns element at position of iterator
       * Synchronized, thread safe!
       *
@@ -58,7 +58,7 @@ public class StorageMessages implements Serializable
 		return eintrag;
     }
     
-    /** 
+    /* 
       * Removes the entry for given messageID
       * Synchronized, thread safe!
       * 
@@ -69,7 +69,7 @@ public class StorageMessages implements Serializable
         messg.deleteEintrag( id);
     }
     
-    /** 
+    /* 
       * Adds a new element at the end of the list
       * Synchronized, thread safe!
       * 

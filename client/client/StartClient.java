@@ -1,6 +1,6 @@
 package client;
 
-/**
+/*
  *
  * @author Salvatore Simonte
  */

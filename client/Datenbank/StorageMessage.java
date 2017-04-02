@@ -1,4 +1,4 @@
-ï»¿package Datenbank;
+package Datenbank;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -37,7 +37,7 @@ public class StorageMessage {
 	static int id;
 	static ResultSet rs;
 
-	// ARRAY für komplette auslesen der DB
+	// ARRAY fuer komplette auslesen der DB
 	ArrayList<String[]> array = new ArrayList<String[]>();
 
 	public StorageMessage(){
@@ -165,7 +165,7 @@ public class StorageMessage {
 		
 		if (!checkMessage(message)) {
 			try {
-				// GIBT mir den größten wert von id aus und mit ASC den
+				// GIBT mir den groeßten wert von id aus und mit ASC den
 				// kleinsten
 				
 				id = getMAX(SPALTEID);

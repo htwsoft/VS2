@@ -1,4 +1,4 @@
-﻿/**
+﻿/*
  * Klasse die  versucht beim Start vom client die Daten von der DB ab zu arbeiten
  *  @author Salvatore Simonte
  */
@@ -27,7 +27,7 @@ public class checkDB implements Runnable {
 		 this.client=client;
 	 }
 	 
-	 /**
+	 /*
 	  * entscheidet welche FUnktion aufegrufen wurde und dann sendet dies an dem Server
 	  */
 	private void send(){

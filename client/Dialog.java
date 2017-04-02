@@ -1,4 +1,4 @@
-﻿import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Scanner;
 import VS2.*;
 import client.*;
