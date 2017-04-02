@@ -18,7 +18,8 @@ FileWriter::FileWriter(string fileName):FileWorker(fileName)
 {
 	//Datei zum beschrieben oeffnen. Datei wird wird beim oeffnen
 	//geloescht
-	this->file = fstream(fileName, ios::out | ios::binary | ios::trunc );
+	//this->file = fstream(fileName, ios::out | ios::binary | ios::trunc );
+	this->file = fstream(fileName, ios::out | ios::trunc );
 	if(this->file.is_open())
 	{
 		//Datei-zeiger auf den Anfang der Datei setzen
@@ -76,7 +77,8 @@ void FileWriter::writeLine(string text, bool withNewLine)
 FileReader::FileReader(string fileName):FileWorker(fileName)
 {
 	//Laden bzw. erzeugend der Datei
-	this->file = fstream(fileName, ios::in | ios::binary);
+	//this->file = fstream(fileName, ios::in | ios::binary);
+	this->file = fstream(fileName, ios::in);
 	if(this->file.is_open())
 	{
 

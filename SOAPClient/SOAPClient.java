@@ -28,6 +28,7 @@ public class SOAPClient
         this.userData.userID = 12345;
         this.userData.password = "test";
         this.userData.userName = "User1";
+        this.userData.isAdmin = false;
     }
 
     /* Methode stellt die Verbindung zum Server her */
@@ -83,8 +84,15 @@ public class SOAPClient
     {
         //Zusatzflag um Nachrichten der SOAP-Gruppe zu identifizieren
         messageID = "SOAP-" + messageID;
-		return this.mbImpl.deleteMessage(this.userData.userID, messageID);
+		return this.mbImpl.deleteMessage(messageID, this.userData);
 	}
+ 
+    /* Methode zum aendern einer Nachricht */
+    public boolean setMessage(String message, String messageID)
+    {
+        messageID = "SOAP-" + messageID;
+        return this.mbImpl.setMessage(message, messageID, this.userData);
+    }
 
     /**/
     public boolean isServerConnected()

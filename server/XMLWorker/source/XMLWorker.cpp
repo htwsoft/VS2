@@ -562,6 +562,10 @@ bool XMLWorker::saveXML(string fileName)
 	{
 		cout << endl << "Achtung: " << c << endl;
 	}
+	catch(...)
+	{
+		cout << "Error while saveXML" << endl;
+	}
 	return dateiGespeichert;
 }
 

@@ -27,6 +27,7 @@ class Messageboard
 		int mIdCounter; //Zaehler um richtige ID fuer eine Message zu generieren
         string name;
 		BoardInformation * father;
+        BoardInformation * soap; //Connectinformationen einer Soap-Tafel
 		vector<BoardInformation *> childs;
 		vector<BoardInformation *>::iterator iterChilds;
 		Message * first;
@@ -39,7 +40,9 @@ class Messageboard
 		void initMessageIdCounter();
 		void initBoardInformations();
 		void initConnectInfos();
+		Message * searchMessage(string messageID);
 		void initFatherNodeConnectInfos(XMLNode * node);
+        void initSoapConnectInfos(XMLNode * node);
 		void initChildConnectInfos(XMLNode * node);
 		void initChild(XMLNode * node);
 		void clearMessages();
@@ -51,6 +54,7 @@ class Messageboard
 		void saveConnectInformations(XMLNode * fatherNode);
 		void saveChildConnectInformations(XMLNode * fatherNode);
 		void saveFatherConnectInformation(XMLNode * fatherNode);
+		void saveSoapConnectInformation(XMLNode * fatherNode);
         unsigned int getConnectInformationChildIndex(string);
 	public:
 		Messageboard(string);//Konstruktor mit einer Board-XML-Datei
@@ -70,13 +74,15 @@ class Messageboard
         void setFirstMessageToHighlighted();
         void setHighlightedMessage(Message * message);
 		bool setMessage(string,int,string);
-		bool createNewMessage(string, int, string);
-		bool createNewMessage(string, string, int, string, bool = true);
+		bool createNewMessage(string, int, string, bool = false);
+		bool createNewMessage(string, string, int, string, bool = true, bool =false);
 		bool deleteMessage(int);
 		void erase();
         int getChildCount();
 		ConnectInformation * getConnectInformationFather();
+        ConnectInformation * getConnectInformationSoap();
 		ConnectInformation * getConnectInformationChild(string);
+		int getSoapBoardId();
 		//Server-Server
 		void saveFatherInformation(int, string, ConnectInformation *);
 		void saveChildrenInformation(int, string, ConnectInformation *);

@@ -1,0 +1,7 @@
+- SOAP-ConnectData einbauen in xml      (X)
+- SOPA-ServerClient erstellen           (X)
+- SOAP-Server-Client implementieren     (X)
+- Error-Handling verbessern             (X)
+- DeleteMessage iterierend              (X)
+- SetMessage iterierend                 ()
+- confirmUserRights                     (X)
